@@ -1,0 +1,133 @@
+<title>Wickfall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@500&family=Silkscreen&display=swap">
+<style>
+@@STYLE@@</style>
+
+<main class="wrap">
+  <header>
+    <div>
+      <h1>Wick<span class="wick">fall</span></h1>
+      <p class="sub">Every flame in Underwick is going out. A small candle goes down into the dark to find the first fire.</p>
+    </div>
+    <div class="actions">
+      <button class="ghost" id="pauseBtn" type="button">Pause</button>
+      <button class="ghost" id="muteBtn" type="button">Sound on</button>
+      <button class="ghost" id="fsBtn" type="button">Full screen</button>
+    </div>
+  </header>
+
+  <div class="game" id="gameWrap">
+   <div class="gin" id="gin">
+    <div class="stage" id="stage">
+      <canvas id="game" width="480" height="272" aria-label="Wickfall game screen"></canvas>
+      <div class="banner" id="banner"><div class="name" id="bName"></div><div class="rule"></div><div class="note" id="bNote"></div></div>
+      <div class="toast" id="toast"></div>
+      <div class="tuthud" id="tutHud" hidden></div>
+      <div class="hudlayer" id="hudLayer" hidden aria-hidden="true">
+        <div class="hud">
+          <svg class="vessel" viewBox="0 0 40 40"><defs><clipPath id="vclip"><circle cx="20" cy="20" r="15"/></clipPath></defs>
+            <circle cx="20" cy="20" r="18.5" fill="rgba(5,6,10,.62)"/><circle cx="20" cy="20" r="15" fill="#181c27"/>
+            <g clip-path="url(#vclip)"><rect class="vwax" id="hudWax" x="0" y="40" width="40" height="40"/><rect class="vshine" x="9" y="8" width="3" height="20" rx="1.5"/></g>
+            <circle class="vring" id="hudRing" cx="20" cy="20" r="15" fill="none" stroke-width="1.6"/>
+            <path d="M33 25h2.5M33 15h2.5" stroke="#7b7766" stroke-width="1.2"/>
+            <circle class="vfocus" id="hudFocus" cx="20" cy="20" r="18.5" fill="none" stroke-width="2" pathLength="100" stroke-dasharray="0 100" transform="rotate(-90 20 20)"/></svg>
+          <div class="hcol"><div class="hemb" id="hudEmb"></div>
+            <div class="hrow"><span class="hcoin" id="hudCoin"><i></i><b id="hudCoinN">×0</b></span><span class="hsk" id="hudSk"></span></div></div>
+        </div>
+        <div class="hboss" id="hudBoss" hidden><span id="hudBossN"></span><div class="hbars"><i id="hudBossT1"><b id="hudBossBar"></b></i><i class="h2" id="hudBossT2" hidden><b id="hudBossBar2"></b></i></div></div>
+      </div>
+      <div class="gal" id="galPanel" hidden></div>
+      <div class="overlay" id="overlay"></div>
+    </div>
+
+    <div class="touch" id="touch" aria-label="Touch controls">
+      <div class="padzone" id="padzone" data-ctl="stick" aria-label="Movement: touch and drag">
+        <div class="pad" id="pad">
+          <svg class="arr up" viewBox="0 0 16 16"><path d="M4 10l4-4 4 4"/></svg>
+          <svg class="arr down" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg>
+          <svg class="arr left" viewBox="0 0 16 16"><path d="M10 4l-4 4 4 4"/></svg>
+          <svg class="arr right" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></svg>
+          <span class="nub" id="nub"></span>
+        </div>
+      </div>
+      <div class="topbar" data-ctl="bar">
+        <button class="ic" data-ui="pause" type="button" aria-label="Pause"></button>
+        <button class="ic" data-ui="fs" type="button" aria-label="Full screen"></button>
+        <button class="ic" data-ui="cfg" type="button" aria-label="Arrange buttons"></button>
+      </div>
+      <div class="acts">
+        <button class="t skill locked" data-act="skill" data-ctl="skill" type="button" aria-label="Skill">
+          <svg viewBox="0 0 24 24"><path d="M12 3l2.1 6.9L21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1z"/></svg>
+        </button>
+        <button class="t focus" data-act="heal" data-ctl="heal" type="button" aria-label="Focus (hold to heal)">
+          <svg viewBox="0 0 24 24"><path d="M12 3c1 3.5 5.5 5.5 5.5 10.5a5.5 5.5 0 0 1-11 0c0-2.6 1.6-4.4 2.8-6 .5 1.6 1.4 2.6 2.4 2.9C12.2 8 11.4 5.4 12 3z"/></svg>
+        </button>
+        <button class="t dash" data-act="dash" data-ctl="dash" type="button" aria-label="Dash">
+          <svg viewBox="0 0 24 24"><path d="M3 8h7M2 12h9M3 16h7"/><path d="M13 6l6 6-6 6"/></svg>
+        </button>
+        <button class="t slash" data-act="attack" data-ctl="attack" type="button" aria-label="Slash">
+          <svg viewBox="0 0 24 24"><path d="M5 20C14 18.5 19.5 12 20 3"/><path d="M5 20c5.5-2.5 9.5-7 11-13" opacity=".55"/><path d="M3.5 17.5l3 3"/></svg>
+        </button>
+        <button class="t jump" data-act="jump" data-ctl="jump" type="button" aria-label="Jump">
+          <svg viewBox="0 0 24 24"><path d="M12 17V5M6.5 10.5L12 5l5.5 5.5"/><path d="M6 20.5h12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="editor" id="editor" hidden>
+      <div class="ed-head"><b id="edTitle">All buttons</b><span id="edHint"></span></div>
+      <label for="edSize">Size <input type="range" id="edSize" min="50" max="180" step="5"><output id="edSizeV"></output></label>
+      <label for="edOp">Opacity <input type="range" id="edOp" min="20" max="100" step="5"><output id="edOpV"></output></label>
+      <div class="ed-row">
+        <button class="btn" id="edAll" type="button">All buttons</button>
+        <button class="btn" id="edReset" type="button">Reset</button>
+        <button class="btn primary" id="edDone" type="button">Done</button>
+      </div>
+    </div>
+   </div>
+  </div>
+
+  <details class="info" id="info" open>
+  <summary><span>Controls &amp; field notes</span><span class="state"><span class="when-closed">Show</span><span class="when-open">Hide</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+  <section class="notes">
+    <div>
+      <p class="label">Controls</p>
+      <dl class="keys">
+        <dt>Move</dt><dd><kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd></dd>
+        <dt>Jump</dt><dd><kbd>Space</kbd> or <kbd>Z</kbd>. Hold for a higher jump. <kbd>↓</kbd> + Jump drops through roots.</dd>
+        <dt>Slash</dt><dd><kbd>X</kbd> or <kbd>J</kbd>. Hold <kbd>↑</kbd> to strike up, <kbd>↓</kbd> in the air to strike down.</dd>
+        <dt>Dash</dt><dd><kbd>Shift</kbd>, <kbd>C</kbd> or <kbd>K</kbd>. One dash in the air.</dd>
+        <dt>Focus</dt><dd>Hold <kbd>F</kbd> while standing to melt 33 wax into one ember.</dd>
+        <dt>Skill</dt><dd><kbd>E</kbd> or <kbd>L</kbd>. Hold <kbd>↑</kbd> or <kbd>↓</kbd> for the other skills once learned. Each costs 33 wax.</dd>
+        <dt>Rest</dt><dd><kbd>↑</kbd> at a shrine</dd>
+        <dt>Pause</dt><dd><kbd>P</kbd> or <kbd>Esc</kbd>. <kbd>M</kbd> toggles sound. Gamepads work too.</dd>
+        <dt>Phone</dt><dd>Touch and drag anywhere on the left to move. Jump, slash, dash and focus sit on the right. Full screen always plays sideways. The sliders icon lets you move and resize every button.</dd>
+      </dl>
+    </div>
+    <div>
+      <p class="label">Field notes</p>
+      <ul class="field">
+        <li><span><b>New here?</b> The tutorial is one short room: move, jump, dash, slash, focus and bounce. Experienced players can skip straight to Wickhollow from hero select or the pause menu.</span></li>
+        <li><span><b>Embers are your health.</b> Wick starts with five. The vessel at top left holds wax.</span></li>
+        <li><span><b>Wick swings a wide, flat crescent</b> that covers space above, below and ahead, and alternates its stroke each swing.</span></li>
+        <li><span><b>Wick Hero is the easiest.</b> Nine embers, a long reach, huge damage and double wax from every hit. Its fourth strike, Severance, fills a wide sphere ahead with cuts.</span></li>
+        <li><span><b>Lampknight is the easier hero.</b> Seven embers, longer reach, and a four-hit combo whose last strike deals double damage. Slower on foot and in the dash.</span></li>
+        <li><span><b>Every hit you land adds wax.</b> Three hits is a third of the vessel, enough to Focus once.</span></li>
+        <li><span><b>Strike down to bounce.</b> A down-slash on a foe or on spines springs you back up and refreshes your dash.</span></li>
+        <li><span><b>Spines cost one ember</b> and return you to the last solid ground.</span></li>
+        <li><span><b>Coins buy skills.</b> Trade 3 coins at a blacksmith. Chapter 1's smith (end of the Drip) forges Ember Bolt; Chapter 2's forges Wax Dive. Skill damage grows with your hero's slash.</span></li>
+        <li><span><b>Music.</b> "Beneath A Frozen Horizon": its calm opening loops at camp and in the stages; its climax takes over at each boss's roar and fades back after. Muffled when paused. <kbd>M</kbd> mutes everything.</span></li>
+        <li><span><b>Gallery.</b> From the home screen: pick any hero, play every move on a button press, spawn either boss and trigger each of its attacks or its entrance.</span></li>
+        <li><span><b>Focus is a risk.</b> Wax drains while you hold it. Let go early and it flows back; take a hit and it spills.</span></li>
+        <li><span><b>Shrines keep your place.</b> Rest at one to restore every ember and set where you return.</span></li>
+      </ul>
+    </div>
+  </section>
+  </details>
+  <footer>All characters, art and sound are drawn and synthesised in code.</footer>
+</main>
+
+<script>
+@@SCRIPT@@</script>

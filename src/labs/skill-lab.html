@@ -1,0 +1,174 @@
+<title>Black Wick Skill Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Silkscreen&display=swap">
+<style>
+/* Layout: a duel stage on the left that stays in view, a deck of skill cards on the right; controls sit under the stage like a sword rack.
+   One deliberate dark look: black wax, dried-blood reds, one hot red for whatever is live. */
+:root{
+  --ink:#0a0405; --wax:#140709; --wax2:#1d0b0e; --edge:#3a1217; --blood:#7a0c14; --hot:#ff4a3c; --ember:#ff8a76;
+  --bone:#efe1dc; --ash:#b79c96; --dim:#8c706b;
+  --f-display:"IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --f-body:"Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  --f-px:"Silkscreen", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:radial-gradient(120% 70% at 20% -10%, #2a0a0f 0%, var(--ink) 55%) fixed, var(--ink);color:var(--bone);font:17px/1.5 var(--f-body);
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px 48px}
+.wrap{max-width:1320px;margin:0 auto;display:grid;gap:22px}
+header{display:grid;gap:4px}
+.eyebrow{font-family:var(--f-px);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--hot)}
+h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(34px,5vw,54px);line-height:1;color:var(--bone);text-wrap:balance}
+h1 em{font-style:normal;color:var(--hot);text-shadow:0 0 22px rgba(255,60,40,.35)}
+.lede{margin:6px 0 0;max-width:68ch;color:var(--ash)}
+.main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;align-items:start}
+.left{position:sticky;top:max(12px, env(safe-area-inset-top, 0px));display:grid;gap:12px;min-width:0}
+.screen{position:relative;aspect-ratio:480/272;max-width:100%;border:1px solid var(--edge);border-radius:6px;overflow:hidden;background:#000;box-shadow:0 0 0 1px #000, 0 18px 50px rgba(120,0,10,.25)}
+.screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.now{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;padding:10px 14px;background:var(--wax);border:1px solid var(--edge);border-radius:6px}
+.now small{font-family:var(--f-px);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.now b{font-family:var(--f-px);font-weight:400;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ember)}
+.now .hp{margin-left:auto;display:flex;gap:8px;align-items:center;min-width:180px;flex:1 1 180px;max-width:280px}
+.bar{flex:1;height:6px;background:#2a0d10;border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--blood),var(--hot));transition:width .2s}
+.rack{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px 16px;align-items:start}
+.ctl{display:grid;gap:6px}
+.ctl>span{font-family:var(--f-px);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.seg{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start}
+button{font:inherit}
+.seg button{font-family:var(--f-px);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ash);background:transparent;border:1px solid var(--edge);border-radius:3px;padding:7px 9px;cursor:pointer}
+.seg button[aria-pressed="true"]{color:var(--ink);background:var(--bone);border-color:var(--bone)}
+.seg button:hover{border-color:var(--hot)}
+button:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.keys{font-size:14px;color:var(--dim)}.keys kbd{font-family:var(--f-px);font-size:10px;color:var(--bone);border:1px solid var(--edge);border-bottom-width:2px;border-radius:3px;padding:1px 5px}
+.deck{display:grid;gap:10px;min-width:0}
+.deckhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.deckhead h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:26px}
+.playall{font-family:var(--f-px);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--hot);border:1px solid var(--hot);border-radius:3px;padding:8px 12px;cursor:pointer}
+.playall[aria-pressed="true"]{background:transparent;color:var(--hot)}
+.group{font-family:var(--f-px);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);padding-top:6px}
+.card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;padding:12px 14px;background:var(--wax);border:1px solid var(--edge);border-radius:6px;cursor:pointer;text-align:left;color:inherit;width:100%;transition:border-color .15s, background .15s}
+.card:hover{border-color:#6e1a20}
+.card.live{border-color:var(--hot);background:linear-gradient(90deg,#2a0a0e,var(--wax) 70%);box-shadow:0 0 0 1px rgba(255,74,60,.3), 0 0 26px rgba(255,40,30,.12) inset}
+.key{grid-row:span 3;width:34px;height:34px;display:grid;place-items:center;font-family:var(--f-px);font-size:13px;color:var(--hot);border:1px solid var(--edge);border-radius:4px;background:var(--ink)}
+.card.live .key{background:var(--hot);color:var(--ink);border-color:var(--hot)}
+.ttl{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.ttl h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:21px;line-height:1.1;color:var(--bone)}
+.chip{font-family:var(--f-px);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:2px 6px;border-radius:3px;border:1px solid var(--edge);color:var(--ash)}
+.chip.p2{border-color:var(--blood);color:var(--ember)}
+.rows{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px 10px;margin:0;font-size:15px}
+.rows dt{font-family:var(--f-px);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding-top:4px}
+.rows dd{margin:0;color:#dcc8c2}
+.meta{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
+footer{color:var(--dim);font-size:14px;max-width:80ch}
+@media (max-width:900px){.main{grid-template-columns:1fr}.left{position:static}}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Wickfall · hidden boss · skill lab</div>
+    <h1>The <em>Black</em> Wick</h1>
+    <p class="lede">Every skill, on demand. Pick one and he plays it once against your hero, then stands still and waits. Slow it down to study the warnings, switch to the second phase for the faster versions, or let the deck play through on its own. You can also fight back at any time.</p>
+  </header>
+
+  <div class="main">
+    <section class="left" aria-label="The duel">
+      <div class="screen"><iframe id="game" src="lab.html" title="The Black Wick duel" allow="autoplay; fullscreen"></iframe></div>
+      <div class="now" aria-live="polite"><small>Now</small><b id="nowState">Loading the pit…</b><span class="hp"><small>HP</small><span class="bar"><i id="hpBar"></i></span></span></div>
+      <div class="rack">
+        <div class="ctl"><span>Phase</span><div class="seg" id="phase"><button type="button" data-v="0" aria-pressed="true">Full health</button><button type="button" data-v="1" aria-pressed="false">Below half</button></div></div>
+        <div class="ctl"><span>Speed</span><div class="seg" id="speed"><button type="button" data-v="1" aria-pressed="true">1×</button><button type="button" data-v="0.5" aria-pressed="false">½×</button><button type="button" data-v="0.25" aria-pressed="false">¼×</button></div></div>
+        <div class="ctl"><span>Your distance</span><div class="seg" id="dist"><button type="button" data-v="50" aria-pressed="false">Close</button><button type="button" data-v="90" aria-pressed="true">Mid</button><button type="button" data-v="150" aria-pressed="false">Far</button></div></div>
+        <div class="ctl"><span>Hero</span><div class="seg" id="hero"><button type="button" data-v="hero" aria-pressed="true">Wick Hero</button><button type="button" data-v="snuff" aria-pressed="false">Wick</button><button type="button" data-v="knight" aria-pressed="false">Lampknight</button></div></div>
+        <div class="ctl"><span>Repeat</span><div class="seg" id="loop"><button type="button" data-v="0" aria-pressed="true">Once</button><button type="button" data-v="1" aria-pressed="false">Loop skill</button></div></div>
+        <div class="ctl"><span>Damage to you</span><div class="seg" id="god"><button type="button" data-v="1" aria-pressed="true">Off</button><button type="button" data-v="0" aria-pressed="false">On</button></div></div>
+      </div>
+      <div class="keys"><b style="color:var(--ember);font-weight:500">Click the game once to turn on sound.</b> Keys on this page: <kbd>1</kbd>–<kbd>9</kbd> play a skill · <kbd>Space</kbd> replay · <kbd>S</kbd> cycle speed. Click the game to fight: <kbd>← →</kbd> move, <kbd>Space</kbd> jump, <kbd>X</kbd> slash.</div>
+    </section>
+
+    <section class="deck" aria-label="Skills">
+      <div class="deckhead"><h2>Skills</h2><button type="button" class="playall" id="playAll" aria-pressed="false">Play all in order</button></div>
+      <div id="cards"></div>
+    </section>
+  </div>
+
+  <footer>Timings shown are at full health and normal speed; below half every warning is about 20% shorter. He has no contact damage and nothing to stun: he takes normal hits, and every attack ends with him open, blade low. That is the safe time to strike.</footer>
+</div>
+
+<script>
+(() => {
+  const SKILLS = [
+    { id:'iai', name:'Draw cut', group:'Attacks', p:'Any phase', tell:'Crouches, hand on the hilt; a red glint flares at the scabbard with a thin "tsing".', act:'Blinks through you at chest height, trailing black fire, and leaves a red line that splits into a wall of flame a beat later.', dodge:'Jump the dash, then stay off the line until it splits.', p2:'Cuts twice, back and forth.', meta:'Warning 0.6 s · line splits 0.32 s later', dur:2.2 },
+    { id:'combo', name:'Combo', group:'Attacks', p:'Any phase', tell:'Blade raised overhead, eyes flare white-hot. From far away he closes the gap during the raise.', act:'Three cuts and a cross, stepping in; the last two throw black flame forward.', dodge:'Back off out of reach, or jump to a ledge.', p2:'Strikes come about 15% faster.', meta:'Warning 0.45 s · 4 strikes over 0.8 s', dur:2.5 },
+    { id:'moon', name:'Moonfall', group:'Attacks', p:'Any phase', tell:'He leaps and vanishes in black smoke. A red column of light marks where you stand.', act:'Drops through the column with a falling cut. Landing throws a pillar of black flame and rolls fire along the floor.', dodge:'Move out of the column as soon as it appears. It reaches the ledges too.', p2:'Four drops instead of three.', meta:'Mark 0.55 s before each drop', dur:4.2 },
+    { id:'wave', name:'Blood crescents', group:'Attacks', p:'Any phase', tell:'Steps back with the blade held low; it glows and drips.', act:'Throws flying sword-slash crescents along the floor: a white-hot edge over crimson, trailing afterimages.', dodge:'Jump each low crescent.', p2:'A third wave is thrown from a raised blade and flies high: stay on the ground for that one.', meta:'Warning 0.6 s · a wave every 0.45 s', dur:2.8 },
+    { id:'guard', name:'Guard', group:'Attacks', p:'Any phase', tell:'Blade held level, the edge burning a steady red, with a ringing hum.', act:'Strike it and he deflects, appears behind you in a burst of black fire and cuts.', dodge:'Do not strike. Wait and he lowers it, open.', p2:'Same.', meta:'Guard lasts 1.3 s · counter after 0.2 s', dur:2.6 },
+    { id:'sev', name:'Severance', group:'Attacks', p:'Below half only', tell:'The room goes dark and a dashed red circle marks where you stand. He begins to sheathe, slowly.', act:'Cuts fill the circle; at the click every cut lands at once and bursts into black flame. Two embers.', dodge:'Get out of the circle before the click.', p2:'Comes every fourth attack.', meta:'Circle holds 1.5 s', dur:3.2, needP2:true },
+    { id:'intro', name:'Entrance', group:'Moments', p:'Fight start', tell:'The pit sinks into red haze; he waits at the far end with his blade sheathed.', act:'His name comes up and he draws with a ringing sound.', dodge:'Nothing to dodge.', meta:'About 3 s', dur:4.5 },
+    { id:'enrage', name:'Second phase', group:'Moments', p:'At half health', tell:'His health drops below half.', act:'Black fire wraps him, the screen flashes red and his crown blazes; after this small flames keep licking off his shoulders.', dodge:'Nothing to dodge.', meta:'Once per fight', dur:2.2 },
+    { id:'death', name:'Burning out', group:'Moments', p:'Defeat', tell:'His health reaches zero.', act:'He kneels, the blade fades, and he burns out in his own black fire before crumbling to ash.', dodge:'Nothing to dodge.', meta:'About 2.4 s', dur:3.2 }
+  ];
+  const STATE = { uIdle:'Waiting', uIaiW:'Hand on the hilt', uIai:'Draw cut', uIaiEnd:'Line hangs', uComboW:'Blade raised', uCombo:'Combo', uOpen:'Open · strike now', uLeap:'Leaping', uRise:'Vanishing', uMark:'Marked · move', uDrop:'Falling cut', uWaveW:'Blade glowing', uWave:'Blood crescents', uGuard:'Guard · hold back', uCounter:'Counter', uCut:'Counter cut', uSevW:'The room goes dark', uSev:'Severance · get out', intro:'Entrance', dead:'Burning out', beaten:'Gone' };
+  const frame = document.getElementById('game');
+  const send = m => { try { frame.contentWindow.postMessage(Object.assign({ uw:1 }, m), '*'); } catch (_) {} };
+  const opt = { p2:false, speed:1, dist:90, hero:'hero', loop:false, god:true };
+  try { const s = JSON.parse(localStorage.getItem('bw-skill-opt') || 'null'); if (s) Object.assign(opt, s); } catch (_) {}
+  const save = () => { try { localStorage.setItem('bw-skill-opt', JSON.stringify(opt)); } catch (_) {} };
+  // the deck
+  const cards = document.getElementById('cards'); let lastGroup = '';
+  cards.innerHTML = SKILLS.map((s, i) => {
+    const g = s.group !== lastGroup ? `<div class="group">${s.group}</div>` : ''; lastGroup = s.group;
+    return `${g}<button type="button" class="card" data-i="${i}" id="sk-${s.id}" aria-label="Play ${s.name}">
+      <span class="key">${i + 1}</span>
+      <span class="ttl"><h3>${s.name}</h3><span class="chip${s.needP2 ? ' p2' : ''}">${s.p}</span></span>
+      <dl class="rows"><dt>Tell</dt><dd>${s.tell}</dd><dt>Then</dt><dd>${s.act}</dd><dt>Answer</dt><dd>${s.dodge}</dd>${s.p2 && s.p2 !== 'Same.' ? `<dt>Below half</dt><dd>${s.p2}</dd>` : ''}</dl>
+      <span class="meta">${s.meta}</span></button>`;
+  }).join('');
+  const cardEls = [...cards.querySelectorAll('.card')];
+  // controls
+  const seg = (id, key, conv, after) => {
+    const btns = [...document.querySelectorAll(`#${id} button`)];
+    const paint = () => btns.forEach(b => b.setAttribute('aria-pressed', String(conv(b.dataset.v) === opt[key])));
+    btns.forEach(b => b.addEventListener('click', () => { opt[key] = conv(b.dataset.v); paint(); save(); after && after(); }));
+    paint(); return paint;
+  };
+  seg('phase', 'p2', v => v === '1', () => replay());
+  const paintSpeed = seg('speed', 'speed', v => +v, () => send({ cmd:'speed', v:opt.speed }));
+  seg('dist', 'dist', v => +v, () => replay());
+  seg('hero', 'hero', v => v, () => replay());
+  seg('loop', 'loop', v => v === '1');
+  seg('god', 'god', v => v === '1', () => send({ cmd:'god', on:opt.god }));
+  // playing a skill
+  let cur = -1, armed = false, sawAction = false, chain = false, chainT = 0, loopT = 0;
+  const play = i => {
+    const s = SKILLS[i]; if (!s) return;
+    cur = i; armed = true; sawAction = false; clearTimeout(loopT); clearTimeout(chainT);
+    cardEls.forEach((c, k) => c.classList.toggle('live', k === i));
+    send({ cmd:'speed', v:opt.speed }); send({ cmd:'god', on:opt.god }); send({ cmd:'hold', on:true });
+    send({ cmd:'ushow', move:s.id, p2:opt.p2 || !!s.needP2, dist:opt.dist, hero:opt.hero });
+    if (chain) chainT = setTimeout(() => { if (chain) play((i + 1) % SKILLS.length); }, (s.dur / opt.speed + 0.9) * 1000);
+  };
+  const replay = () => { if (cur >= 0) play(cur); };
+  cardEls.forEach(c => c.addEventListener('click', () => { chain = false; paintAll(); play(+c.dataset.i); }));
+  const all = document.getElementById('playAll');
+  const paintAll = () => { all.setAttribute('aria-pressed', String(chain)); all.textContent = chain ? 'Stop' : 'Play all in order'; };
+  all.addEventListener('click', () => { chain = !chain; paintAll(); if (chain) play(0); else clearTimeout(chainT); });
+  document.addEventListener('keydown', e => {
+    if (e.target.closest && e.target.closest('input,textarea')) return;
+    const n = +e.key; if (n >= 1 && n <= SKILLS.length) { chain = false; paintAll(); play(n - 1); e.preventDefault(); }
+    else if (e.code === 'Space' && document.activeElement === document.body) { replay(); e.preventDefault(); }
+    else if (e.key === 's' || e.key === 'S') { const sp = [1, 0.5, 0.25]; opt.speed = sp[(sp.indexOf(opt.speed) + 1) % sp.length]; paintSpeed(); save(); send({ cmd:'speed', v:opt.speed }); }
+  });
+  // live readout; loop a skill once he is back to waiting
+  const nowEl = document.getElementById('nowState'), hpEl = document.getElementById('hpBar');
+  window.addEventListener('message', e => {
+    const m = e.data; if (!m || !m.uw || e.source !== frame.contentWindow || m.type !== 'stats') return;
+    nowEl.textContent = STATE[m.state] || m.state || '…';
+    hpEl.style.width = (m.bmax ? Math.max(0, m.bhp / m.bmax * 100) : 0) + '%';
+    if (armed && m.state && m.state !== 'uIdle') sawAction = true;
+    if (armed && sawAction && (m.state === 'uIdle' || m.state === 'beaten')) { armed = false; if (opt.loop && !chain) loopT = setTimeout(replay, 700 / opt.speed); }
+  });
+  frame.addEventListener('load', () => setTimeout(() => { send({ cmd:'speed', v:opt.speed }); send({ cmd:'god', on:opt.god }); send({ cmd:'hold', on:true }); play(0); }, 500));
+})();
+</script>

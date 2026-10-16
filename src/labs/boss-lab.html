@@ -1,0 +1,714 @@
+<title>Chapter 3 Boss Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Silkscreen&display=swap">
+<style>
+/* Layout: one long dossier; each boss gets a looping storyboard (left) and its design sheet (right). Single dark look: the game's cave. */
+:root{
+  --night:#0b1014; --stone:#141c22; --line:#2a3640; --wax:#efe3c2; --dim:#9aa59f; --ember:#f2a541; --frost:#9fdcd0; --bronze:#c9a64e;
+  --f-display:"IM Fell English SC","Iowan Old Style",Georgia,serif;
+  --f-body:"Alegreya Sans","Segoe UI",system-ui,sans-serif;
+  --f-px:"Silkscreen","JetBrains Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--night);color:var(--wax);font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:1120px;margin:0 auto;display:grid;gap:44px}
+header{display:grid;gap:8px}
+.eyebrow{font-family:var(--f-px);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(38px,6.5vw,68px);line-height:1;letter-spacing:.02em;text-wrap:balance}
+h1 span{color:var(--ember)}
+.lede{margin:0;max-width:68ch;color:#cfc6ad}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.rules span{font-family:var(--f-px);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border:1px solid var(--line);border-radius:3px;color:var(--frost)}
+.boss.wide{grid-template-columns:minmax(0,1fr);max-width:820px;width:100%;margin:0 auto}
+.boss{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:26px;padding-top:30px;border-top:1px solid var(--line);align-items:start}
+.left{display:grid;gap:10px;min-width:0}
+.stage{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#05070b}
+.stage canvas{display:block;width:100%;height:auto;image-rendering:pixelated;max-width:100%}
+.cap{min-height:3.2em;display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#d9cfb4}
+.cap b{flex:none;font-family:var(--f-px);font-weight:400;font-size:11px;letter-spacing:.14em;color:var(--night);background:var(--ember);padding:3px 7px;border-radius:2px;margin-top:2px}
+.beats{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.beats button{font-family:var(--f-px);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);background:transparent;border:1px solid var(--line);border-radius:3px;padding:6px 9px;cursor:pointer}
+.beats button[aria-pressed="true"]{color:var(--night);background:var(--wax);border-color:var(--wax)}
+.beats button.pp{margin-left:auto;color:var(--wax)}
+.beats button:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+.sheet{display:grid;gap:14px;min-width:0}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px}
+.title h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:38px;line-height:1}
+.chip{font-family:var(--f-px);font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:3px 8px;border:1px solid currentColor;border-radius:2px}
+.sheet p{margin:0;max-width:62ch}
+.k{display:grid;gap:4px}
+.k h3{margin:0;font-family:var(--f-px);font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember)}
+.k ul{margin:0;padding-left:18px;display:grid;gap:4px;color:#d9cfb4}
+.k li b{color:var(--wax);font-weight:500}
+.dive{padding:10px 12px;border-left:2px solid var(--ember);background:var(--stone);color:#d9cfb4}
+.dive b{color:var(--ember);font-weight:500}
+.meter{display:grid;grid-template-columns:max-content 1fr;gap:5px 14px;font-size:14px;align-items:center}
+.meter span{font-family:var(--f-px);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.pips{display:flex;gap:4px}.pips i{width:16px;height:6px;border-radius:2px;background:#1d2830}.pips i.on{background:var(--ember)}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px;padding-top:26px;border-top:1px solid var(--line)}
+.card{display:grid;gap:8px;align-content:start;padding:14px 16px;background:var(--stone);border:1px solid var(--line);border-radius:6px;min-width:0}
+.card h3{margin:0;font-family:var(--f-px);font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember)}
+.card p,.card li{margin:0;color:#d9cfb4;font-size:15px}.card ul{margin:0;padding-left:18px;display:grid;gap:4px}.card b{color:var(--wax);font-weight:500}
+.card.q{border-color:#6b5226}.card.q h3{color:var(--frost)}
+footer{border-top:1px solid var(--line);padding-top:22px;display:grid;gap:8px;color:#cfc6ad}
+footer h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:28px;color:var(--wax)}
+
+/* boss lab */
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.screen{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#05070b;aspect-ratio:480/272;max-width:100%}
+.screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.screenbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--dim)}
+.screenbar kbd{font-family:var(--f-px);font-size:10px;letter-spacing:.08em;color:var(--wax);border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:2px 6px}
+.panel{display:grid;gap:14px;min-width:0}
+.grp{display:grid;gap:7px}
+.grp>h3,.tunehead h3{margin:0;font-family:var(--f-px);font-weight:400;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ember)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button,.btnx{font-family:var(--f-px);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--wax);background:transparent;border:1px solid var(--line);border-radius:3px;padding:7px 10px;cursor:pointer}
+.seg button[aria-pressed="true"]{color:var(--night);background:var(--wax);border-color:var(--wax)}
+.btnx.go{color:var(--night);background:var(--ember);border-color:var(--ember)}
+/* the hidden duel */
+.btnx.secret{color:#ff7a66;background:#14060a;border-color:#6e1018;box-shadow:0 0 12px rgba(200,20,30,.25) inset}
+.btnx.secret:hover{border-color:#ff4a3c}
+#seal{cursor:default;user-select:none}
+.sl[data-secret]{display:none}.unlocked .sl[data-secret]{display:grid}
+.umbra{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:22px;padding:20px;background:linear-gradient(160deg,#14060a,#0b0306 60%);border:1px solid #5a0c12;border-radius:6px;box-shadow:0 0 40px rgba(160,10,20,.18) inset}
+.umbra[hidden]{display:none}
+.umbra h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:30px;color:#ff6a58;text-shadow:0 0 18px rgba(255,40,30,.35)}
+.umbra .sub{margin:2px 0 10px;font-style:italic;color:#c79a92}
+.umbra p,.umbra li{color:#e2cfc9}.umbra b{color:#ff8a76;font-weight:500}
+.umbra h3{margin:12px 0 6px;font-family:var(--f-px);font-weight:400;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#ff4a3c}
+.umbra ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.umbra .look{display:grid;gap:6px;align-content:start}
+@media (max-width:760px){.umbra{grid-template-columns:1fr}}
+.seg button:hover,.btnx:hover{border-color:var(--ember)}
+.seg button:focus-visible,.btnx:focus-visible,input:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+.read{display:grid;gap:6px;padding:12px;background:var(--stone);border:1px solid var(--line);border-radius:6px;font-size:14px}
+.read .bn{font-family:var(--f-display);font-size:22px;line-height:1.1}
+.read .st{font-family:var(--f-px);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--frost)}
+.bar{height:7px;background:#2a1814;border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#a3321f,#e2553f 70%,#ff9b6a);transition:width .2s}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 10px;font-variant-numeric:tabular-nums}
+.kv span{display:grid;gap:1px}.kv small{font-family:var(--f-px);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}.kv b{font-weight:500}
+.tune{display:grid;gap:14px;padding-top:6px}
+.tunehead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px 22px}
+.sl{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;align-content:start;font-size:14px;min-width:0}
+.sl label{color:#d9cfb4}.sl output{font-family:var(--f-px);font-size:11px;color:var(--wax);font-variant-numeric:tabular-nums}
+.sl output.chg{color:var(--ember)}
+.sl input{grid-column:1/-1;width:100%;accent-color:var(--ember)}
+.sl small{grid-column:1/-1;color:var(--dim);font-size:12.5px}
+.log{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+.log table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums;min-width:560px}
+.log th,.log td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line)}
+.log th{font-family:var(--f-px);font-weight:400;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.log td.empty{color:var(--dim)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px}
+.res td.ok{color:#9fdc9f}
+.reach{font-family:var(--f-px);font-size:11px;letter-spacing:.06em}
+.reach td{padding:4px 7px;text-align:center}.reach .s{color:var(--night);background:var(--ember)}.reach .h{color:#ff8a7a}
+details.old{border-top:1px solid var(--line);padding-top:18px}
+details.old>summary{cursor:pointer;font-family:var(--f-px);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+details.old[open]>summary{margin-bottom:24px}
+.secthead{display:grid;gap:6px}
+.secthead h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:34px;line-height:1.05}
+.secthead p{margin:0;max-width:68ch;color:#cfc6ad}
+.toast{font-size:13px;color:var(--frost);min-height:1.2em}
+@media (max-width:900px){.lab{grid-template-columns:1fr}}
+@media (max-width:820px){.boss{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.beats button{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Wickfall · Chapter 3 · boss lab</div>
+    <h1>The Tallow Wyrm <span id="seal">→</span> The Cinder Moth</h1>
+    <p class="lede">The real fight from the game, dropped straight into the Kiln Pit. Pick a hero and a stage, play it, then move the numbers below and play again. Every attempt is logged here so we can talk about what felt right.</p>
+    <div class="rules"><span>Shell clangs, white wax breaks</span><span>Bridge over open lava</span><span>The quake throws everything up</span><span>Dash in, dive down</span><span>No text hints</span></div>
+  </header>
+
+  <section class="lab" aria-label="Playable fight">
+    <div style="display:grid;gap:10px;min-width:0">
+      <div class="screen"><iframe id="game" src="lab.html" title="Kiln Pit boss fight" allow="autoplay; fullscreen"></iframe></div>
+      <div class="screenbar"><span>Click the game first.</span><span><kbd>← →</kbd> move</span><span><kbd>Space</kbd> jump</span><span><kbd>X</kbd> slash</span><span><kbd>E</kbd> bolt</span><span><kbd>↓</kbd>+<kbd>E</kbd> Wax Dive</span><span><kbd>F</kbd> focus</span><span><kbd>P</kbd> pause</span></div>
+    </div>
+    <div class="panel">
+      <div class="grp"><h3>Hero</h3><div class="seg" id="heroes"><button type="button" data-h="snuff" aria-pressed="true">Wick</button><button type="button" data-h="knight" aria-pressed="false">Lampknight</button><button type="button" data-h="hero" aria-pressed="false">Wick Hero</button></div></div>
+      <div class="grp"><h3>Start</h3><div class="seg" id="starts"><button type="button" class="btnx go" data-s="1">Stage 1 · Wyrm</button><button type="button" class="btnx" data-s="2">Stage 2 · Moth</button><button type="button" class="btnx" data-s="1i">From the entrance</button><button type="button" class="btnx secret" data-s="3" id="secretBtn" hidden>??? · The Black Wick</button></div></div>
+      <div class="read" aria-live="polite">
+        <div class="st" id="rState">Loading…</div>
+        <div class="bn" id="rName">The Tallow Wyrm</div>
+        <div class="bar"><i id="rBar" style="width:100%"></i></div>
+        <div class="kv">
+          <span><small>Time</small><b id="rTime">0.0s</b></span><span><small>Embers</small><b id="rHp">–</b></span><span><small>Wax</small><b id="rWax">–</b></span>
+          <span><small>Wyrm stuns</small><b id="rS1">0</b></span><span><small>Moth stuns</small><b id="rS2">0</b></span><span><small>Hits taken</small><b id="rHits">0</b></span>
+        </div>
+      </div>
+      <div class="grp"><h3>Force an attack</h3><div class="seg" id="moves"></div></div>
+      <div class="grp"><h3>Practice</h3><div class="seg"><button type="button" id="god" aria-pressed="false">No damage</button></div></div>
+    </div>
+  </section>
+
+  <section class="tune" aria-label="Tuning">
+    <div class="tunehead"><h3>Tuning · changes apply live; HP applies on the next start</h3>
+      <div class="seg"><button type="button" class="btnx" id="tReset">Reset to game values</button><button type="button" class="btnx" id="tCopy">Copy values</button></div></div>
+    <div class="sliders" id="sliders"></div>
+    <div class="toast" id="toast"></div>
+  </section>
+
+  <section class="grp" aria-label="Attempt log">
+    <div class="secthead"><h2>Your attempts</h2><p>Each finished stage lands here with the values it was played on. It is kept in this browser only.</p></div>
+    <div class="log"><table><thead><tr><th>Hero</th><th>Start</th><th>Time</th><th>To moth</th><th>Stuns W / M</th><th>Hits</th><th>Falls</th><th>Changed values</th></tr></thead><tbody id="logBody"><tr><td class="empty" colspan="8">Beat a stage and it shows up here.</td></tr></tbody></table></div>
+    <div class="seg"><button type="button" class="btnx" id="logClear">Clear log</button></div>
+  </section>
+
+  <section class="umbra" id="umbraCard" aria-label="Hidden boss" hidden>
+    <div class="look">
+      <div class="eyebrow" style="color:#c0281e">Hidden · lab only</div>
+      <h2>The Black Wick</h2>
+      <p class="sub">What the cold flame left behind.</p>
+      <p>Wick Hero's shadow. Same body, same stance, same katana, drawn with Wick Hero's own animation code and recoloured live: black wax, a crown of dark red fire, a crimson scarf, a black blade whose edge burns red, and two red eyes. Wisps rise off him all fight; the pit is sunk in red haze with ash falling.</p>
+      <h3>How to find him</h3>
+      <p>In the lab he is always available: press <b>??? · The Black Wick</b> under Start. In the game: clear Chapter 3 without falling once, and when the abyss opens a black crack tears open in the air beside it. Jump into it. The Characters (Beta) screen also has a door to the duel.</p>
+      <h3>How he fights</h3>
+      <p>A duellist. No contact damage and no stun to earn: he takes normal hits, but he is out of reach for much of each attack (blinking, vanishing, guarding). Every attack ends in an <b>open window</b> (blade low, breathing) — that is the safe time to strike. Strike into his guard and he punishes you.</p>
+    </div>
+    <div>
+      <h3>Attacks and their tells</h3>
+      <ul>
+        <li><b>Draw cut:</b> he crouches with a hand on the hilt and a red glint flares at the scabbard with a thin "tsing". He blinks through you at chest height and leaves a red line hanging in the air, which splits a beat later. Jump it. Below half he cuts twice, back and forth.</li>
+        <li><b>Combo:</b> blade raised overhead, eyes flare white-hot; if you are far he closes the gap during the raise. Three cuts and a cross, stepping in. Back off or jump to a ledge; he is open afterwards.</li>
+        <li><b>Moonfall:</b> he leaps and vanishes in black smoke. A red column of light marks you, and he drops through it with a falling cut. Three times, four below half. Reaches the ledges too.</li>
+        <li><b>Blood crescents:</b> he steps back with the blade held low and glowing, then throws flying sword-slash crescents along the floor. Jump them. Below half the last is thrown from a raised blade and flies high: stay down for that one.</li>
+        <li><b>Guard:</b> blade held level, edge burning a steady red, a ringing hum. Strike it and he deflects, blinks behind you and cuts. Wait it out and he lowers it, open.</li>
+        <li><b>Severance (below half):</b> the room goes dark, a dashed red sphere marks where you stand, and cuts fill it while he slowly sheathes. At the click every cut lands for two embers. Get out of the sphere.</li>
+      </ul>
+      <h3>Below half</h3>
+      <p>His crown blazes, every tell is about 20% shorter, and Severance comes in every fourth attack. If you stand on a ledge he mostly answers with Moonfall.</p>
+      <h3>Numbers</h3>
+      <p>48 HP (Wick Hero does 3 a hit, Wick 1). Health, rest between attacks and tell length are on the sliders below once he is unlocked.</p>
+    </div>
+  </section>
+
+  <section class="spec" aria-label="Current design">
+    <div class="card"><h3>The Kiln Pit</h3><p>A white wax bridge on two pillars, 32 tiles wide. Under it is an air gap, then open lava. The wyrm swims half in the lava, its shelled back breaking the surface in humps like a dolphin, so you always see where it is and when it coils to strike. Wax crates, jars and candles stand on the deck and hop whenever the bridge shakes (looks only).</p></div>
+    <div class="card"><h3>How the fight explains itself</h3><ul><li><b>A dark shell</b> covers its body and head. Blades and bolts <b>clang</b>, flash a white ring and shove you back.</li><li><b>One plug of white wax</b> seals the top of its skull, the same wax as the floors you dive through. It is always on show, but the head rides too high to reach with a normal jump. <b>Only the quake's throw gets you above it.</b></li><li><b>Down-slash</b> on the plug bounces you; landing on it bounces you. Only a <b>Wax Dive</b> breaks it.</li><li>Broken open, the skull glows and the shell seams blaze. Now blades bite.</li></ul></div>
+    <div class="card"><h3>Stage 1 · Tallow Wyrm</h3><ul><li><b>Quake</b> (the main opening): it surfaces a dash away from you and rears high while the deck rattles, then <b>smashes its head down on the bridge</b>. Everything on it is thrown high, you included, and you hang in the air for about a second and a half. Steer or dash over its head and dive onto the plug. Miss and you land; the head is too high to reach from the deck. Below half it slams twice.</li><li><b>Bite:</b> you see it swim under you and the planks glow and crack. It bursts up with its jaws gaping wide, lunges a little toward you and snaps them shut. Step away once the glow stops following you.</li><li><b>Flamethrower:</b> it surfaces away from you and draws back to breathe in (mouth shut, eyes narrowed, throat glowing), then throws its head forward and roars with its eyes blown white. Brows slammed down, it pours billowing pixel fire that spreads along the bridge, holds and dies back, then hisses smoke. The fire only burns the wax bridge: a cornered player can step off onto the stone bank. But camp on a bank and it rears out on the bridge, roars, and <b>lobs the fire onto the bank</b> (the stone glows first); step back onto the bridge.</li><li><b>Leap:</b> it arcs out of the lava over the bridge and back in. Below half it lands with walls of fire.</li><li><b>Stunned</b> 3.2 s; then it quakes no more for two attacks.</li></ul></div>
+    <div class="card"><h3>Pupa → Stage 2 · Cinder Moth</h3><ul><li><b>The hatch (about 7.5 s, controls locked):</b> the camera pushes in, the room darkens and bars close in under a low droning hum. A heartbeat speeds up, red veins swell on the shell and something presses outward from inside. The lights gutter out for a moment and two red eyes are all you see. Legs punch through, the shell splits, and the moth crawls out in jerky stops, still tied to the husk by wet strands, its head twitching. Then it goes still and stares at you in the dark before the wings snap open and it screams.</li><li><b>Look:</b> darker, torn wings with moth-eaten holes; the wing spots are pale staring eyes whose pupils follow you; extra small red eyes on the head; a curled proboscis that straightens when it strikes; grey fur; random head twitches.</li><li><b>Triple slash (new):</b> it closes in at your height and three green lights appear over it. Each light flares, and the wing glints green, just before its slash lands. Hit it while a light burns and the slash breaks: a green flash, and it drops stunned. Only your first strike counts. Strike at the wrong moment and the lights turn red, so you have to dodge the rest.</li><li><b>Rush:</b> wings cocked, eyes flare, a red sight line to you, the aim locks, then it rushes along it. Now twice in a row (three times below half). After the last one it climbs back low and slow: dive on it.</li><li><b>Pounce:</b> hovers over you while its shadow grows dark red, drops, fire rolls out both ways, then it rests on the floor with its saddle in reach.</li><li>Ember rain is gone from this fight. Call moths stays for wax; the fire sweep joins below half.</ul></div>
+  </section>
+
+  <section class="grid2" aria-label="Test results">
+    <div class="card"><h3>Tested · bot clears with every hero</h3>
+      <div class="log" style="border:0"><table class="res"><thead><tr><th>Hero</th><th>Result</th><th>Wyrm stuns</th><th>Moth stuns</th><th>Finisher</th></tr></thead><tbody>
+      <tr><td>Wick</td><td class="ok">Cleared</td><td>3</td><td>5*</td><td>Wingclip</td></tr>
+      <tr><td>Lampknight</td><td class="ok">Cleared</td><td>2</td><td>5*</td><td>Kiln Breaker</td></tr>
+      <tr><td>Wick Hero</td><td class="ok">Cleared</td><td>1</td><td>2</td><td>Severed Wings</td></tr></tbody></table></div>
+      <p>*The bot is clumsy on the floor after a moth stun and often misses the window. A person should need about 3.</p></div>
+    <div class="card"><h3>Can a real jump reach the cap?</h3>
+      <p>Wick jumps toward a raised head from different distances and dives after a delay. S = stun, h = got bitten, · = missed.</p>
+      <div class="log" style="border:0"><table class="reach"><thead><tr><th>Distance</th><th>0.07s</th><th>0.13s</th><th>0.2s</th><th>0.27s</th><th>0.33s</th><th>0.4s</th><th>0.47s</th></tr></thead><tbody>
+      <tr><td>80 px</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td><td class="s">S</td></tr>
+      <tr><td>65 px</td><td>·</td><td>·</td><td>·</td><td>·</td><td class="s">S</td><td class="s">S</td><td class="s">S</td></tr>
+      <tr><td>50 px</td><td>·</td><td>·</td><td>·</td><td class="s">S</td><td class="s">S</td><td class="s">S</td><td class="s">S</td></tr>
+      <tr><td>35 px, waiting for the sag</td><td>·</td><td class="s">S</td><td class="s">S</td><td class="s">S</td><td class="s">S</td><td class="s">S</td><td class="s">S</td></tr></tbody></table></div></div>
+  </section>
+
+  <section class="card q" aria-label="For discussion">
+    <h3>For discussion</h3>
+    <ul>
+      <li><b>Quake difficulty.</b> In a bot test the dive lands when you dash about a third of a second after the bounce and dive just past it. Is that window right, or should the quake bounce higher?</li>
+      <li><b>Should the quake hurt</b> if you are already in the air when it hits, or stay harmless?</li>
+      <li><b>Second quake below half.</b> A second chance, or should the second slam also drop debris?</li>
+      <li><b>The bridge props.</b> More of them, or different things (chains, lanterns)?</li>
+      <li><b>The moth</b> now opens up after its own attacks (the slow climb after a rush, the rest after a pounce). Is the red sight line before a rush too generous, or about right?</li><li><b>Triple slash counter:</b> is the green window (0.24 s) right, and should a wrong strike really lock you out for the rest of the slash?</li>
+    </ul>
+  </section>
+
+  <details class="old">
+    <summary>Earlier storyboards and the first spec (outdated)</summary>
+    <div style="display:grid;gap:44px">
+      <div id="chosen" style="display:grid;gap:44px"></div>
+      <section class="spec" id="spec"></section>
+      <div class="eyebrow" style="margin-top:10px">The three original drafts</div>
+      <div id="list" style="display:grid;gap:44px"></div>
+    </div>
+  </details>
+</div>
+
+<script>
+const W = 480, H = 272, TAU = Math.PI * 2;
+const C = { wax:'#efe3c2', waxSh:'#c9ba93', waxHi:'#fff7e2', flame:'#f2a541', core:'#fff1c1', ember:'#e2553f', rock:'#1e2534', rockHi:'#323d52', rockLo:'#121722', top:'#5fa39a', bronze:'#b8873a', bronzeHi:'#e2b866', bronzeLo:'#6e4e1e' };
+const lerp = (a, b, k) => a + (b - a) * k, cl = (v, a, b) => Math.max(a, Math.min(b, v)), seg = (t, a, b) => cl((t - a) / (b - a), 0, 1), ease = k => k * k * (3 - 2 * k);
+function bg(g, tone) { const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, tone[0]); gr.addColorStop(1, tone[1]); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  g.fillStyle = 'rgba(0,0,0,.25)'; for (let x = 0; x < W; x += 14) g.fillRect(x, 0, 10, 8 + ((x * 37) % 17)); }
+function stone(g, x, y, w, h) { g.fillStyle = C.rock; g.fillRect(x, y, w, h); g.fillStyle = C.rockLo; for (let yy = y + 6; yy < y + h; yy += 8) g.fillRect(x, yy, w, 1); for (let yy = y; yy < y + h; yy += 8) for (let xx = x + ((yy / 8) % 2 ? 0 : 8); xx < x + w; xx += 16) g.fillRect(xx, yy, 1, 8); g.fillStyle = C.top; g.fillRect(x, y, w, 2); }
+function waxFloor(g, x, y, w, h, crack) { g.fillStyle = C.waxSh; g.fillRect(x, y, w, h); g.fillStyle = C.wax; g.fillRect(x, y, w, h - 3); g.fillStyle = C.waxHi; g.fillRect(x, y, w, 2);
+  g.fillStyle = '#d9caa2'; for (let i = 6; i < w; i += 13) g.fillRect(x + i, y + 4, 1, h - 8); g.fillStyle = C.wax; for (let i = 4; i < w; i += 11) g.fillRect(x + i, y + h, 1, 2 + (i % 3));
+  if (crack) { g.fillStyle = `rgba(242,165,65,${crack})`; g.fillRect(x + w / 2 - 1, y, 2, h); g.fillRect(x + w / 4, y + h / 2, w / 2, 1); } }
+function hero(g, x, y, f, t, pose) { // y = feet
+  const b = pose === 'dive' ? 0 : Math.round(Math.sin(t * 6) * 0.5);
+  if (pose === 'dive') { g.fillStyle = 'rgba(242,165,65,.5)'; g.fillRect(x - 2, y - 40, 4, 26); g.fillStyle = 'rgba(255,241,193,.8)'; g.fillRect(x - 1, y - 34, 2, 18); }
+  g.fillStyle = '#4b6b8f'; g.fillRect(x - 4, y - 9 + b, 8, 7); g.fillStyle = '#3a3046'; g.fillRect(x - 3, y - 3, 2, 3); g.fillRect(x + 1, y - 3, 2, 3);
+  g.fillStyle = C.wax; g.fillRect(x - 4, y - 17 + b, 8, 8); g.fillStyle = '#18121f'; g.fillRect(x - 1 + f, y - 14 + b, 1, 2); g.fillRect(x + 2 + f, y - 14 + b, 1, 2);
+  flame(g, x + 0.5, y - 18 + b, 1, t);
+  if (pose === 'slash') { g.strokeStyle = 'rgba(239,227,194,.9)'; g.lineWidth = 2; g.beginPath(); g.arc(x + f * 4, y - 9, 16, f > 0 ? -1.1 : Math.PI - 1.1, f > 0 ? 1.1 : Math.PI + 1.1); g.stroke(); }
+  else { g.strokeStyle = '#c9d3e2'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(x - f * 4, y - 5); g.lineTo(x - f * 11, y); g.stroke(); }
+}
+function flame(g, x, y, s, t) { const fl = 1 + Math.sin(t * 13 + x) * 0.12; g.fillStyle = C.flame; g.beginPath(); g.ellipse(x, y - 3 * s * fl, 2.2 * s, 4 * s * fl, 0, 0, TAU); g.fill(); g.fillStyle = C.core; g.beginPath(); g.ellipse(x, y - 2 * s, 1 * s, 2 * s, 0, 0, TAU); g.fill(); }
+function ring(g, x, y, r, a, col) { g.strokeStyle = `rgba(${col || '242,165,65'},${a})`; g.lineWidth = 2; g.beginPath(); g.ellipse(x, y, r, r * 0.35, 0, 0, TAU); g.stroke(); }
+function label(g, txt, x, y, col, size) { g.font = `${size || 8}px "Silkscreen", monospace`; g.textAlign = 'center'; g.fillStyle = 'rgba(0,0,0,.6)'; g.fillText(txt, x + 1, y + 1); g.fillStyle = col || C.core; g.fillText(txt, x, y); }
+function arrow(g, x, y, t) { const b = Math.sin(t * 6) * 2; for (let i = 0; i < 2; i++) { g.fillStyle = i ? C.flame : C.core; g.beginPath(); g.moveTo(x - 5, y + i * 6 + b); g.lineTo(x + 5, y + i * 6 + b); g.lineTo(x, y + 5 + i * 6 + b); g.fill(); } }
+function drips(g, t, x0, x1, k) { for (let i = 0; i < 6; i++) { const x = lerp(x0, x1, (i * 0.37) % 1), y = 20 + ((t * 140 + i * 40) % 200); g.globalAlpha = k; g.fillStyle = C.wax; g.fillRect(x, y, 2, 4); g.fillStyle = C.flame; g.fillRect(x, y + 4, 2, 1); g.globalAlpha = 1; } }
+
+// ---------------------------------------------------------- 1. The Sunken Bell
+function bell(g, x, y, s, t, o) { // x centre, y = bottom rim
+  const w = 70 * s, h = 64 * s;
+  g.save(); g.translate(x, y); if (o.tilt) g.rotate(o.tilt);
+  g.fillStyle = 'rgba(0,0,0,.35)'; g.beginPath(); g.ellipse(0, 3, w * 0.62, 4, 0, 0, TAU); g.fill();
+  g.fillStyle = o.flash ? '#fff1c1' : C.bronze; g.beginPath(); g.moveTo(-w / 2, 0); g.quadraticCurveTo(-w * 0.44, -h * 0.55, -w * 0.28, -h * 0.82); g.quadraticCurveTo(0, -h * 1.02, w * 0.28, -h * 0.82); g.quadraticCurveTo(w * 0.44, -h * 0.55, w / 2, 0); g.closePath(); g.fill();
+  g.fillStyle = o.flash ? '#fff' : C.bronzeLo; g.fillRect(-w / 2, -6 * s, w, 6 * s); g.fillStyle = C.bronzeHi; g.fillRect(-w * 0.3, -h * 0.75, 4 * s, h * 0.6);
+  g.fillStyle = o.flash ? '#fff' : C.bronzeLo; g.fillRect(-6 * s, -h * 1.04, 12 * s, 8 * s); // the crown (weak point)
+  g.fillStyle = o.crownGlow ? `rgba(242,165,65,${o.crownGlow})` : 'rgba(242,165,65,.35)'; g.fillRect(-5 * s, -h * 1.03, 10 * s, 3 * s);
+  // eye in the mouth of the bell
+  g.fillStyle = '#120c08'; g.beginPath(); g.ellipse(0, -10 * s, w * 0.36, 7 * s, 0, 0, TAU); g.fill();
+  g.fillStyle = o.stun ? '#5c4d43' : C.ember; g.fillRect(-9 * s, -12 * s, 5 * s, 3 * s); g.fillRect(4 * s, -12 * s, 5 * s, 3 * s);
+  g.restore();
+}
+const BELL = { dur:13, beats:[
+  { at:0, t:'The bell rests on three layers of white wax floor. You start on the high ledges.' },
+  { at:2.4, t:'Sideways hits clang off the bronze: no damage. The only soft spot is the glowing crown on top.' },
+  { at:4.6, t:'Climb, then Wax Dive onto the crown. The toll stuns it and melts the wax layer beneath.' },
+  { at:7.2, t:'The ring knocks wax drips off the ceiling. Catch them to refill your vessel.' },
+  { at:9, t:'It sinks a level. Follow it down by diving through the melted floor.' },
+  { at:11, t:'Its slam: a growing shadow marks where it lands. Step out, then punish the crown again.' } ],
+  draw(g, t) {
+    bg(g, ['#0d0b08', '#201a10']);
+    stone(g, 0, 236, 40, 36); stone(g, 440, 236, 40, 36); stone(g, 10, 120, 70, 8); stone(g, 400, 120, 70, 8); stone(g, 30, 70, 50, 8);
+    const sink = t > 9 ? ease(seg(t, 9, 10)) : 0, layers = t >= 4.95 ? 2 : 3;
+    for (let i = 0; i < 3; i++) { if (i === 0 && t >= 4.95) continue; waxFloor(g, 140, 176 + i * 20, 200, 20, i === 0 && t > 4.6 && t < 4.95 ? 0.8 : 0); }
+    stone(g, 140, 236, 200, 36);
+    const by = lerp(176, 196, sink) + (t >= 4.95 && t < 9 ? 20 * ease(seg(t, 4.95, 5.4)) : 0) - (t >= 4.95 && t < 9 ? 20 : 0) + (t >= 9 ? 0 : 0);
+    let bx = 240, slamY = 0, shadow = 0;
+    if (t > 11) { const k = seg(t, 11, 12.3); bx = 250; if (k < 0.55) { slamY = -60 * ease(k / 0.55); shadow = k / 0.55; } else slamY = -60 * (1 - ease((k - 0.55) / 0.12 > 1 ? 1 : (k - 0.55) / 0.12)); }
+    if (shadow) { g.fillStyle = `rgba(0,0,0,${0.25 + 0.35 * shadow})`; g.beginPath(); g.ellipse(bx, by + 2, 20 + 22 * shadow, 4, 0, 0, TAU); g.fill(); }
+    const hitSide = t > 2.4 && t < 4.4, flash = (t > 4.85 && t < 5.05) || (hitSide && (t % 0.6) < 0.08);
+    bell(g, bx, by + slamY, 1, t, { flash, stun:t > 4.9 && t < 7, crownGlow:t > 3.8 && t < 4.9 ? 0.6 + 0.4 * Math.sin(t * 12) : 0, tilt:hitSide ? Math.sin(t * 20) * 0.02 : 0 });
+    // the hero
+    let hx = 55, hy = 120, f = 1, pose = 'idle';
+    if (t < 2.4) { hx = 50; hy = 120; }
+    else if (t < 4.4) { const k = seg(t, 2.4, 2.9); hx = lerp(50, 190, k); hy = k < 1 ? lerp(120, 236, k) : 236; hy = Math.min(hy, by - 64 > 0 ? 236 : 236); hx = 196; hy = by; pose = (t % 0.6) < 0.2 ? 'slash' : 'idle'; if ((t % 0.6) < 0.1) label(g, 'CLANG', 230, by - 70, '#9aa59f'); }
+    else if (t < 4.85) { const k = seg(t, 4.4, 4.85); hx = lerp(55, bx, k); hy = lerp(70, by - 64, k * k); pose = k > 0.4 ? 'dive' : 'idle'; }
+    else if (t < 7.2) { hx = bx + Math.min(30, (t - 4.85) * 60); hy = t < 5.3 ? by - 64 : 236; }
+    else if (t < 9) { hx = 300 + Math.sin(t * 2) * 30; hy = 236; f = -1; }
+    else if (t < 11) { const k = seg(t, 9, 10); hx = 300; hy = lerp(236, 236, k); }
+    else { hx = t < 11.6 ? 250 : 300 + (t - 11.6) * 20; hy = 236; f = -1; }
+    if (t >= 4.4 && t < 4.85) arrow(g, bx, by - 96, t);
+    hero(g, hx, hy, f, t, pose);
+    if (t > 4.85 && t < 5.6) { const k = seg(t, 4.85, 5.6); ring(g, bx, by - 64, 20 + 120 * k, 1 - k); ring(g, bx, by - 30, 10 + 90 * k, (1 - k) * 0.6, '255,241,193'); label(g, 'TOLL!', bx, by - 90, C.core, 10); }
+    if (t > 4.9 && t < 6.8) label(g, 'STUNNED', bx, by - 74, '#9fdcd0');
+    if (t > 7.2 && t < 9) { drips(g, t, 150, 330, 1); label(g, '+ WAX', 300, 200, C.flame); }
+    if (t > 11.5 && t < 12.2) { const k = seg(t, 11.5, 12.2); ring(g, bx, by, 20 + 140 * k, 1 - k, '226,85,63'); }
+  } };
+
+// ---------------------------------------------------------- 2. The Tallow Leviathan
+function eel(g, pts, t, o) {
+  for (let i = pts.length - 1; i >= 0; i--) { const [x, y] = pts[i], r = 9 - i * 0.55; g.fillStyle = o.flash ? '#fff' : i % 2 ? C.waxSh : C.wax; g.beginPath(); g.arc(x, y, Math.max(3, r), 0, TAU); g.fill(); }
+  const [hx, hy] = pts[0]; g.fillStyle = '#1a1414'; g.beginPath(); g.ellipse(hx + o.f * 3, hy, 5, 3.5, 0, 0, TAU); g.fill(); g.fillStyle = o.stun ? '#5c4d43' : C.ember; g.fillRect(hx + o.f * 4 - 1, hy - 2, 3, 3);
+  if (o.mouth) { g.fillStyle = '#1a1414'; g.beginPath(); g.moveTo(hx + o.f * 6, hy); g.lineTo(hx + o.f * 16, hy - 6 * o.mouth); g.lineTo(hx + o.f * 16, hy + 6 * o.mouth); g.fill(); }
+}
+const LEV = { dur:12, beats:[
+  { at:0, t:'A pool of molten tallow has cooled into a pale crust. Something long glows underneath.' },
+  { at:2.2, t:'It breaches to bite, then sinks again. Stay on the ledges when the crust bubbles.' },
+  { at:4.6, t:'Track its glow under the crust, then Wax Dive right above it. The crust shatters.' },
+  { at:6.4, t:'Forced out and stunned on the surface: slash it while it flails.' },
+  { at:8.8, t:'Broken crust leaves wax chunks behind. Pick them up to refill for the next dive.' },
+  { at:10.4, t:'Phase 2: the crust thins and the pool rises. Dives come from higher, riskier ledges.' } ],
+  draw(g, t) {
+    bg(g, ['#120a07', '#2a160c']);
+    stone(g, 0, 150, 60, 122); stone(g, 420, 150, 60, 122); stone(g, 90, 110, 50, 8); stone(g, 340, 110, 50, 8);
+    const rise = t > 10.4 ? ease(seg(t, 10.4, 11.4)) * 14 : 0, py = 214 - rise;
+    const gr = g.createLinearGradient(0, py, 0, H); gr.addColorStop(0, '#ff9b3a'); gr.addColorStop(1, '#7a2a0e'); g.fillStyle = gr; g.fillRect(60, py, 360, H - py);
+    // the eel's path
+    let mode = 'under', ex = 120 + ((t * 70) % 240), ey = py + 18, mouth = 0, stun = false;
+    if (t > 2.2 && t < 4.4) { const k = seg(t, 2.2, 4.4); mode = 'breach'; ex = 300; ey = py - Math.sin(k * Math.PI) * 70; mouth = Math.sin(k * Math.PI); }
+    if (t >= 4.4 && t < 5.4) { ex = 200 + Math.sin(t * 3) * 10; ey = py + 18; }
+    if (t >= 5.4 && t < 8.6) { mode = 'stun'; ex = 210; ey = py - 8; stun = true; }
+    const pts = []; for (let i = 0; i < 12; i++) pts.push(mode === 'breach' ? [ex - i * 8, ey + Math.sin(i * 0.6) * 4 + i * 5] : mode === 'stun' ? [ex - i * 9, ey + Math.sin(t * 8 + i) * 2] : [ex - i * 9, ey + Math.sin(t * 3 + i * 0.7) * 3]);
+    if (mode === 'under') { g.fillStyle = 'rgba(255,220,150,.55)'; for (const [x, y] of pts) { g.beginPath(); g.arc(x, py + 6, 7, 0, TAU); g.fill(); } }
+    // crust plates
+    const broken = t >= 5.2 && t < 10.4;
+    for (let x = 60; x < 420; x += 30) { if (broken && Math.abs(x + 15 - 205) < 40) continue; g.fillStyle = C.waxSh; g.fillRect(x + 1, py - 4, 28, 6); g.fillStyle = C.wax; g.fillRect(x + 1, py - 4, 28, 4); g.fillStyle = C.waxHi; g.fillRect(x + 1, py - 4, 28, 1); }
+    if (mode !== 'under') eel(g, pts, t, { f:1, mouth, stun, flash:t > 6.4 && t < 8.6 && (t % 0.5) < 0.07 });
+    if (mode === 'breach' && mouth > 0.6) label(g, 'BITE', ex + 18, ey - 14, C.ember);
+    // hero
+    let hx = 115, hy = 110, f = 1, pose = 'idle';
+    if (t >= 4.4 && t < 5.2) { const k = seg(t, 4.4, 5.2); hx = lerp(115, 205, k); hy = lerp(110, py - 4, k * k); pose = k > 0.35 ? 'dive' : 'idle'; if (k < 0.5) arrow(g, 205, py - 40, t); }
+    else if (t >= 5.2 && t < 8.8) { hx = 175; hy = py - 4; pose = (t % 0.45) < 0.16 && t > 6.4 ? 'slash' : 'idle'; }
+    else if (t >= 8.8 && t < 10.4) { hx = lerp(175, 260, seg(t, 8.8, 10)); hy = py - 4; }
+    else if (t >= 10.4) { hx = 365; hy = 110; f = -1; }
+    hero(g, hx, hy, f, t, pose);
+    if (t > 5.2 && t < 5.9) { const k = seg(t, 5.2, 5.9); ring(g, 205, py, 20 + 100 * k, 1 - k); for (let i = 0; i < 8; i++) { g.fillStyle = C.wax; g.fillRect(205 + Math.cos(i) * 60 * k, py - 30 * k * Math.sin(i + 1), 4, 3); } label(g, 'CRACK!', 205, py - 52, C.core, 10); }
+    if (t > 6.4 && t < 8.6 && (t % 0.45) < 0.12) label(g, 'HIT', 225, py - 26, C.core);
+    if (t > 8.8 && t < 10.4) { for (let i = 0; i < 4; i++) { const x = 220 + i * 14, y = py - 10 + Math.sin(t * 4 + i) * 2; if (hx < x - 3) { g.fillStyle = C.wax; g.fillRect(x, y, 6, 5); g.fillStyle = C.flame; g.fillRect(x + 2, y - 2, 2, 2); } } label(g, '+ WAX', 270, py - 30, C.flame); }
+    if (t >= 10.4) label(g, 'PHASE 2', 240, 60, C.ember, 10);
+  } };
+
+// ---------------------------------------------------------- 3. The Spire Mother
+function mother(g, x, y, t, o) {
+  g.save(); g.translate(x, y);
+  for (let i = 0; i < 6; i++) { const a = -Math.PI / 2 + (i - 2.5) * 0.45 + Math.sin(t * 3 + i) * 0.08, L = 34; g.strokeStyle = o.flash ? '#fff' : C.waxSh; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(0, 0); const kx = Math.cos(a) * L * 0.6 - 14 * Math.sign(Math.cos(a) || 1), ky = Math.sin(a) * L * 0.6; g.lineTo(kx, ky); g.lineTo(Math.cos(a) * L * 0.9 - 26 * Math.sign(Math.cos(a) || 1) * 0.5, Math.sin(a) * L + 30); g.stroke(); }
+  g.fillStyle = o.flash ? '#fff' : C.wax; g.beginPath(); g.ellipse(0, 0, 18, 24, 0, 0, TAU); g.fill(); g.fillStyle = C.waxSh; g.beginPath(); g.ellipse(5, 2, 8, 18, 0, 0, TAU); g.fill();
+  g.fillStyle = '#1a1414'; g.beginPath(); g.ellipse(0, -6, 9, 6, 0, 0, TAU); g.fill(); g.fillStyle = o.stun ? '#5c4d43' : C.ember; g.fillRect(-6, -8, 3, 3); g.fillRect(3, -8, 3, 3); g.fillRect(-1, -4, 2, 2);
+  // the soft back (target)
+  g.fillStyle = `rgba(242,165,65,${o.glow || 0.3})`; g.beginPath(); g.ellipse(0, -18, 8, 4, 0, 0, TAU); g.fill();
+  for (const k of [-6, 0, 6]) flame(g, k, -22, 0.8, t + k);
+  g.restore();
+}
+const SPIRE = { dur:12, beats:[
+  { at:0, t:'A tall shaft. The Mother clings to the central pillar and climbs as you climb.' },
+  { at:2.4, t:'Ledges are white wax: they soften and drop away a few seconds after you land, so keep moving up.' },
+  { at:5, t:'Get above it and Wax Dive onto its back. The height of the fall sets the damage.' },
+  { at:7, t:'The blow knocks it down a level and it sheds wax for you to collect.' },
+  { at:9, t:'Its threats: wax webs that slow you, and a lunge along the pillar marked by its legs tensing.' } ],
+  draw(g, t) {
+    bg(g, ['#0a0d12', '#16202c']);
+    stone(g, 222, 0, 36, 272); g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(250, 0, 8, 272);
+    stone(g, 0, 250, 480, 22);
+    const ledges = [[120, 214], [320, 186], [150, 150], [300, 112], [130, 76], [310, 40]];
+    ledges.forEach(([x, y], i) => { const gone = t > 2.4 && t < 9 && i < Math.floor((t - 2.4) / 0.9) && i < 3; if (gone) return; waxFloor(g, x - 22, y, 44, 8, t > 2.4 && i === Math.floor((t - 2.4) / 0.9) ? 0.6 : 0); });
+    let my = lerp(200, 70, ease(seg(t, 0, 5)));
+    if (t > 5.6) my = 70 + 90 * ease(seg(t, 5.6, 6.4));
+    if (t > 9) my = 160 + Math.sin(t * 2) * 6;
+    const hit = t > 5.55 && t < 5.75;
+    mother(g, 240, my, t, { flash:hit, stun:t > 5.6 && t < 8.4, glow:t > 4.4 && t < 5.6 ? 0.6 + 0.4 * Math.sin(t * 12) : 0.3 });
+    let hx = 120, hy = 214, f = 1, pose = 'idle';
+    const step = Math.min(5, Math.floor(seg(t, 0, 4.6) * 6)); if (t < 4.6) { [hx, hy] = ledges[step]; f = hx < 240 ? 1 : -1; }
+    else if (t < 5.6) { const k = seg(t, 4.6, 5.6); hx = lerp(310, 240, k); hy = lerp(40, my - 24, k * k); pose = k > 0.3 ? 'dive' : 'idle'; if (k < 0.5) arrow(g, 240, 10, t); }
+    else if (t < 9) { hx = 300; hy = 112; f = -1; }
+    else { hx = 150; hy = 150; f = 1; }
+    hero(g, hx, hy, f, t, pose);
+    if (t > 5.55 && t < 6.3) { const k = seg(t, 5.55, 6.3); ring(g, 240, my - 24, 16 + 110 * k, 1 - k); label(g, 'CRUSH!', 240, 30, C.core, 10); }
+    if (t > 6.4 && t < 8.6) { drips(g, t, 190, 290, 0.9); label(g, 'STUNNED · + WAX', 240, my - 46, '#9fdcd0'); }
+    if (t > 9) { g.strokeStyle = 'rgba(239,227,194,.5)'; g.lineWidth = 1; for (let i = 0; i < 6; i++) { g.beginPath(); g.moveTo(240, my); g.lineTo(150 + i * 4, 140 + i * 6); g.stroke(); } label(g, 'WEB', 175, 128, C.wax); }
+  } };
+
+
+// ================================================== the chosen fight
+function wyrmSeg(g, x, y, r, i, flash) { g.fillStyle = flash ? '#fff' : i % 2 ? C.waxSh : C.wax; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); if (i % 3 === 0) { g.fillStyle = 'rgba(226,85,63,.55)'; g.fillRect(x - 1, y - r + 1, 2, 3); } }
+function wyrm(g, pts, t, o) {
+  for (let i = pts.length - 1; i >= 0; i--) wyrmSeg(g, pts[i][0], pts[i][1], Math.max(4, 11 - i * 0.55), i, o.flash);
+  const [hx, hy] = pts[0], f = o.f || 1;
+  g.fillStyle = '#1a1414'; g.beginPath(); g.ellipse(hx + f * 4, hy, 7, 5, 0, 0, TAU); g.fill();
+  g.fillStyle = o.stun ? '#5c4d43' : o.glow ? '#ffd27a' : C.ember; g.fillRect(hx + f * 6 - 1, hy - 3, 3, 3);
+  if (o.throat) { const gl = g.createRadialGradient(hx, hy + 4, 0, hx, hy + 4, 14); gl.addColorStop(0, `rgba(255,170,60,${o.throat})`); gl.addColorStop(1, 'rgba(255,120,40,0)'); g.fillStyle = gl; g.fillRect(hx - 14, hy - 10, 28, 28); }
+  if (o.jaw) { g.fillStyle = '#efe3c2'; for (const s of [-1, 1]) { g.beginPath(); g.moveTo(hx + f * 8, hy + s * 2); g.lineTo(hx + f * (18 + 4 * o.jaw), hy + s * (6 + 6 * o.jaw)); g.lineTo(hx + f * 12, hy + s * 1); g.fill(); } }
+  if (o.stun) label(g, 'STUNNED', hx, hy - 20, '#9fdcd0');
+}
+function lavaPool(g, py) { const gr = g.createLinearGradient(0, py, 0, H); gr.addColorStop(0, '#ff9b3a'); gr.addColorStop(1, '#7a2a0e'); g.fillStyle = gr; g.fillRect(60, py, 360, H - py); }
+function crust(g, py, holes, t) { for (let x = 60; x < 420; x += 30) { if (holes && holes.some(h => Math.abs(x + 15 - h) < 30)) continue; g.fillStyle = C.waxSh; g.fillRect(x + 1, py - 4, 28, 6); g.fillStyle = C.wax; g.fillRect(x + 1, py - 4, 28, 4); g.fillStyle = C.waxHi; g.fillRect(x + 1, py - 4, 28, 1); } }
+function puddle(g, x, py, a, t) { g.fillStyle = `rgba(255,120,40,${a})`; g.beginPath(); g.ellipse(x, py - 3, 12, 3, 0, 0, TAU); g.fill(); flame(g, x - 5, py - 4, 0.7 * a, t + x); flame(g, x + 5, py - 4, 0.6 * a, t + x * 2); }
+const WYRM = { dur:14, beats:[
+  { at:0, t:'The Kiln Pit: a molten tallow pool with a pale crust you can walk on. The Tallow Wyrm swims underneath; its glow shows where it is.' },
+  { at:2, t:'Lava spread: its throat glows for 0.7 s, then it spits a fan of burning wax that leaves puddles on the crust for a few seconds.' },
+  { at:4.4, t:'Dive: bubbles mark a line across the crust, then it leaps out in an arc and plunges back in, splashing both sides.' },
+  { at:7, t:'Bite: the crust glows and rumbles under you for 0.9 s, then it lunges up with open jaws. Step aside, then turn on it.' },
+  { at:8.6, t:'While its head is up after the bite, Wax Dive onto it: the impact stuns it on the crust.' },
+  { at:10, t:'Stunned for about 3 s: slash and bolt it. This is the only time it takes damage. It knocks loose wax chunks to refill your vessel.' } ],
+  draw(g, t) {
+    bg(g, ['#120a07', '#2a160c']); stone(g, 0, 150, 60, 122); stone(g, 420, 150, 60, 122); stone(g, 90, 112, 50, 8); stone(g, 340, 112, 50, 8);
+    const py = 214; lavaPool(g, py);
+    let pts = [], mode = 'under', o = { f:1 };
+    const swim = x0 => { for (let i = 0; i < 13; i++) pts.push([x0 - i * 9, py + 18 + Math.sin(t * 3 + i * 0.7) * 3]); };
+    let holes = [];
+    if (t < 2) swim(130 + t * 60);
+    else if (t < 4.4) { mode = 'up'; const k = seg(t, 2, 4.4), hx = 300; for (let i = 0; i < 13; i++) pts.push([hx - i * 5, py - 18 + i * 4 + Math.sin(i * 0.5) * 2]); o = { f:-1, throat:k < 0.35 ? k / 0.35 : 0, flash:false };
+      if (k >= 0.35) for (let j = 0; j < 4; j++) { const kk = Math.min(1, (k - 0.35) / 0.3), x = lerp(290, 150 + j * 40, kk), y = py - 20 - Math.sin(kk * Math.PI) * 50; if (kk < 1) { g.fillStyle = C.flame; g.fillRect(x, y, 4, 4); } else puddle(g, 150 + j * 40, py, 1 - Math.max(0, (k - 0.75) / 0.25), t); } }
+    else if (t < 7) { const k = seg(t, 4.4, 7); if (k < 0.3) { swim(120); for (let j = 0; j < 8; j++) { g.fillStyle = `rgba(255,220,150,${0.4 + 0.4 * Math.sin(t * 20 + j)})`; g.beginPath(); g.arc(150 + j * 28, py - 4, 3, 0, TAU); g.fill(); } }
+      else { mode = 'arc'; const kk = (k - 0.3) / 0.7; for (let i = 0; i < 13; i++) { const q = cl(kk - i * 0.035, 0, 1); pts.push([lerp(140, 360, q), py + 10 - Math.sin(q * Math.PI) * 110]); } if (kk > 0.85) { ring(g, 360, py, 40 * (kk - 0.85) / 0.15, 1); } } }
+    else if (t < 8.6) { const k = seg(t, 7, 8.6); if (k < 0.55) { swim(240); const gl = g.createRadialGradient(240, py, 0, 240, py, 30); gl.addColorStop(0, `rgba(255,200,120,${0.5 + 0.4 * Math.sin(t * 25)})`); gl.addColorStop(1, 'rgba(255,160,80,0)'); g.fillStyle = gl; g.fillRect(200, py - 30, 80, 50); label(g, 'RUMBLE', 240, py - 34, C.ember); }
+      else { mode = 'bite'; const kk = (k - 0.55) / 0.45; holes = [240]; for (let i = 0; i < 13; i++) pts.push([240 + Math.sin(i * 0.4) * 3, py - 46 * Math.min(1, kk * 2) + i * 8]); o = { f:-1, jaw:Math.min(1, kk * 2) }; label(g, 'BITE', 225, py - 70, C.ember); } }
+    else if (t < 10) { mode = 'bite'; holes = [240]; for (let i = 0; i < 13; i++) pts.push([240 + Math.sin(i * 0.4) * 3, py - 46 + i * 8]); o = { f:-1, jaw:0.4, flash:t > 9.35 && t < 9.5 }; }
+    else { mode = 'stun'; holes = [240]; for (let i = 0; i < 13; i++) pts.push([250 - i * 9, py - 10 + Math.sin(t * 8 + i) * 2]); o = { f:1, stun:true, flash:(t % 0.45) < 0.07 }; }
+    if (mode === 'under') { g.fillStyle = 'rgba(255,220,150,.5)'; for (const [x] of pts) { g.beginPath(); g.arc(x, py + 4, 6, 0, TAU); g.fill(); } }
+    crust(g, py, holes, t);
+    if (mode !== 'under') wyrm(g, pts, t, o);
+    // hero
+    let hx = 330, hy = py - 4, f = -1, pose = 'idle';
+    if (t < 4.4) { hx = 110; hy = 112; f = 1; }
+    else if (t < 7) { hx = 110; hy = 112; f = 1; }
+    else if (t < 8.6) { hx = t < 7.8 ? 240 : lerp(240, 280, seg(t, 7.8, 8.2)); hy = py - 4; f = -1; }
+    else if (t < 9.4) { const k = seg(t, 8.6, 9.4); hx = lerp(280, 244, k); hy = lerp(py - 80, py - 50, k * k); if (k < 0.5) hy = py - 4 - Math.sin(k * 2 * Math.PI / 2) * 76; pose = k > 0.5 ? 'dive' : 'idle'; if (k > 0.3 && k < 0.6) arrow(g, 244, py - 120, t); }
+    else if (t < 10) { hx = 270; hy = py - 4; }
+    else { hx = 285; hy = py - 4; pose = (t % 0.45) < 0.16 ? 'slash' : 'idle'; if ((t % 0.45) < 0.12) label(g, 'HIT', 262, py - 30, C.core); }
+    hero(g, hx, hy, f, t, pose);
+    if (t > 9.35 && t < 10.1) { const k = seg(t, 9.35, 10.1); ring(g, 244, py - 46, 16 + 90 * k, 1 - k); label(g, 'STUN!', 244, py - 92, C.core, 10); }
+    if (t > 10.5) for (let i = 0; i < 3; i++) { const x = 180 + i * 16, y = py - 10 + Math.sin(t * 4 + i) * 2; g.fillStyle = C.wax; g.fillRect(x, y, 6, 5); g.fillStyle = C.flame; g.fillRect(x + 2, y - 2, 2, 2); }
+  } };
+function pupa(g, x, y, k, t) {
+  g.save(); g.translate(x, y); const pulse = 1 + Math.sin(t * (4 + k * 8)) * 0.03 * (1 + k);
+  g.scale(pulse, pulse);
+  g.fillStyle = '#6e4e1e'; g.beginPath(); g.ellipse(0, -26, 16, 28, 0, 0, TAU); g.fill();
+  g.fillStyle = '#c9a64e'; g.beginPath(); g.ellipse(-3, -28, 10, 22, 0, 0, TAU); g.fill();
+  g.strokeStyle = `rgba(255,170,60,${0.3 + 0.7 * k})`; g.lineWidth = 1.5; g.beginPath(); g.moveTo(0, -52); g.lineTo(-4, -38); g.lineTo(3, -26); g.lineTo(-2, -12); g.moveTo(-4, -38); g.lineTo(-11, -32); g.moveTo(3, -26); g.lineTo(10, -20); g.stroke();
+  for (let i = 0; i < 4; i++) { g.fillStyle = '#4a3416'; g.fillRect(-15, -40 + i * 10, 30, 1); }
+  g.restore();
+  const gl = g.createRadialGradient(x, y - 26, 0, x, y - 26, 50 + 40 * k); gl.addColorStop(0, `rgba(255,150,60,${0.25 + 0.35 * k})`); gl.addColorStop(1, 'rgba(255,120,40,0)'); g.fillStyle = gl; g.fillRect(x - 100, y - 120, 200, 160);
+}
+function moth(g, x, y, t, o) {
+  const fl = Math.sin(t * (o.fast ? 22 : 12)) * 0.5 + 0.5, s = o.s || 1;
+  g.save(); g.translate(x, y); g.scale(s, s);
+  for (const d of [-1, 1]) { g.save(); g.scale(d, 1); g.rotate(-0.2 - fl * 0.5);
+    const gr = g.createLinearGradient(0, 0, 40, -20); gr.addColorStop(0, o.flash ? '#fff' : '#e2553f'); gr.addColorStop(0.6, o.flash ? '#fff' : '#f2a541'); gr.addColorStop(1, o.glow ? '#fff1c1' : '#7a2a0e');
+    g.fillStyle = gr; g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(26, -34, 46, -14); g.quadraticCurveTo(36, 4, 0, 4); g.fill();
+    g.fillStyle = '#2a1410'; g.beginPath(); g.arc(26, -14, 4, 0, TAU); g.fill(); g.fillStyle = o.glow ? '#fff1c1' : '#f2a541'; g.beginPath(); g.arc(26, -14, 2, 0, TAU); g.fill();
+    g.fillStyle = o.flash ? '#fff' : '#a3321f'; g.beginPath(); g.moveTo(0, 2); g.quadraticCurveTo(22, 18, 30, 30); g.quadraticCurveTo(10, 22, 0, 8); g.fill();
+    g.restore(); }
+  g.fillStyle = o.flash ? '#fff' : '#3a1c14'; g.beginPath(); g.ellipse(0, 4, 6, 16, 0, 0, TAU); g.fill();
+  g.fillStyle = o.stun ? '#5c4d43' : '#ffd27a'; g.fillRect(-4, -9, 3, 3); g.fillRect(1, -9, 3, 3);
+  g.strokeStyle = '#3a1c14'; g.lineWidth = 1; g.beginPath(); g.moveTo(-2, -12); g.quadraticCurveTo(-8, -24, -12, -26); g.moveTo(2, -12); g.quadraticCurveTo(8, -24, 12, -26); g.stroke();
+  g.fillStyle = 'rgba(242,165,65,.55)'; g.beginPath(); g.ellipse(0, -2, 4, 2, 0, 0, TAU); g.fill(); // the back (dive target)
+  g.restore();
+  if (!o.s || o.s > 0.5) for (let i = 0; i < 3; i++) { const k = (t * 1.3 + i / 3) % 1; g.fillStyle = `rgba(255,170,80,${1 - k})`; g.fillRect(x + Math.sin((t + i) * 4) * 10, y + 20 + k * 30, 2, 2); }
+}
+const PUPA = { dur:9, beats:[
+  { at:0, t:'The Wyrm falls and coils on the last crust plate in the middle of the pool.' },
+  { at:1.6, t:'It hardens into a bronze pupa. Nothing can hurt it. It sheds a few wax chunks so you start stage 2 with a full vessel.' },
+  { at:3.6, t:'The pool cools into a solid floor and wax ledges rise up the walls: the arena for stage 2 is built while you watch.' },
+  { at:6, t:'The shell splits along glowing seams and the Cinder Moth unfolds its wings. The health bar refills for stage 2.' } ],
+  draw(g, t) {
+    const cool = ease(seg(t, 3.6, 5.6));
+    bg(g, ['#120a07', '#2a160c']); stone(g, 0, 150, 60, 122); stone(g, 420, 150, 60, 122);
+    const py = 214; lavaPool(g, py); if (cool > 0) { g.globalAlpha = cool; stone(g, 60, py - 4, 360, H - py + 4); g.globalAlpha = 1; }
+    crust(g, py, null, t);
+    const rise = ease(seg(t, 3.8, 5.8)); [[90, 160], [380, 120], [110, 80], [360, 44]].forEach(([x, y], i) => { const yy = lerp(260, y, cl(rise * 1.2 - i * 0.1, 0, 1)); waxFloor(g, x - 22, yy, 44, 8, 0); });
+    if (t < 1.6) { const k = seg(t, 0, 1.6), pts = []; for (let i = 0; i < 13; i++) { const a = i * 0.5 + k * 3; pts.push([240 + Math.cos(a) * (24 - i * 1.2), py - 14 + Math.sin(a) * 8 - i]); } wyrm(g, pts, t, { f:1, stun:true }); }
+    else if (t < 6.4) { pupa(g, 240, py - 4, seg(t, 1.6, 6.4), t); if (t < 3.4) for (let i = 0; i < 3; i++) { g.fillStyle = C.wax; g.fillRect(200 + i * 30, py - 12 - ((t * 20 + i * 7) % 10), 6, 5); } }
+    else { const k = seg(t, 6.4, 7.6); g.fillStyle = '#6e4e1e'; g.fillRect(228, py - 18, 10, 14); g.fillRect(244, py - 16, 10, 12); moth(g, 240, lerp(py - 30, 70, ease(k)), t, { s:0.4 + 0.6 * ease(k), glow:true }); if (k < 1) { ring(g, 240, py - 30, 30 + 120 * k, 1 - k, '255,200,120'); } label(g, 'THE CINDER MOTH', 240, 30, '#f2a541', 10); }
+    hero(g, 110, t < 4 ? 150 : 150, 1, t, 'idle');
+  } };
+const MOTH = { dur:15, beats:[
+  { at:0, t:'The Cinder Moth hovers high in figure-eights. It can only be hurt after a Wax Dive stun, and it flies above the top ledges.' },
+  { at:2.2, t:'Triple slash: three green lights. Strike it while a light flares and the slash breaks; it drops stunned.' },
+  { at:4.6, t:'It calls small moths. They dive-bomb you, but each one you slash bursts into wax: they are your refill.' },
+  { at:7.2, t:'Climb the wax ledges to the top while dodging. Wait until the moth flies below you.' },
+  { at:9.4, t:'Wax Dive onto its back: it drops to the floor stunned for about 3 s. Slash and bolt it.' },
+  { at:12.4, t:'Fire sweep: it rears back, eyes flash, then streaks across at your height leaving a trail of flame. Drop or jump a ledge.' } ],
+  draw(g, t) {
+    bg(g, ['#140c0a', '#2a1810']); stone(g, 0, 214, 480, 58); stone(g, 0, 0, 30, 214); stone(g, 450, 0, 30, 214);
+    const L = [[90, 160], [380, 120], [110, 80], [360, 44]]; L.forEach(([x, y]) => waxFloor(g, x - 22, y, 44, 8, 0));
+    let mx = 240 + Math.sin(t * 0.9) * 120, my = 70 + Math.sin(t * 1.8) * 18, o = {};
+    if (t >= 2.2 && t < 4.6) { const k = seg(t, 2.2, 4.6); mx = 240; my = 60; o.glow = k < 0.3; if (k >= 0.3) for (let i = 0; i < 12; i++) { const x = 60 + i * 32 + ((i * 13) % 9), y = 70 + ((k - 0.3) / 0.7) * 160 + ((i * 7) % 20); if (y < 214) { g.fillStyle = i % 2 ? C.flame : C.ember; g.fillRect(x, y, 3, 5); } else flame(g, x, 214, 0.8, t + i); } }
+    if (t >= 9.4 && t < 12.4) { const k = seg(t, 9.4, 9.9); mx = 330; my = lerp(76, 196, ease(k)); o.stun = t > 9.9; o.flash = t > 9.85 && t < 10 || (t > 10.4 && (t % 0.45) < 0.07); }
+    else if (t >= 7.2 && t < 9.4) { mx = 330 + Math.sin(t * 2) * 30; my = 84; }
+    if (t >= 12.4) { const k = seg(t, 12.4, 15); mx = k < 0.3 ? 420 : lerp(420, 40, ease((k - 0.3) / 0.5)); my = 118; o.glow = k < 0.3; if (k > 0.3) { g.fillStyle = 'rgba(242,120,40,.5)'; g.fillRect(Math.min(mx, 420), 112, Math.abs(420 - mx), 6); for (let x = mx; x < 420; x += 18) flame(g, x, 118, 0.9, t + x); } else { g.fillStyle = 'rgba(226,85,63,.25)'; g.fillRect(30, 114, 420, 2); } }
+    moth(g, mx, my, t, o);
+    if (o.stun) label(g, 'STUNNED', mx, my - 34, '#9fdcd0');
+    // small moths
+    if (t >= 4.6 && t < 9.4) for (let i = 0; i < 3; i++) { const k = (t - 4.6 - i * 0.4); if (k < 0) continue; const dead = t > 6.1 + i * 0.5; const sx = lerp(mx, 120 + i * 12, Math.min(1, k)), sy = lerp(my, 150 - i * 8, Math.min(1, k)) + Math.sin(t * 10 + i) * 4;
+      if (!dead) moth(g, sx, sy, t + i, { s:0.25, fast:true }); else if (t < 6.6 + i * 0.5) { g.fillStyle = C.wax; g.fillRect(sx, sy, 5, 4); label(g, '+WAX', sx, sy - 8, C.flame); } }
+    // hero
+    let hx = 120, hy = 214, f = 1, pose = 'idle';
+    if (t < 4.6) { hx = 120 + Math.sin(t * 1.5) * 40; hy = 214; f = 1; }
+    else if (t < 7.2) { hx = 130; hy = 160 + 0; f = -1; pose = (t % 0.5) < 0.18 ? 'slash' : 'idle'; hy = 160; }
+    else if (t < 9.4) { const step = Math.min(3, Math.floor(seg(t, 7.2, 8.8) * 4)); [hx, hy] = L[step]; f = hx < 240 ? 1 : -1; }
+    else if (t < 9.9) { const k = seg(t, 9.4, 9.9); hx = lerp(360, 330, k); hy = lerp(44, 66, k * k); pose = 'dive'; }
+    else if (t < 12.4) { hx = 300; hy = 214; f = 1; pose = (t % 0.45) < 0.16 && t > 10.4 ? 'slash' : 'idle'; if ((t % 0.45) < 0.1 && t > 10.4) label(g, 'HIT', 318, 176, C.core); }
+    else { hx = 380; hy = 120; f = -1; if (t > 13) { hx = 380; hy = 214; } }
+    if (t >= 8.6 && t < 9.4) arrow(g, 360, 14, t);
+    hero(g, hx, hy, f, t, pose);
+    if (t > 9.85 && t < 10.6) { const k = seg(t, 9.85, 10.6); ring(g, 330, 76, 14 + 100 * k, 1 - k); label(g, 'STUN!', 330, 34, C.core, 10); }
+  } };
+const CHOSEN = [
+  { id:'wyrm', name:'Stage 1 · The Tallow Wyrm', chip:'36 HP', col:'#ff9b3a', S:WYRM },
+  { id:'pupa', name:'Between stages · The Pupa', chip:'Cutscene', col:'#c9a64e', S:PUPA },
+  { id:'moth', name:'Stage 2 · The Cinder Moth', chip:'40 HP', col:'#e2553f', S:MOTH }
+];
+
+const BOSSES = [
+  { id:'bell', name:'The Sunken Bell', chip:'Recommended', col:'#c9a64e', S:BELL,
+    pitch:'A huge bronze bell sits on stacked floors of white wax in a flooded bell tower. Something lives inside it.',
+    dive:'<b>Why Wax Dive is required:</b> sideways hits and bolts clang off the bronze for no damage. Only a dive onto the crown hurts it, and only a dive takes you down to the next floor once the wax melts.',
+    attacks:[['Slam','its shadow grows on the floor for 0.8 s, then it drops; step out of the shadow.'], ['Swing','it rocks back (bronze creak) and sweeps the ledges at one height; jump or drop down a ledge.'], ['Toll','a visible ring rolls out along the floor; jump it.']],
+    wax:'Each crown hit knocks wax drips off the ceiling, enough for the next dive. Wax pots on the ledges refill if you miss.',
+    phases:'Phase 1 on the top floor, phase 2 one floor down after the first layer melts, phase 3 in the bell pit. The pit has no wax floor left, so it gets a short climb back up to the crown.',
+    feel:[['Dive focus', 5], ['Readability', 4], ['Build cost', 3]] },
+  { id:'lev', name:'The Tallow Leviathan', chip:'Most active', col:'#ff9b3a', S:LEV,
+    pitch:'A long eel of melted wax swims under a pool of molten tallow that has cooled into a pale crust you can stand on.',
+    dive:'<b>Why Wax Dive is required:</b> under the crust it cannot be hit at all. A dive above its glow cracks the crust and forces it up; only then can you slash it.',
+    attacks:[['Breach bite','the crust bubbles where it will rise; it bursts up in an arc.'], ['Spit','it surfaces, rears back with a glowing throat, and spits three blobs of hot wax.'], ['Tail sweep','in phase 2 its tail drags across the crust from one side; jump it.']],
+    wax:'Every broken crust plate leaves two wax chunks that float for a few seconds. The crust re-forms over time so the arena never runs out.',
+    phases:'Phase 2 at half health: the pool rises one tile and the crust gets thinner, so a bad step burns. Ledges are higher and the dives longer.',
+    feel:[['Dive focus', 4], ['Readability', 5], ['Build cost', 3]] },
+  { id:'spire', name:'The Spire Mother', chip:'Most dramatic', col:'#9fdcd0', S:SPIRE,
+    pitch:'A many-legged mother of wax clings to the pillar of a tall shaft. The fight goes upward.',
+    dive:'<b>Why Wax Dive is required:</b> its body is hard from the side; the soft back only faces up. You must get above it and dive, and higher dives hit harder.',
+    attacks:[['Lunge','its legs tense and glow, then it runs along the pillar at your height.'], ['Wax web','strings of wax that slow you for a moment; burn them with Ember Bolt.'], ['Drop','it lets go and falls to the floor below, shaking the ledges.']],
+    wax:'Each hit makes it shed wax that drifts down the shaft; ledge pots also refill. White wax ledges re-form after a few seconds so you can always climb back.',
+    phases:'Each hit knocks it down a level; phase 2 starts at the bottom of the shaft and the climb restarts faster.',
+    feel:[['Dive focus', 5], ['Readability', 3], ['Build cost', 1]] }
+];
+
+const list = document.getElementById('list'), stages = [];
+const chosenEl = document.getElementById('chosen');
+for (const b of CHOSEN) {
+  const sec = document.createElement('section'); sec.className = 'boss wide'; sec.id = b.id;
+  sec.innerHTML = `<div class="left"><div class="title"><h2>${b.name}</h2><span class="chip" style="color:${b.col}">${b.chip}</span></div>
+    <div class="stage"><canvas width="480" height="272" aria-label="${b.name} storyboard"></canvas></div>
+    <div class="cap"><b>1</b><span></span></div>
+    <div class="beats">${b.S.beats.map((x, i) => `<button type="button" data-i="${i}">Beat ${i + 1}</button>`).join('')}<button type="button" class="pp" aria-pressed="false">Pause</button></div></div>`;
+  chosenEl.appendChild(sec);
+  const st = { b, cv:sec.querySelector('canvas'), cap:sec.querySelector('.cap span'), num:sec.querySelector('.cap b'), btns:[...sec.querySelectorAll('.beats [data-i]')], pp:sec.querySelector('.pp'), t:0, paused:false, last:-1 };
+  st.btns.forEach(btn => btn.addEventListener('click', () => { st.t = b.S.beats[+btn.dataset.i].at + 0.01; }));
+  st.pp.addEventListener('click', () => { st.paused = !st.paused; st.pp.textContent = st.paused ? 'Play' : 'Pause'; st.pp.setAttribute('aria-pressed', st.paused); });
+  stages.push(st);
+}
+document.getElementById('spec').innerHTML = [
+  ['The arena: the Kiln Pit', '<p>A wide room with a molten tallow pool across the middle and a pale crust on top you can walk on. Stone banks on both sides. For stage 2 the pool cools into a solid floor and four white-wax ledges rise up the walls, the top one above the moth\u2019s usual flight height.</p>'],
+  ['Stage 1 · Tallow Wyrm', '<ul><li><b>Lava spread:</b> throat glows 0.7 s, fan of 4 burning globs; puddles last 3 s.</li><li><b>Dive:</b> bubbles mark a line 0.8 s, then it leaps across and splashes both banks.</li><li><b>Bite:</b> crust glows and rumbles under you 0.9 s, then it lunges up and its head stays up about 1.2 s.</li><li><b>Stun:</b> Wax Dive onto the raised head. Stunned 3 s on the crust; only then does it take damage.</li><li><b>Below half:</b> faster tells, two bites in a row, puddles last longer.</li></ul>'],
+  ['Stage 2 · Cinder Moth', '<ul><li><b>Triple slash:</b> three green lights; each flares just before a slash. Strike during a flare to break it and stun the moth. First strike only; a wrong one turns the lights red.</li><li><b>Rush:</b> wings cocked, eyes flare, a red sight line to you; the aim locks, then it rushes along it, twice (three times below half). After the last it climbs back slowly, low and open to a dive.</li><li><b>Pounce:</b> hovers over you, its shadow grows dark red, then it drops; fire rolls out both ways; it rests on the floor after.</li><li><b>Fire sweep (below half):</b> a faint line marks the height, then it streaks across and leaves flame on that ledge.</li><li><b>Call moths:</b> 2 to 3 small moths dive-bomb you (1 ember each); each slashed one bursts into wax. Never more than 4 alive.</li><li><b>Stun:</b> break its triple slash on a green light, or Wax Dive onto its saddle: when it climbs back after a rush, when it rests after a pounce, or from the top ledges as it passes. It falls to the floor, stunned 3 s.</li><li><b>Below half:</b> more moths, every rush twice, the sweep joins in, faster flight.</li></ul>'],
+  ['Wax, so you never get stuck', '<p>Stage 1: broken crust and each stun drop wax chunks, and the crust re-forms. Pupa: sheds enough wax to fill the vessel. Stage 2: small moths are the steady refill, and the moth sheds wax when stunned. The shrine stays sealed during the fight, as in the Chandler\u2019s Hall.</p>'],
+  ['After the fight', '<p>The moth is downed, you hold up for your hero\u2019s finishing move (three new ones), and the blacksmith waits past the arena to forge <b>Flare Burst</b> (up + skill) as the chapter\u2019s reward.</p>'],
+  ['Questions for you', '<ul><li>If you fall in stage 2, restart from stage 1, or from the pupa? (A checkpoint mid-fight felt like cheating last time.)</li><li>One health bar that refills at the pupa, or two separate bars?</li><li>Names: Tallow Wyrm and Cinder Moth, or something else?</li><li>Chapter 3 stages before the boss: two rooms like the other chapters?</li></ul>']
+].map(([h, b], i) => `<div class="card${i === 5 ? ' q' : ''}"><h3>${h}</h3>${b}</div>`).join('');
+for (const b of BOSSES) {
+  const sec = document.createElement('section'); sec.className = 'boss'; sec.id = b.id;
+  sec.innerHTML = `<div class="left"><div class="stage"><canvas width="480" height="272" aria-label="${b.name} storyboard"></canvas></div>
+    <div class="cap"><b>1</b><span></span></div>
+    <div class="beats">${b.S.beats.map((x, i) => `<button type="button" data-i="${i}">Beat ${i + 1}</button>`).join('')}<button type="button" class="pp" aria-pressed="false">Pause</button></div></div>
+  <div class="sheet">
+    <div class="title"><h2>${b.name}</h2><span class="chip" style="color:${b.col}">${b.chip}</span></div>
+    <p>${b.pitch}</p>
+    <div class="dive">${b.dive}</div>
+    <div class="k"><h3>Attacks and their tells</h3><ul>${b.attacks.map(([n, d]) => `<li><b>${n}:</b> ${d}</li>`).join('')}</ul></div>
+    <div class="k"><h3>Wax supply</h3><p>${b.wax}</p></div>
+    <div class="k"><h3>Phases</h3><p>${b.phases}</p></div>
+    <div class="meter">${b.feel.map(([n, v]) => `<span>${n}</span><span class="pips">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= v ? 'on' : ''}"></i>`).join('')}</span>`).join('')}</div>
+  </div>`;
+  list.appendChild(sec);
+  const st = { b, cv:sec.querySelector('canvas'), cap:sec.querySelector('.cap span'), num:sec.querySelector('.cap b'), btns:[...sec.querySelectorAll('.beats [data-i]')], pp:sec.querySelector('.pp'), t:0, paused:false, last:-1 };
+  st.btns.forEach(btn => btn.addEventListener('click', () => { st.t = b.S.beats[+btn.dataset.i].at + 0.01; }));
+  st.pp.addEventListener('click', () => { st.paused = !st.paused; st.pp.textContent = st.paused ? 'Play' : 'Pause'; st.pp.setAttribute('aria-pressed', st.paused); });
+  stages.push(st);
+}
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let prev = performance.now();
+function tick(now) {
+  const dt = Math.min(0.05, (now - prev) / 1000); prev = now;
+  for (const st of stages) {
+    if (!st.paused && !RM) st.t = (st.t + dt) % st.b.S.dur;
+    const g = st.cv.getContext('2d'); g.imageSmoothingEnabled = false; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
+    st.b.S.draw(g, st.t);
+    let bi = 0; st.b.S.beats.forEach((x, i) => { if (st.t >= x.at) bi = i; });
+    if (bi !== st.last) { st.last = bi; st.cap.textContent = st.b.S.beats[bi].t; st.num.textContent = bi + 1; st.btns.forEach((x, i) => x.setAttribute('aria-pressed', i === bi)); }
+  }
+  requestAnimationFrame(tick);
+}
+if (RM) stages.forEach(st => { st.t = st.b.S.beats[2].at + 0.4; });
+requestAnimationFrame(tick);
+</script>
+
+<script>
+(() => {
+  const frame = document.getElementById('game');
+  const send = m => { try { frame.contentWindow.postMessage(Object.assign({ uw:1 }, m), '*'); } catch (_) {} };
+  const focusGame = () => { try { frame.focus(); frame.contentWindow.focus(); } catch (_) {} };
+  // the numbers the game ships with; sliders start here
+  const SPEC = [
+    ['wyrmHp', 'Wyrm HP', 30, 16, 60, 1, ''],
+    ['mothHp', 'Moth HP', 32, 16, 60, 1, ''],
+    ['stunT', 'Stun length', 3.2, 1.5, 5, 0.1, 's', 'How long either stage lies open after a dive.'],
+    ['biteTell', 'Bite warning', 0.85, 0.4, 1.5, 0.05, 's', 'Crust glows under you before the head bursts up.'],
+    ['launch', 'Quake throw', 440, 340, 560, 10, '', 'How hard the head-slam throws you up off the bridge.'],
+    ['floatG', 'Float after the throw', 0.8, 0.3, 1, 0.05, '× gravity', 'Lower = longer hang in the air to steer and dive.'],
+    ['biteHang', 'Head stays up after the quake', 1.4, 0.6, 3, 0.1, 's', 'Your window to dash over and dive.'],
+    ['diveReach', 'Dive catch width', 22, 10, 32, 1, 'px', 'Half the width of the area that counts as landing on the cap.'],
+    ['wyrmGap', 'Wyrm rest between attacks', 0.7, 0.3, 2.5, 0.05, 's'],
+    ['flameLen', 'Flamethrower reach', 150, 80, 240, 5, 'px', 'How far the fire spreads along the bridge.'],
+    ['flameT', 'Flamethrower length', 1.3, 0.6, 2.5, 0.1, 's'],
+    ['capRegrow', 'Wax plug regrow time', 1.2, 0.4, 4, 0.1, 's'],
+    ['mothSpeed', 'Moth hover speed', 80, 40, 140, 5, 'px/s', 'How fast it follows you around between attacks.'],
+    ['rushSpeed', 'Moth rush speed', 400, 220, 560, 10, 'px/s'],
+    ['parryWin', 'Green light (counter window)', 0.24, 0.08, 0.5, 0.02, 's', 'How long each green light burns before its slash lands.'],
+    ['recoverT', 'Moth climbs back after its last rush', 0.7, 0.3, 2, 0.05, 's', 'Low and slow: the window to dive on it.'],
+    ['mothGap', 'Moth rest between attacks', 1.1, 0.6, 3, 0.05, 's'],
+    ['minis', 'Small moths per call', 2, 0, 4, 1, ''],
+    ['miniMax', 'Small moths alive at once', 4, 1, 8, 1, ''],
+    ['saddleRegrow', 'Saddle regrow time', 1.5, 0.4, 4, 0.1, 's'],
+    ['perchT', 'Moth rests after a pounce', 1.8, 0.6, 3.5, 0.1, 's', 'It drops to the floor, spent, with its saddle in jump reach.'],
+    ['umbraHp', 'Black Wick HP', 48, 20, 90, 1, '', '', 1],
+    ['umbraGap', 'Black Wick rest between attacks', 0.7, 0.3, 2, 0.05, 's', '', 1],
+    ['umbraTell', 'Black Wick tell length', 1, 0.6, 1.6, 0.05, '× ', 'Scales every warning: the glint, the raise, the mark, the glow.', 1]
+  ];
+  const DEF = Object.fromEntries(SPEC.map(r => [r[0], r[2]]));
+  let tune = Object.assign({}, DEF);
+  try { const saved = JSON.parse(localStorage.getItem('uwlab-tune') || 'null'); if (saved) for (const k in saved) if (k in DEF) tune[k] = +saved[k]; } catch (_) {}
+  const save = () => { try { localStorage.setItem('uwlab-tune', JSON.stringify(tune)); } catch (_) {} };
+  const box = document.getElementById('sliders');
+  const fmt = (v, step, u) => (step < 1 ? (+v).toFixed(step < 0.1 ? 2 : 1) : String(Math.round(v))) + (u ? ' ' + u : '');
+  box.innerHTML = SPEC.map(([k, n, d, lo, hi, st, u, help, sec]) => `<div class="sl"${sec ? ' data-secret' : ''}><label for="t_${k}">${n}</label><output id="o_${k}" for="t_${k}"></output><input id="t_${k}" type="range" min="${lo}" max="${hi}" step="${st}" value="${tune[k]}">${help ? `<small>${help}</small>` : ''}</div>`).join('');
+  const paint = k => { const r = SPEC.find(x => x[0] === k), o = document.getElementById('o_' + k); o.textContent = fmt(tune[k], r[5], r[6]); o.classList.toggle('chg', Math.abs(tune[k] - DEF[k]) > 1e-9); };
+  SPEC.forEach(r => { paint(r[0]); document.getElementById('t_' + r[0]).addEventListener('input', e => { tune[r[0]] = +e.target.value; paint(r[0]); save(); send({ cmd:'tune', key:r[0], val:tune[r[0]] }); }); });
+  const toast = m => { const t = document.getElementById('toast'); t.textContent = m; clearTimeout(toast.h); toast.h = setTimeout(() => t.textContent = '', 3200); };
+  document.getElementById('tReset').addEventListener('click', () => { tune = Object.assign({}, DEF); SPEC.forEach(r => { document.getElementById('t_' + r[0]).value = tune[r[0]]; paint(r[0]); }); save(); send({ cmd:'tuneAll', tune }); toast('Back to the values the game ships with.'); });
+  const changed = t => SPEC.filter(r => Math.abs(t[r[0]] - DEF[r[0]]) > 1e-9).map(r => `${r[1]} ${fmt(t[r[0]], r[5], r[6])}`).join(', ');
+  document.getElementById('tCopy').addEventListener('click', () => {
+    const txt = 'Chapter 3 boss values: ' + (changed(tune) || 'all defaults');
+    navigator.clipboard.writeText(txt).then(() => toast('Copied. Paste it to me in the chat.'), () => toast(txt));
+  });
+  // hero and start
+  let hero = 'snuff';
+  try { hero = localStorage.getItem('uwlab-hero') || 'snuff'; } catch (_) {}
+  const heroBtns = [...document.querySelectorAll('#heroes button')];
+  const paintHero = () => heroBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.h === hero));
+  paintHero();
+  heroBtns.forEach(b => b.addEventListener('click', () => { hero = b.dataset.h; paintHero(); try { localStorage.setItem('uwlab-hero', hero); } catch (_) {} start(lastStage); }));
+  let lastStage = '1';
+  const start = s => { lastStage = s; send({ cmd:'tuneAll', tune }); send({ cmd:'start', hero, stage:s === '2' ? 2 : s === '3' ? 3 : 1, intro:s === '1i' }); focusGame(); };
+  // the hidden boss: clear the moth, or click the title arrow three times
+  const unlock = quiet => {
+    document.getElementById('secretBtn').hidden = false; document.getElementById('umbraCard').hidden = false; document.body.classList.add('unlocked');
+    try { localStorage.setItem('uwlab-umbra', '1'); } catch (_) {}
+    if (!quiet) { toast('Something black stirs at the bottom of the pit.'); const sb = document.getElementById('secretBtn'); sb.animate([{ boxShadow:'0 0 0 rgba(255,40,30,0)' }, { boxShadow:'0 0 24px rgba(255,40,30,.8)' }, { boxShadow:'0 0 0 rgba(255,40,30,0)' }], { duration:1400, iterations:2 }); }
+  };
+  unlock(true);   // always shown in the lab
+  { let n = 0, t0 = 0; document.getElementById('seal').addEventListener('click', () => { const now = performance.now(); n = now - t0 < 900 ? n + 1 : 1; t0 = now; if (n >= 3 && document.getElementById('secretBtn').hidden) unlock(false); }); }
+  document.querySelectorAll('#starts button').forEach(b => b.addEventListener('click', () => start(b.dataset.s)));
+  const god = document.getElementById('god');
+  god.addEventListener('click', () => { const on = god.getAttribute('aria-pressed') !== 'true'; god.setAttribute('aria-pressed', on); send({ cmd:'god', on }); focusGame(); });
+  // force-attack buttons follow the stage on screen
+  const MOVES = { wyrm:[['quake', 'Quake'], ['bite', 'Bite'], ['spread', 'Flamethrower'], ['dive', 'Leap'], ['stun', 'Stun it'], ['hatch', 'Skip to the hatch']], moth:[['rush', 'Rush'], ['slash', 'Triple slash'], ['pounce', 'Pounce'], ['sweep', 'Fire sweep'], ['call', 'Call moths'], ['stun', 'Stun it'], ['end', 'Skip to the ending']],
+    umbra:[['iai', 'Draw cut'], ['combo', 'Combo'], ['moon', 'Moonfall'], ['wave', 'Blood crescents'], ['guard', 'Guard'], ['sev', 'Severance']] };
+  const movesEl = document.getElementById('moves'); let movesFor = '';
+  const paintMoves = kind => { if (kind === movesFor) return; movesFor = kind; movesEl.innerHTML = (MOVES[kind] || []).map(([m, n]) => `<button type="button" data-m="${m}">${n}</button>`).join('') || '<span style="color:var(--dim);font-size:14px">Available while a stage is fighting.</span>'; };
+  movesEl.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; send(b.dataset.m === 'stun' ? { cmd:'stun' } : { cmd:'move', move:b.dataset.m }); focusGame(); });
+  paintMoves('wyrm');
+  // live readout and the attempt log
+  const $ = id => document.getElementById(id);
+  const NAMES = { wyrm:'The Tallow Wyrm', moth:'The Cinder Moth', umbra:'The Black Wick' };
+  const HERO = { snuff:'Wick', knight:'Lampknight', hero:'Wick Hero' };
+  let log = []; try { log = JSON.parse(localStorage.getItem('uwlab-log') || '[]'); } catch (_) {}
+  const paintLog = () => {
+    $('logBody').innerHTML = log.length ? log.slice().reverse().map(r => `<tr><td>${HERO[r.hero] || r.hero}</td><td>${r.stage === 3 ? 'Black Wick' : r.stage === 2 ? 'Moth' : 'Wyrm'}</td><td>${r.time.toFixed(1)}s</td><td>${r.t1 != null ? r.t1.toFixed(1) + 's' : '–'}</td><td>${r.stuns} / ${r.mstuns}</td><td>${r.hits}</td><td>${r.deaths}</td><td>${changed(r.tune) || 'defaults'}</td></tr>`).join('')
+      : '<tr><td class="empty" colspan="8">Beat a stage and it shows up here.</td></tr>';
+  };
+  paintLog();
+  $('logClear').addEventListener('click', () => { log = []; try { localStorage.setItem('uwlab-log', '[]'); } catch (_) {} paintLog(); });
+  const STATE = { under:'Swimming', biteW:'Bite coming', bite:'Biting', biteUp:'Head up · dive now', sink:'Sinking', emerge:'Rearing', spreadW:'About to spit', spreadEnd:'Spat', diveW:'Leap coming', leap:'Leaping', stun:'Stunned · cut it', pupa:'Pupa', intro:'Waking', dormant:'Asleep', hatch:'Hatching', fly:'Flying', rainW:'Ember rain coming', callW:'Calling moths', sweepGo:'Lining up a sweep', sweepW:'Sweep coming', sweep:'Sweeping', slashGo:'Closing in', slash:'Triple slash · strike on green', rushW:'Rush coming', rush:'Rushing', skid:'Skidding', recover:'Climbing back · dive now', stalk:'Stalking you', slamW:'Pounce coming', slamDrop:'Pouncing', perch:'Resting · dive now', land:'Landing', fall:'Falling', rise:'Taking off', downed:'Beaten · hold ↑ by it', dead:'Burning out', beaten:'Stage cleared',
+    uIdle:'Circling', uIaiW:'Hand on the hilt', uIai:'Draw cut', uIaiEnd:'Line hangs · jump', uComboW:'Blade raised', uCombo:'Combo', uOpen:'Open · strike now', uLeap:'Leaping', uRise:'Vanishing', uMark:'Marked · move', uDrop:'Falling cut', uWaveW:'Blade glowing', uWave:'Blood crescents', uGuard:'Guard · hold back', uCounter:'Counter', uCut:'Counter cut', uSevW:'The room goes dark', uSev:'Severance · get out' };
+  window.addEventListener('message', e => {
+    const m = e.data; if (!m || !m.uw || e.source !== frame.contentWindow) return;
+    if (m.type === 'stats') {
+      $('rState').textContent = STATE[m.state] || m.state || '';
+      if (m.kind) $('rName').textContent = NAMES[m.kind] || '';
+      $('rBar').style.width = (m.bmax ? Math.max(0, m.bhp / m.bmax * 100) : 0) + '%';
+      $('rTime').textContent = m.time.toFixed(1) + 's'; $('rHp').textContent = m.hp + ' / ' + m.maxHp; $('rWax').textContent = m.wax;
+      $('rS1').textContent = m.stuns; $('rS2').textContent = m.mstuns; $('rHits').textContent = m.hits + (m.deaths ? ` · ${m.deaths} fall${m.deaths > 1 ? 's' : ''}` : '');
+      paintMoves(m.kind && !['pupa', 'downed', 'dead', 'dormant', 'intro'].includes(m.state) ? m.kind : '');
+    }
+    if (m.type === 'result') { if (m.stage === 2 && document.getElementById('secretBtn').hidden) setTimeout(() => unlock(false), 1500); log.push(m); if (log.length > 40) log.shift(); try { localStorage.setItem('uwlab-log', JSON.stringify(log)); } catch (_) {} paintLog(); toast(`Cleared as ${HERO[m.hero] || m.hero} in ${m.time.toFixed(1)}s.`); }
+  });
+  frame.addEventListener('load', () => setTimeout(() => { send({ cmd:'tuneAll', tune }); send({ cmd:'start', hero, stage:1 }); }, 400));
+})();
+</script>
