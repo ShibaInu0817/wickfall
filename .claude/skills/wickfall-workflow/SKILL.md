@@ -102,7 +102,7 @@ tools/test.sh --all                 # + browser tests (Playwright, Chromium at /
 
 ## Trailer, screenshots and GitHub Pages
 
-- `tools/capture/` records the real game frame by frame (see the README for the five commands). Scenes are scripted in `scenes.cjs`: a setup using `__stage({...})` plus a per-frame controller that calls the game's own `press()`/`release()`.
+- `tools/capture/` records the real game frame by frame (run in order: `make_page.py`, `record_all.cjs`, `compose.cjs`, `render_sfx.cjs`, `assemble.py`; local Chromium via `CHROMIUM=<path>`). Scenes are scripted in `scenes.cjs`: a setup using `__stage({...})` plus a per-frame controller that calls the game's own `press()`/`release()`.
 - **Pause the clock.** `clock.install()` alone lets real time leak in, and the first takes came out about 2.7× fast-forward. `lib.cjs` installs at a fixed date and calls `pauseAt`, so only `runFor` moves the game.
 - **Check timing with a contact sheet** (`node sheet.cjs <scene> 300 15`) before recording; pick trim points and still frames from it.
 - Google Fonts are blocked in the sandbox; the capture embeds local OFL fonts from `tools/capture/fonts`.

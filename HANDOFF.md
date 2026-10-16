@@ -58,7 +58,7 @@ For new heroes, enemies, bosses or rooms, read `wickfall-content`; for sound, fe
   10. hard screen slash, then black
   11. 10 s live camp end card with the title and slogan (no URL; removed 16 Oct 2026)
 - **Slogan:** "Every flame goes out. Not yours." Marketing never states how many bosses there are; the owner wants room to add more.
-- **Rebuilding media:** the scripts are in `tools/capture/`; the README's last section lists the commands.
+- **Rebuilding media:** the scripts are in `tools/capture/`, run in order: `make_page.py`, `record_all.cjs`, `compose.cjs`, `render_sfx.cjs`, `assemble.py` (each file's first lines say what it does).
   - Scenes are scripted in `scenes.cjs`.
   - The browser clock is paused (`lib.cjs`), so every frame is exactly 1/60 s.
   - Use `sheet.cjs` to check a scene's timing before recording.
