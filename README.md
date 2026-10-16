@@ -11,6 +11,42 @@
   <a href="media/trailer.mp4"><img src="https://img.shields.io/badge/Watch-the%20trailer-2b2f3a?style=for-the-badge" alt="Watch the trailer"></a>
 </p>
 
+A small candle goes down into the dark, where every flame is going out.
+Wickfall is a short, candle-lit platformer: keepers to put to rest, three heroes, hidden alcoves, a boss rush and something waiting below.
+It runs in the browser on desktop and phone, with no download, no account and no server. Progress stays on your device.
+
+<table>
+  <tr>
+    <td><img src="media/screenshots/01-caption.png" alt="A small flame goes down."></td>
+    <td><img src="media/screenshots/02-caption.png" alt="Every keeper, a puzzle."></td>
+    <td><img src="media/screenshots/03-caption.png" alt="Strike down. Bounce. Keep moving."></td>
+  </tr>
+  <tr>
+    <td><img src="media/screenshots/04-caption.png" alt="Read the tell. Break the slash."></td>
+    <td><img src="media/screenshots/05-caption.png" alt="End it with a finishing move."></td>
+    <td><img src="media/screenshots/06-caption.png" alt="Three heroes, three ways to fight."></td>
+  </tr>
+  <tr>
+    <td><img src="media/screenshots/07-caption.png" alt="Secrets in the stone."></td>
+    <td><img src="media/screenshots/08-caption.png" alt="Something answers from below."></td>
+    <td><img src="media/screenshots/09-caption.png" alt="Dive. Stun. Strike."></td>
+  </tr>
+</table>
+
+## Controls
+
+| | Keyboard | Gamepad | Phone |
+|---|---|---|---|
+| Move | ← → or A D | left stick or d-pad | left half of the screen |
+| Jump | Space or Z (hold to jump higher) | A / Cross | Jump |
+| Slash | X or J (hold ↑ or ↓ to aim) | X / Square | Slash (swipe on it to aim) |
+| Dash | Shift, C or K | any shoulder button | Dash |
+| Focus | hold F | hold B / Circle | Focus |
+| Skill | E or L, once learned | Y / Triangle | Skill |
+| Pause | P or Esc (M toggles sound) | Start | Pause |
+
+---
+
 ## Folders
 
 ```
