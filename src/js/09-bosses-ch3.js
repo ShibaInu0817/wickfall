@@ -33,7 +33,7 @@ function updateWaxbits(dt) {
     }
     if (b.t > 0.25 && !P.dead && overlap(P, { x:b.x - 6, y:b.y - 6, w:12, h:12 })) {
       b.dead = true; P.wax = Math.min(99, P.wax + 22); sfx('waxGet');
-      burst(b.x, b.y, 8, { spd:70, life:0.35, colors:[C.wax, '#fff7e2', C.flame], size:1, g:-40 });
+      burst(b.x, b.y, 8, { spd:70, life:0.35, colors:[C.wax, C.waxHi, C.flame], size:1, g:-40 });
     }
     if (b.t > 24) b.dead = true;
   }
@@ -45,8 +45,8 @@ function drawWaxbits(cx0, t) {
     const x = Math.round(b.x - cx0), y = Math.round(b.y + (b.rest ? Math.sin(t * 3 + b.x) * 0.8 : 0)), a = b.t > 21 ? (Math.sin(t * 20) > 0 ? 1 : 0.3) : 1;
     ctx.globalAlpha = a;
     const g = ctx.createRadialGradient(x, y, 0, x, y, 9); g.addColorStop(0, 'rgba(255,240,200,.35)'); g.addColorStop(1, 'rgba(255,240,200,0)'); ctx.fillStyle = g; ctx.fillRect(x - 9, y - 9, 18, 18);
-    ctx.fillStyle = '#7a6a48'; ctx.fillRect(x - 3, y - 2, 6, 5); ctx.fillRect(x - 2, y - 3, 4, 7);
-    ctx.fillStyle = C.wax; ctx.fillRect(x - 2, y - 2, 4, 4); ctx.fillStyle = '#fff7e2'; ctx.fillRect(x - 2, y - 2, 2, 1); ctx.fillStyle = C.waxSh; ctx.fillRect(x - 1, y + 1, 3, 1);
+    ctx.fillStyle = C.waxDk; ctx.fillRect(x - 3, y - 2, 6, 5); ctx.fillRect(x - 2, y - 3, 4, 7);
+    ctx.fillStyle = C.wax; ctx.fillRect(x - 2, y - 2, 4, 4); ctx.fillStyle = C.waxHi; ctx.fillRect(x - 2, y - 2, 2, 1); ctx.fillStyle = C.waxSh; ctx.fillRect(x - 1, y + 1, 3, 1);
     ctx.globalAlpha = 1;
   }
 }
@@ -55,7 +55,7 @@ function drawWaxbits(cx0, t) {
 function kinDiveHit(B, x, y) {
   P.dive = false; P.vy = -310; P.inv = Math.max(P.inv, 0.7); P.canDash = true; P.grounded = false;
   G.shake = Math.max(G.shake, 15); G.hitstop = Math.max(G.hitstop, 0.16); screenFlash(0.55, 0.15, '255,240,210'); sfx('thud'); sfx('bslam'); sfx('crack'); buzz([60, 30, 90]);
-  burst(x, y, 30, { spd:200, life:0.6, colors:[C.wax, '#fff7e2', C.eye, C.flame], size:2, g:260 });
+  burst(x, y, 30, { spd:200, life:0.6, colors:[C.wax, C.waxHi, C.eye, C.flame], size:2, g:260 });
   G.fx.push({ k:'ring', x, y, t:0.4, max:0.4, r:56, c:'239,227,194' });
   G.spells.push({ k:'quake', x, y:y + 4, life:0.4, max:0.4 });
   for (let i = 0; i < 2; i++) waxBit(x + rand(-10, 10), y - 4, (i ? 1 : -1) * rand(50, 90), -rand(140, 200));
@@ -64,7 +64,7 @@ function kinDiveHit(B, x, y) {
 function kinDeflect(B, o) {
   sfx('shell'); sfx('clink'); G.hitstop = Math.max(G.hitstop, 0.06); G.shake = Math.max(G.shake, 3); B.armorT = 0.22;
   const hx = clamp(P.x + P.w / 2 + P.face * 10, B.x, B.x + B.w), hy = clamp(P.y + (P.atkDir === 'down' ? P.h + 4 : 6), B.y, B.y + B.h);
-  burst(hx, hy, 12, { spd:190, life:0.3, colors:['#ffffff', '#fff7e2', '#ffd27a'], size:2, g:220 });
+  burst(hx, hy, 12, { spd:190, life:0.3, colors:['#ffffff', C.waxHi, '#ffd27a'], size:2, g:220 });
   G.fx.push({ k:'ring', x:hx, y:hy, t:0.25, max:0.25, r:24, c:'255,255,255' });
   G.fx.push({ k:'star', x:hx, y:hy, t:0.12, max:0.12, n:8, r:16, rot:rand(0, TAU) });
   if (!o.spell && P.atkDir !== 'down') { P.recoilT = 0.18; P.recoilV = -P.face * 240; if (P.grounded) P.vy = -110; }
@@ -73,7 +73,7 @@ function kinDeflect(B, o) {
 function kinBounce(B, x, top) {
   P.y = top - 2 - P.h; P.vy = -300; P.canDash = true; P.jumping = false; P.dashT = 0; B.armorT = 0.22;
   sfx('shell'); sfx('pogo'); G.shake = Math.max(G.shake, 2);
-  burst(P.x + P.w / 2, top, 10, { spd:150, life:0.3, colors:['#ffffff', '#fff7e2'], size:2, g:250, ang:-Math.PI / 2, spread:1.2 });
+  burst(P.x + P.w / 2, top, 10, { spd:150, life:0.3, colors:['#ffffff', C.waxHi], size:2, g:250, ang:-Math.PI / 2, spread:1.2 });
   G.fx.push({ k:'ring', x:P.x + P.w / 2, y:top, t:0.25, max:0.25, r:20, c:'255,255,255' });
 }
 
@@ -223,7 +223,7 @@ function wyrmQuake(B) {
   const floorY = 13 * T;
   heavyShake(16); G.hitstop = Math.max(G.hitstop, 0.1); sfx('bslam'); sfx('wallhit'); sfx('hit8'); screenFlash(0.25, 0.1, '255,200,150'); buzz([70, 30, 110]);
   if (!P.dead && P.grounded && !P.dive) { P.vy = -TUNE.launch; P.grounded = false; P.jumping = false; P.canDash = true; P.dashT = 0; G.floatT = 1.6; G.floatAge = 0; sfx('jump'); dust(P.x + P.w / 2, floorY, 8);
-    for (let i = 0; i < 10; i++) G.parts.push({ x:P.x + P.w / 2 + rand(-6, 6), y:P.y + P.h, vx:rand(-20, 20), vy:rand(-200, -80), life:0.5, max:0.5, c:i % 2 ? '#fff7e2' : '#c9ba93', s:2, g:300 }); }
+    for (let i = 0; i < 10; i++) G.parts.push({ x:P.x + P.w / 2 + rand(-6, 6), y:P.y + P.h, vx:rand(-20, 20), vy:rand(-200, -80), life:0.5, max:0.5, c:i % 2 ? C.waxHi : C.waxSh, s:2, g:300 }); }
   for (const b of G.waxbits || []) if (b.rest) { b.rest = false; b.vy = -rand(160, 240); b.vx = rand(-30, 30); }
   for (const pr of G.props || []) { pr.vy = -rand(150, 230); pr.vr = rand(-6, 6); }
   for (let x = 2 * T; x < G.room.w * T - 2 * T; x += 24) dust(x + rand(-6, 6), floorY, 2);
@@ -285,7 +285,7 @@ function updateWyrm(dt, B) {
     case 'quakeSlam':
       // the head comes down on the bridge like a hammer
       rise = 1; B.headUp = 6 + 84 * Math.max(0, B.t / 0.12); B.rise = 1;
-      if (B.t <= 0) { wyrmQuake(B); burst(B.hx, floorY - 2, 30, { spd:240, life:0.6, colors:[C.wax, '#fff7e2', C.waxSh, C.flame], size:2, g:500, ang:-Math.PI / 2, spread:1.4 }); B.state = 'quakeUp'; B.t = TUNE.biteHang * (p2 ? 0.85 : 1); B.headUp = 6; }
+      if (B.t <= 0) { wyrmQuake(B); burst(B.hx, floorY - 2, 30, { spd:240, life:0.6, colors:[C.wax, C.waxHi, C.waxSh, C.flame], size:2, g:500, ang:-Math.PI / 2, spread:1.4 }); B.state = 'quakeUp'; B.t = TUNE.biteHang * (p2 ? 0.85 : 1); B.headUp = 6; }
       break;
     case 'quakeUp': rise = 1; B.headUp = approach(B.headUp, 60, 160 * dt); B.face = pcx < B.hx ? -1 : 1;
       if (p2 && !B.q2 && B.t < TUNE.biteHang * 0.45 && !gp) { B.q2 = true; B.state = 'quakeW'; B.t = B.wt = 0.35; break; }   // below half it slams twice
@@ -356,7 +356,7 @@ function updateWyrm(dt, B) {
     const top = hd.y - 16, zone = { x:hd.x - TUNE.diveReach, y:top - 10, w:TUNE.diveReach * 2, h:26 };
     if (overlap(P, zone) && P.y + P.h <= top + 16) {
       kinDiveHit(B, hd.x, top + 2);
-      for (let i = 0; i < 14; i++) G.parts.push({ x:hd.x + rand(-8, 8), y:top + rand(0, 4), vx:rand(-90, 90), vy:rand(-160, -60), life:rand(0.6, 1), max:1, c:i % 3 ? '#efe3c2' : '#fff7e2', s:Math.random() < 0.5 ? 3 : 2, g:500 });
+      for (let i = 0; i < 14; i++) G.parts.push({ x:hd.x + rand(-8, 8), y:top + rand(0, 4), vx:rand(-90, 90), vy:rand(-160, -60), life:rand(0.6, 1), max:1, c:i % 3 ? C.wax : C.waxHi, s:Math.random() < 0.5 ? 3 : 2, g:500 });
       B.state = 'stun'; B.t = TUNE.stunT; B.rise = 1; B.cap = 0; G.shots = []; B.noQuake = 2; B.q2 = false;
       hitEnemy(B, skDmg('dive'), { spell:true, dir:B.face, x:hd.x, y:top + 4 });
       return;
@@ -673,7 +673,7 @@ function updateMoth(dt, B) {
   if (P.dive && P.vy > 0 && B.cap >= 1 && !['stun', 'fall', 'dead', 'downed', 'hatch'].includes(B.state) && P.y + P.h <= B.y + 12 && overlap(P, { x:B.x - 8, y:B.y - 8, w:B.w + 16, h:B.h + 4 })) {
     kinDiveHit(B, bcx, B.y + 2);
     B.state = 'fall'; B.vy = 40; B.vx *= 0.3; B.cap = 0; B.trail = [];
-    for (let i = 0; i < 14; i++) G.parts.push({ x:bcx + rand(-12, 12), y:B.y + rand(0, 4), vx:rand(-90, 90), vy:rand(-160, -60), life:rand(0.6, 1), max:1, c:i % 3 ? '#efe3c2' : '#fff7e2', s:Math.random() < 0.5 ? 3 : 2, g:500 });
+    for (let i = 0; i < 14; i++) G.parts.push({ x:bcx + rand(-12, 12), y:B.y + rand(0, 4), vx:rand(-90, 90), vy:rand(-160, -60), life:rand(0.6, 1), max:1, c:i % 3 ? C.wax : C.waxHi, s:Math.random() < 0.5 ? 3 : 2, g:500 });
     hitEnemy(B, skDmg('dive'), { spell:true, dir:B.face, x:bcx, y:B.y + 4 });
     return;
   }

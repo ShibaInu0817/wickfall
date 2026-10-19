@@ -129,14 +129,14 @@ function shareCard() {
   // the hero, drawn by the game itself
   try { const fr = charFrames(G.char, 'idle')[0]; g.imageSmoothingEnabled = false; g.drawImage(fr, 52 - 30, 92 - 56, 60, 60, 90, 170, 360, 360); } catch (_) {}
   const fl = g.createRadialGradient(270, 300, 10, 270, 300, 240); fl.addColorStop(0, 'rgba(255,190,100,.18)'); fl.addColorStop(1, 'rgba(255,150,60,0)'); g.fillStyle = fl; g.fillRect(30, 60, 480, 480);
-  g.textBaseline = 'alphabetic'; g.fillStyle = '#efe3c2'; g.font = '64px "IM Fell English SC", Georgia, serif'; g.fillText('Wickfall', 520, 130);
+  g.textBaseline = 'alphabetic'; g.fillStyle = C.wax; g.font = '64px "IM Fell English SC", Georgia, serif'; g.fillText('Wickfall', 520, 130);
   g.fillStyle = '#f2a541'; g.font = '22px "Silkscreen", monospace'; g.fillText(mode.toUpperCase(), 524, 175);
   g.fillStyle = '#cfc6ad'; g.font = '24px "JetBrains Mono", monospace'; g.fillText((CHARS[G.char] || CH()).name + (G.assisted ? '  ·  assist' : ''), 524, 214);
   const rows = [['Time', fmtTime(G.time || 0)], ['Falls', String(G.deaths || 0)], ['Hits taken', String(G.hits || 0)], ['Score', R.score != null && R.parts && R.parts.time != null ? R.score + ' / 100' : '—']];
   rows.forEach(([k, v], i) => { const y = 290 + i * 62; g.fillStyle = '#9aa59f'; g.font = '20px "Silkscreen", monospace'; g.fillText(k.toUpperCase(), 524, y); g.fillStyle = '#f6e7bf'; g.font = '40px "JetBrains Mono", monospace'; g.fillText(v, 760, y + 4); g.fillStyle = 'rgba(201,166,78,.25)'; g.fillRect(524, y + 18, 420, 2); });
   // the rank stamp
   if (R.rank && R.parts && R.parts.time != null) {
-    const sx = 1040, sy = 330, col = { S:'#ffd66b', A:'#f2a541', B:'#efe3c2', C:'#9fdcd0', D:'#9aa59f' }[R.rank] || '#efe3c2';
+    const sx = 1040, sy = 330, col = { S:'#ffd66b', A:'#f2a541', B:C.wax, C:'#9fdcd0', D:'#9aa59f' }[R.rank] || C.wax;
     g.save(); g.translate(sx, sy); g.rotate(-0.12); g.strokeStyle = col; g.lineWidth = 8; g.beginPath(); g.arc(0, 0, 92, 0, TAU); g.stroke(); g.lineWidth = 3; g.beginPath(); g.arc(0, 0, 76, 0, TAU); g.stroke();
     g.fillStyle = col; g.textAlign = 'center'; g.font = '120px "IM Fell English SC", Georgia, serif'; g.fillText(R.rank, 0, 40); g.font = '18px "Silkscreen", monospace'; g.fillText('RANK', 0, -50); g.restore();
   }

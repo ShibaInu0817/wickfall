@@ -263,11 +263,11 @@ function drawGates(cx0, t) {
   const glow = 0.5 + 0.3 * Math.sin(t * 2.6);
   for (const k of G.cracks || []) {
     const [tx, ty] = k.split(',').map(Number), x = tx * T - cx0, y = ty * T; if (x < -T || x > W) continue;
-    ctx.fillStyle = '#c9ba93'; ctx.fillRect(x, y, T, T);                         // shaded wax body
-    ctx.fillStyle = '#efe3c2'; ctx.fillRect(x, y, T, T - 4);                     // lit face
-    ctx.fillStyle = '#fff7e2'; ctx.fillRect(x, y, T, 2); ctx.fillRect(x + 2, y + 2, 3, 1); ctx.fillRect(x + 10, y + 2, 2, 1);  // soft top and highlights
-    ctx.fillStyle = '#d9caa2'; ctx.fillRect(x + 5, y + 5, 1, 4); ctx.fillRect(x + 11, y + 7, 1, 3); ctx.fillRect(x + (tx % 2 ? 3 : 8), y + 10, 4, 1); // lumps and seams
-    ctx.fillStyle = '#efe3c2'; ctx.fillRect(x + (tx % 2 ? 4 : 11), y + T, 1, 2 + (tx % 3)); ctx.fillRect(x + (tx % 2 ? 12 : 2), y + T, 1, 1);  // drips hanging into the gap
+    ctx.fillStyle = C.waxSh; ctx.fillRect(x, y, T, T);                         // shaded wax body
+    ctx.fillStyle = C.wax; ctx.fillRect(x, y, T, T - 4);                     // lit face
+    ctx.fillStyle = C.waxHi; ctx.fillRect(x, y, T, 2); ctx.fillRect(x + 2, y + 2, 3, 1); ctx.fillRect(x + 10, y + 2, 2, 1);  // soft top and highlights
+    ctx.fillStyle = C.waxMid; ctx.fillRect(x + 5, y + 5, 1, 4); ctx.fillRect(x + 11, y + 7, 1, 3); ctx.fillRect(x + (tx % 2 ? 3 : 8), y + 10, 4, 1); // lumps and seams
+    ctx.fillStyle = C.wax; ctx.fillRect(x + (tx % 2 ? 4 : 11), y + T, 1, 2 + (tx % 3)); ctx.fillRect(x + (tx % 2 ? 12 : 2), y + T, 1, 1);  // drips hanging into the gap
     ctx.fillStyle = `rgba(242,165,65,${0.18 * glow})`; ctx.fillRect(x, y - 2, T, 2); // a faint warm sheen on the surface
   }
   // over the weak floor: a bobbing "dive here" marker once Wax Dive is known, a lock before
@@ -281,7 +281,7 @@ function drawGates(cx0, t) {
         markArrow(mx, my - 22 + bob);
         if (near) { ctx.font = '9px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#f2c46a'; gtext(TOUCH ? 'STICK ↓ + SPARK' : 'WAX DIVE  ↓ + E', mx, my - 32 + bob); }
       } else if (near) {
-        ctx.font = '9px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#efe3c2'; gtext('WAX FLOOR', mx, my - 26 + bob);
+        ctx.font = '9px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = C.wax; gtext('WAX FLOOR', mx, my - 26 + bob);
       }
       ctx.restore();
     }
@@ -352,7 +352,7 @@ function breakCracks() {
   if (!seed.length) return;
   const q = seed.slice(), gone = new Set(seed);
   while (q.length) { const [x, y] = q.pop().split(',').map(Number); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const k = (x + dx) + ',' + (y + dy); if (G.cracks.has(k) && !gone.has(k)) { gone.add(k); q.push(k); } } }
-  for (const k of gone) { const [x, y] = k.split(',').map(Number); G.room.g[y][x] = 0; G.cracks.delete(k); burst(x * T + 8, y * T + 8, 12, { spd:150, life:0.7, colors:['#efe3c2', '#fff7e2', '#c9ba93', C.flame], size:2, g:500 }); }
+  for (const k of gone) { const [x, y] = k.split(',').map(Number); G.room.g[y][x] = 0; G.cracks.delete(k); burst(x * T + 8, y * T + 8, 12, { spd:150, life:0.7, colors:[C.wax, C.waxHi, C.waxSh, C.flame], size:2, g:500 }); }
   G.broken[G.ri] = true; buildTiles(); sfx('crack'); G.shake = Math.max(G.shake, 8); P.grounded = false; P.vy = 80;
 }
 function waxNudge(what) {
@@ -365,7 +365,7 @@ function updateWorld() {
     const ty = Math.floor((P.y + P.h + 1) / T), on = [Math.floor(P.x / T), Math.floor((P.x + P.w - 0.01) / T)].some(tx => G.cracks.has(tx + ',' + ty));
     if (on) { G.creakT = (G.creakT || 0) - 1 / 120;
       if (G.creakT <= 0) { G.creakT = 0.7; G.shake = Math.max(G.shake, 1.2); tone2(90, 0.18, 'triangle', 0.05, 0.7); nsweep(0.15, 0.05, 'bandpass', 900, 300, 2);
-        for (let i = 0; i < 6; i++) G.parts.push({ x:P.x + rand(-2, P.w + 2), y:P.y + P.h + 1, vx:rand(-10, 10), vy:rand(-30, -5), life:0.5, max:0.5, c:i % 2 ? '#efe3c2' : '#c9ba93', s:1, g:300 }); }
+        for (let i = 0; i < 6; i++) G.parts.push({ x:P.x + rand(-2, P.w + 2), y:P.y + P.h + 1, vx:rand(-10, 10), vy:rand(-30, -5), life:0.5, max:0.5, c:i % 2 ? C.wax : C.waxSh, s:1, g:300 }); }
     }
   }
   if (G.cracks.size && !P.dead) {

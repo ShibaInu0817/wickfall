@@ -144,7 +144,7 @@ function drawChandler(cx0, t, B) {
   let ox = 0; if ((B.state === 'windup' && B.next === 'cross') || B.state === 'intro' || B.state === 'dead') ox = Math.round(rand(-1.5, 1.5)); else if (B.state === 'windup') ox = Math.round(Math.sin(t * 50) * 0.6);
   const x = Math.round(B.x - cx0) + ox, y = Math.round(B.y), w = B.w, h = B.h, mx = x + w / 2;
   ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.ellipse(mx, 13 * T + 1, w / 2 + 2 - (13 * T - y - h) * 0.1, 2, 0, 0, TAU); ctx.fill();
-  if (!low) { ctx.fillStyle = '#6b6f7a'; for (let yy = T; yy < y; yy += 3) ctx.fillRect(mx, yy, 1, 2); }
+  if (!low) { ctx.fillStyle = '#5b6186'; for (let yy = T; yy < y; yy += 3) ctx.fillRect(mx, yy, 1, 2); }
   // the wax body hanging under the ring, with drips
   const body = fl ? '#ffffff' : C.wax, shade = fl ? '#ffffff' : C.waxSh;
   ctx.fillStyle = body; ctx.beginPath(); ctx.moveTo(x + 3, y + 8); ctx.lineTo(x + w - 3, y + 8); ctx.quadraticCurveTo(x + w - 1, y + h - 6, mx + 4, y + h); ctx.lineTo(mx - 4, y + h); ctx.quadraticCurveTo(x + 1, y + h - 6, x + 3, y + 8); ctx.fill();
@@ -170,7 +170,7 @@ function drawChandler(cx0, t, B) {
   if (B.state === 'windup') drawChandlerTell(B, x, y, w, h, mx, t);
   // brass ring with five candles
   ctx.strokeStyle = fl ? '#fff' : C.brass; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(mx, y + 7, 16, 4, 0, 0, TAU); ctx.stroke();
-  ctx.fillStyle = fl ? '#fff' : '#8d6a33'; ctx.fillRect(mx - 1, y + 2, 2, 5);
+  ctx.fillStyle = fl ? '#fff' : '#7a5a2a'; ctx.fillRect(mx - 1, y + 2, 2, 5);
   const flare = B.state === 'windup' ? (B.next === 'rain' ? 1.9 : B.next === 'volley' ? 1.5 : 1.25) : low ? 0.55 : B.wardT > 0 ? 0.4 : 1;
   for (const k of [-12, -6, 0, 6, 12]) {
     const cy = y + 7 + Math.abs(k) * -0.1, cxk = mx + k;

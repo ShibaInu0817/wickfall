@@ -255,14 +255,14 @@ function umbraPass(fn, cx, by, flash, alpha) {
     if (flash) { nr = 255; ng = 225; nb = 215; }
     else if (blu > 35) { const t = L / 255; nr = 40 + 215 * Math.pow(t, 0.8); ng = 8 + 70 * t * t; nb = 14 + 60 * t * t; }
     else if (L > 248) { nr = 255; ng = 72; nb = 60; }
-    else if (L > 140) { const v = 18 + (L - 140) * 0.22; nr = v + 6; ng = v; nb = v + 2; }
-    else { const v = L * 0.55; nr = v + 4; ng = v; nb = v + 2; }
+    else if (L > 140) { const v = 18 + (L - 140) * 0.22; nr = v + 10; ng = v; nb = v + 1; }
+    else { const v = L * 0.55; nr = v + 3; ng = v; nb = v + 8; }
     d[k] = nr; d[k + 1] = ng; d[k + 2] = nb;
-    if (a >= 110 && blu <= 35) { d[k + 3] = 255; solid[p] = 1; } else if (a < 110) d[k + 3] = a * 0.4;   // soft glow kept faint so the black body reads
+    if (a >= 110 && blu <= 35) { d[k + 3] = 255; solid[p] = 1; } else if (a < 110) d[k + 3] = 0;   // no soft halo: it blurred him into the red room
   }
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const p = y * w + x, k = p * 4; if (solid[p] || d[k + 3] >= 110) continue;
-    if ((x > 0 && solid[p - 1]) || (x < w - 1 && solid[p + 1]) || (y > 0 && solid[p - w]) || (y < h - 1 && solid[p + w])) { d[k] = 96; d[k + 1] = 10; d[k + 2] = 18; d[k + 3] = 255; }
+    if ((x > 0 && solid[p - 1]) || (x < w - 1 && solid[p + 1]) || (y > 0 && solid[p - w]) || (y < h - 1 && solid[p + w])) { d[k] = 214; d[k + 1] = 52; d[k + 2] = 58; d[k + 3] = 255; }
   }
   g.putImageData(im, x0, y0);
   real.save(); real.setTransform(1, 0, 0, 1, 0, 0); real.globalAlpha = alpha == null ? 1 : alpha; real.drawImage(UMB.c, x0, y0, w, h, x0, y0, w, h); real.restore();

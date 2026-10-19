@@ -39,7 +39,7 @@ const mkBoss = (px, py) => ({ type:'boss', x:px, y:py + T - 30, w:34, h:30, vx:0
 //   Hook Puppet (ch2, 'h') hangs on a chain from the ceiling and swings; the chain creaks at the end of each swing
 //   Slag Crawler (ch3, 'g') armoured at the front, leaves a trail of burning slag; strike it from behind or dive on it
 //   Ash Moth Swarm (ch3, 'm') five small moths circling in formation; hit one and the rest scatter, then regroup
-const mkDripMite = (px, py) => ({ type:'dripmite', x:px + 3, y:py + 2, w:10, h:8, vx:0, vy:0, hp:2, flash:0, kbT:0, st:'hang', t:0, dir:-1, anim:rand(0, 5), grounded:false, burstC:['#c9ba93', '#efe3c2', '#6b5a3a'] });
+const mkDripMite = (px, py) => ({ type:'dripmite', x:px + 3, y:py + 2, w:10, h:8, vx:0, vy:0, hp:2, flash:0, kbT:0, st:'hang', t:0, dir:-1, anim:rand(0, 5), grounded:false, burstC:[C.waxSh, C.wax, '#6b5a3a'] });
 const mkWisp = (px, py) => ({ type:'wisp', x:px + 3, y:py + 3, w:10, h:10, vx:0, vy:0, hp:1, flash:0, kbT:0, t:rand(0, 6), hx:px, hy:py, burstC:['#8c8f99', '#5f626b', '#c9ccd4'] });
 const mkEel = (px, py) => ({ type:'eel', x:px, y:py + 2 * T, w:14, h:8, hx:px, vx:0, vy:0, hp:2, flash:0, kbT:0, st:'lurk', t:rand(0.8, 1.6), dir:1, burstC:['#2f78a8', '#9fdcf0', '#f2a541'] });
 const mkPuppet = (px, py) => ({ type:'puppet', ax:px + 8, ay:T, len:72, ang:0.9, av:0, x:px, y:T + 72, w:12, h:14, vx:0, vy:0, hp:2, flash:0, kbT:0, t:rand(0, 3), creak:0, burstC:['#8a6a3a', '#c9a64e', '#3a2a1a'] });
@@ -153,18 +153,18 @@ function foeHit(e) {
 }
 function updateDrips(dt) {
   if (!G.drips) return;
-  for (const d of G.drips) { d.vy = Math.min(d.vy + 700 * dt, 400); d.y += d.vy * dt; const tl = tileAt(Math.floor(d.x / T), Math.floor(d.y / T)); if (tl === 1 || tl === 3) { d.dead = true; burst(d.x, Math.floor(d.y / T) * T, 4, { spd:50, life:0.3, colors:['#efe3c2', '#c9ba93'], size:1, g:300, ang:-Math.PI / 2, spread:1.2 }); } }
+  for (const d of G.drips) { d.vy = Math.min(d.vy + 700 * dt, 400); d.y += d.vy * dt; const tl = tileAt(Math.floor(d.x / T), Math.floor(d.y / T)); if (tl === 1 || tl === 3) { d.dead = true; burst(d.x, Math.floor(d.y / T) * T, 4, { spd:50, life:0.3, colors:[C.wax, C.waxSh], size:1, g:300, ang:-Math.PI / 2, spread:1.2 }); } }
   G.drips = G.drips.filter(d => !d.dead);
   if (G.smog > 0) G.smog -= dt;
 }
 function drawFoe(e, cx0, t) {
   const x = Math.round(e.x - cx0), y = Math.round(e.y), fl = e.flash > 0;
   if (e.type === 'dripmite') {
-    const body = fl ? '#ffffff' : '#c9ba93', dk = fl ? '#ffffff' : '#7a6a48';
+    const body = fl ? '#ffffff' : C.waxSh, dk = fl ? '#ffffff' : C.waxDk;
     if (e.st === 'hang' || e.st === 'warn') {   // upside down on the ceiling, legs gripping the rock
       ctx.fillStyle = dk; for (let i = 0; i < 3; i++) ctx.fillRect(x + 1 + i * 3, y - 2, 1, 3);
       ctx.fillStyle = body; ctx.fillRect(x, y, 10, 5); ctx.fillRect(x + 2, y + 5, 6, 2);
-      ctx.fillStyle = '#efe3c2'; ctx.fillRect(x + 4, y + 7, 2, 1 + (e.st === 'warn' ? 2 : Math.floor((t * 1.5) % 2)));   // a bead of wax forming
+      ctx.fillStyle = C.wax; ctx.fillRect(x + 4, y + 7, 2, 1 + (e.st === 'warn' ? 2 : Math.floor((t * 1.5) % 2)));   // a bead of wax forming
       ctx.fillStyle = '#e2553f'; ctx.fillRect(x + 2, y + 3, 1, 1); ctx.fillRect(x + 7, y + 3, 1, 1);
     } else {
       const ph = Math.floor(e.anim * 14) % 2, f = e.dir;
@@ -201,7 +201,7 @@ function drawFoe(e, cx0, t) {
     ctx.save(); ctx.translate(bx, by); ctx.rotate(-e.ang * 0.6);
     ctx.fillStyle = fl ? '#ffffff' : '#c9a64e'; ctx.fillRect(-1, -2, 2, 3);                                 // the hook
     ctx.fillStyle = fl ? '#ffffff' : '#8a6a3a'; ctx.fillRect(-5, 1, 10, 9); ctx.fillStyle = fl ? '#ffffff' : '#5a4428'; ctx.fillRect(-5, 8, 10, 2);
-    ctx.fillStyle = '#efe3c2'; ctx.fillRect(-3, 3, 2, 2); ctx.fillRect(1, 3, 2, 2); ctx.fillStyle = '#1a1414'; ctx.fillRect(-2, 4, 1, 1); ctx.fillRect(2, 4, 1, 1);
+    ctx.fillStyle = C.wax; ctx.fillRect(-3, 3, 2, 2); ctx.fillRect(1, 3, 2, 2); ctx.fillStyle = '#1a1414'; ctx.fillRect(-2, 4, 1, 1); ctx.fillRect(2, 4, 1, 1);
     ctx.fillStyle = '#5a4428'; ctx.fillRect(-6, 10, 2, 3); ctx.fillRect(4, 10, 2, 3);
     ctx.restore();
     return;
@@ -223,7 +223,7 @@ function drawFoe(e, cx0, t) {
   }
 }
 function drawDrips(cx0) {
-  if (G.drips) for (const d of G.drips) { ctx.fillStyle = '#efe3c2'; ctx.fillRect(Math.round(d.x - cx0), Math.round(d.y), 1, 3); }
+  if (G.drips) for (const d of G.drips) { ctx.fillStyle = C.wax; ctx.fillRect(Math.round(d.x - cx0), Math.round(d.y), 1, 3); }
 }
 // a touch of smoke clouds the edges of the screen for a moment
 function drawSmog() {
@@ -340,7 +340,7 @@ function hitEnemy(e, dmg = 1, o = {}) {
     else {
       e.dead = true; sfx('kill');
       G.fx.push({ k:'ring', x:ecx, y:e.y + e.h / 2, t:0.3, max:0.3, r:34, c:'255,241,193' });
-      burst(ecx, e.y + e.h / 2, 22, { spd:170, life:0.6, colors:e.burstC ? e.burstC : e.type === 'crawler' ? [C.mite, C.miteHi, C.bone, '#ffffff'] : e.type === 'cocoon' ? [C.wax, '#fff7e2', C.waxSh, C.flame] : e.cinder ? [C.ember, C.flame, C.core, C.wax] : [C.moth, C.mothDk, C.eye, '#ffffff'], size:2, g:350 });
+      burst(ecx, e.y + e.h / 2, 22, { spd:170, life:0.6, colors:e.burstC ? e.burstC : e.type === 'crawler' ? [C.mite, C.miteHi, C.bone, '#ffffff'] : e.type === 'cocoon' ? [C.wax, C.waxHi, C.waxSh, C.flame] : e.cinder ? [C.ember, C.flame, C.core, C.wax] : [C.moth, C.mothDk, C.eye, '#ffffff'], size:2, g:350 });
       if (e.cinder) waxBit(ecx, e.y + e.h / 2, null, -rand(60, 120));
       if (e.type === 'wisp') waxBit(ecx, e.y + e.h / 2, null, -rand(50, 90));   // cut down, a wisp condenses into a lump of wax
       if (e.type === 'cocoon') { waxBit(ecx, e.y + e.h / 2, null, -rand(60, 120)); if (Math.random() < 0.4) { const m = mkCinderMoth(ecx, e.y + e.h / 2); m.cinder = 'wild'; G.enemies.push(m); sfx('mFlap'); } }

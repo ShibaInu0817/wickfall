@@ -41,8 +41,22 @@ const tip = (touchText, keyText) => TOUCH ? touchText : keyText;
 const C = {
   void:'#07080c', rock:'#1b2130', rockHi:'#2c3549', rockLo:'#10141d', speck:'#222a3b',
   moss:'#5fa39a', mossDim:'#3b6c67', bone:'#d8cfb6', boneSh:'#a39a83',
-  wax:'#efe3c2', waxSh:'#c9ba93', flame:'#f2a541', core:'#fff1c1', ember:'#e2553f',
+  wax:'#efe3c2', waxHi:'#fffae0', waxMid:'#ddbf98', waxSh:'#cf9e7d', waxDk:'#775440', flame:'#f2a541', core:'#fff1c1', ember:'#e2553f',
   cloak:'#3a2b4b', cloakHi:'#56416d', brass:'#c79a4a', wood:'#5a4632', woodHi:'#7d6247',
   mite:'#7a3f2e', miteHi:'#a65c3f', moth:'#bcb5a2', mothDk:'#6f6a5e', eye:'#8ff0e0', stone:'#3a4152', stoneHi:'#525b70'
+};
+// the heroes' palette: materials they share, then each hero's own ramp. Every ramp runs dark to light.
+// The crisp passes (17, 19) snap to colours listed from here, so a new hero colour belongs here first.
+const HP = {
+  ink:'#121826', soot:'#2a2222',
+  steel:['#2b2942', '#47486c', '#5b6186', '#6a7495', '#7b88a0', '#9aa7bd', '#c4cee0', '#eae4d7'],   // hue-shifted: indigo shadows, candlelit top
+  brass:['#7a5a2a', C.brass, '#f2c46a', '#ffe08a'],
+  leather:['#211a14', '#3a2a1e'],
+  ember:['#5a2430', C.ember, C.flame, C.core],                 // every hero's hurt state
+  wick:['#2e2a4b', '#62508b', '#9778ba', '#d7b5e3'],           // Wick's cape
+  hero:['#123a6b', '#2f78d8', '#5cb2ff', '#7cc8ff', '#b4f4ff'], // Wick Hero's cold fire
+  heroCoat:['#1c2230', '#1a2440', '#2b3d66'],
+  coldWax:['#b9c2cf', '#d3dae4', '#e8ecf2'],                   // Wick Hero's white wax head
+  knight:['#3b1629', '#5a2430', '#813237'], lamp:'#ffd9a0',    // Lampknight's cape and lamp
 };
 

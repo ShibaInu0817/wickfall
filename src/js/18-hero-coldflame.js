@@ -158,21 +158,21 @@ function drawHeroWorld(cx0) {
 // a polished katana: wrapped grip, round guard, a curved steel blade with a bright edge and a glint that runs along it
 function drawKatana(hand, ux, uy, px, py, len, t) {
   ctx.lineCap = 'butt';
-  ctx.strokeStyle = '#1a2233'; ctx.lineWidth = 1.8; kline(hand.x - ux * 5, hand.y - uy * 5, hand.x + ux * 0.6, hand.y + uy * 0.6);
-  ctx.fillStyle = '#9fb8d8'; for (const k of [1.6, 3.4]) ctx.fillRect(Math.round(hand.x - ux * k), Math.round(hand.y - uy * k), 1, 1);
-  ctx.fillStyle = '#e6eef8'; ctx.fillRect(Math.round(hand.x - ux * 5.4), Math.round(hand.y - uy * 5.4), 1, 1);
-  ctx.strokeStyle = '#8fb3d9'; ctx.lineWidth = 1.3; kline(hand.x + ux * 1.1 + px * 2.1, hand.y + uy * 1.1 + py * 2.1, hand.x + ux * 1.1 - px * 2.1, hand.y + uy * 1.1 - py * 2.1);
+  ctx.strokeStyle = HP.heroCoat[0]; ctx.lineWidth = 1.8; kline(hand.x - ux * 5, hand.y - uy * 5, hand.x + ux * 0.6, hand.y + uy * 0.6);
+  ctx.fillStyle = HP.steel[5]; for (const k of [1.6, 3.4]) ctx.fillRect(Math.round(hand.x - ux * k), Math.round(hand.y - uy * k), 1, 1);
+  ctx.fillStyle = HP.steel[7]; ctx.fillRect(Math.round(hand.x - ux * 5.4), Math.round(hand.y - uy * 5.4), 1, 1);
+  ctx.strokeStyle = HP.steel[5]; ctx.lineWidth = 1.3; kline(hand.x + ux * 1.1 + px * 2.1, hand.y + uy * 1.1 + py * 2.1, hand.x + ux * 1.1 - px * 2.1, hand.y + uy * 1.1 - py * 2.1);
   if (len < 1) return;
   // the blade curves gently toward its spine (sori); edge on +p, spine on -p
   const b0x = hand.x + ux * 1.8, b0y = hand.y + uy * 1.8, tx = hand.x + ux * (len + 1.8), ty = hand.y + uy * (len + 1.8);
   const cx = (b0x + tx) / 2 - px * 1.1, cy = (b0y + ty) / 2 - py * 1.1;
   const curve = (o1, o2, w, col) => { ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(b0x + px * o1, b0y + py * o1); ctx.quadraticCurveTo(cx + px * o2, cy + py * o2, tx, ty); ctx.stroke(); };
   curve(0, 0, 3.6, 'rgba(140,210,255,.16)');
-  ctx.fillStyle = '#b4c3d8'; ctx.beginPath(); ctx.moveTo(b0x + px * 1.35, b0y + py * 1.35); ctx.quadraticCurveTo(cx + px * 1.1, cy + py * 1.1, tx, ty);
+  ctx.fillStyle = HP.steel[6]; ctx.beginPath(); ctx.moveTo(b0x + px * 1.35, b0y + py * 1.35); ctx.quadraticCurveTo(cx + px * 1.1, cy + py * 1.1, tx, ty);
   ctx.quadraticCurveTo(cx - px * 1.0, cy - py * 1.0, b0x - px * 1.1, b0y - py * 1.1); ctx.closePath(); ctx.fill();
-  curve(-0.75, -0.75, 0.7, '#55657f');           // spine ridge
+  curve(-0.75, -0.75, 0.7, HP.steel[2]);           // spine ridge
   curve(1.05, 0.85, 0.8, '#ffffff');           // the honed edge catches the light
-  ctx.fillStyle = '#d9b46a'; ctx.fillRect(Math.round(b0x) - 0.5, Math.round(b0y) - 0.5, 1, 1); // habaki collar
+  ctx.fillStyle = C.brass; ctx.fillRect(Math.round(b0x) - 0.5, Math.round(b0y) - 0.5, 1, 1); // habaki collar
   // a glint slides along the edge from guard to tip every couple of seconds: a short bright streak on the steel, no halo
   const g = (t * 0.75) % 1.6;
   if (g < 0.9) {
@@ -187,7 +187,7 @@ const COLD_CROWN = {
   body:['...obbo..', '..obblbo.', '.obbllbo.', '.oblcclbo', '..olccco.']
 };
 function drawColdHead(hx, hy, t, hurt, sit) {
-  const pal = hurt ? { o:'#5a1a12', b:'#c2412a', l:'#f2a541', c:'#ffe6a8' } : { o:'#123a6b', b:'#2f78d8', l:'#5cb2ff', c:'#b4f4ff' };
+  const pal = hurt ? { o:HP.ember[0], b:C.ember, l:C.flame, c:C.core } : { o:HP.hero[0], b:HP.hero[1], l:HP.hero[2], c:HP.hero[4] };
   // a cold glow that breathes with the fire
   const pulse = 0.85 + 0.15 * Math.sin(t * 4.2), gc = hurt ? '242,120,60' : '90,175,255', bloom = !P._noBloom;   // the Black Wick draws without the cold bloom
   ctx.globalCompositeOperation = bloom ? 'lighter' : 'destination-over';
@@ -195,21 +195,21 @@ function drawColdHead(hx, hy, t, hurt, sit) {
   ctx.fillStyle = g; ctx.fillRect(hx - 24, hy - 28, 48, 48);
   ctx.globalCompositeOperation = 'source-over';
   // wax head: lit rim, shaded side and jaw
-  ctx.fillStyle = '#e8ecf2'; ctx.fillRect(hx - 4, hy, 8, 8);
+  ctx.fillStyle = HP.coldWax[2]; ctx.fillRect(hx - 4, hy, 8, 8);
   ctx.fillStyle = '#ffffff'; ctx.fillRect(hx - 3, hy, 6, 1); ctx.fillRect(hx + 3, hy + 1, 1, 4);
-  ctx.fillStyle = '#b9c2cf'; ctx.fillRect(hx - 4, hy + 1, 1, 7); ctx.fillRect(hx - 3, hy + 7, 6, 1);
-  ctx.fillStyle = '#d3dae4'; ctx.fillRect(hx - 2, hy + 6, 1, 1);
+  ctx.fillStyle = HP.coldWax[0]; ctx.fillRect(hx - 4, hy + 1, 1, 7); ctx.fillRect(hx - 3, hy + 7, 6, 1);
+  ctx.fillStyle = HP.coldWax[1]; ctx.fillRect(hx - 2, hy + 6, 1, 1);
   // stern brows that dip toward the nose, narrow eyes with cold blue irises, a firm mouth
-  const blink = sit || idleBlink() || (t % 4.1) < 0.08, fierce = P.atkT > 0 || P.dashT > 0, ink = '#121826';
+  const blink = sit || idleBlink() || (t % 4.1) < 0.08, fierce = P.atkT > 0 || P.dashT > 0, ink = HP.ink;
   ctx.fillStyle = ink;
   ctx.fillRect(hx - 3, hy + 2, 2, 1); ctx.fillRect(hx - 1, hy + 3, 1, 1);
   ctx.fillRect(hx + 2, hy + 2, 2, 1); ctx.fillRect(hx + 1, hy + 3, 1, 1);
   if (blink) { ctx.fillRect(hx - 3, hy + 4, 2, 1); ctx.fillRect(hx + 1, hy + 4, 3, 1); }
   else {
     ctx.fillRect(hx - 3, hy + 4, 2, 1); ctx.fillRect(hx + 2, hy + 4, 2, 1);
-    ctx.fillStyle = fierce ? '#e6fbff' : '#4aa8ff'; ctx.fillRect(hx - 2, hy + 4, 1, 1); ctx.fillRect(hx + 2, hy + 4, 1, 1);
+    ctx.fillStyle = fierce ? '#ffffff' : HP.hero[2]; ctx.fillRect(hx - 2, hy + 4, 1, 1); ctx.fillRect(hx + 2, hy + 4, 1, 1);
   }
-  ctx.fillStyle = '#8a93a3'; ctx.fillRect(hx, hy + 6, 2, 1);
+  ctx.fillStyle = HP.steel[4]; ctx.fillRect(hx, hy + 6, 2, 1);
   // a faint blue scar of old frostbite under the left eye
   ctx.fillStyle = 'rgba(80,150,230,.55)'; ctx.fillRect(hx - 3, hy + 5, 1, 1);
   // the blue fire spirit burning on top; its cyan core sits right on the wax
@@ -237,38 +237,38 @@ function drawHeroBody(cx, by, f, t, sit) {
   const scarf = () => { ctx.beginPath(); ctx.moveTo(hx - 2, hy + 7); ctx.lineTo(hx + 3, hy + 7);
     ctx.quadraticCurveTo(hx - 8 - Q.lean * 1.5 - sp, hy + 6 + Math.sin(t * 9) * 1.5, hx - 15 - Q.lean * 2 - sp * 2, hy + 9 + Math.sin(t * 7 + 1) * 2.5);
     ctx.lineTo(hx - 13 - Q.lean * 2 - sp * 2, hy + 11 + Math.sin(t * 7 + 1) * 2.5); ctx.quadraticCurveTo(hx - 6, hy + 10, hx - 2, hy + 9); };
-  ctx.fillStyle = '#123a6b'; ctx.save(); ctx.translate(0, 0.8); scarf(); ctx.fill(); ctx.restore();
-  ctx.fillStyle = '#2f78d8'; scarf(); ctx.fill();
-  ctx.strokeStyle = '#7cc8ff'; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(hx + 2, hy + 7.3);
+  ctx.fillStyle = HP.hero[0]; ctx.save(); ctx.translate(0, 0.8); scarf(); ctx.fill(); ctx.restore();
+  ctx.fillStyle = HP.hero[1]; scarf(); ctx.fill();
+  ctx.strokeStyle = HP.hero[3]; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(hx + 2, hy + 7.3);
   ctx.quadraticCurveTo(hx - 8 - Q.lean * 1.5 - sp, hy + 6.3 + Math.sin(t * 9) * 1.5, hx - 15 - Q.lean * 2 - sp * 2, hy + 9.3 + Math.sin(t * 7 + 1) * 2.5); ctx.stroke();
   // back arm
-  ctx.lineCap = 'round'; ctx.strokeStyle = '#1a2030'; ctx.lineWidth = 2; kline(bs.x, bs.y, bs.x + Math.cos(1.2) * KARM, bs.y + Math.sin(1.2) * KARM);
+  ctx.lineCap = 'round'; ctx.strokeStyle = HP.heroCoat[0]; ctx.lineWidth = 2; kline(bs.x, bs.y, bs.x + Math.cos(1.2) * KARM, bs.y + Math.sin(1.2) * KARM);
   // legs
-  ctx.lineCap = 'butt'; ctx.strokeStyle = '#1c2230'; ctx.lineWidth = 2;
+  ctx.lineCap = 'butt'; ctx.strokeStyle = HP.heroCoat[0]; ctx.lineWidth = 2;
   let ffx, bfx;
   if (P.grounded && Math.abs(P.vx) > 20 && !(P.atkT > 0)) { const s = Math.sin(P.anim * 15) * 2; ffx = cx + 1 + s; bfx = cx - 2 - s; }
   else { ffx = cx + 1 + Q.stride; bfx = cx - 2 - Q.stride * 0.4; }
   const footY = P.grounded ? fy : fy - 1;
   if (!sit) { kline(hipX - 1.5, hipY, bfx, footY); kline(hipX + 1.5, hipY, ffx, footY); }
   // torso
-  ctx.fillStyle = '#1a2440'; ctx.beginPath(); ctx.moveTo(hipX - 4, hipY); ctx.lineTo(hipX + 4, hipY); ctx.lineTo(shX + 4, shY); ctx.lineTo(shX - 4, shY); ctx.fill();
-  ctx.fillStyle = '#2b3d66'; ctx.beginPath(); ctx.moveTo(hipX + 2, hipY - 1); ctx.lineTo(hipX + 4, hipY - 1); ctx.lineTo(shX + 4, shY); ctx.lineTo(shX + 2, shY); ctx.fill();
-  ctx.strokeStyle = '#5cb2ff'; ctx.lineWidth = 0.8; kline(shX + 1, shY + 0.5, hipX - 1, hipY - 2.5);   // the coat's crossed lapel
-  ctx.fillStyle = '#2f78d8'; ctx.fillRect(hipX - 4, hipY - 2, 8, 1); ctx.fillStyle = '#7cc8ff'; ctx.fillRect(hipX - 4, hipY - 2, 3, 1);
+  ctx.fillStyle = HP.heroCoat[1]; ctx.beginPath(); ctx.moveTo(hipX - 4, hipY); ctx.lineTo(hipX + 4, hipY); ctx.lineTo(shX + 4, shY); ctx.lineTo(shX - 4, shY); ctx.fill();
+  ctx.fillStyle = HP.heroCoat[2]; ctx.beginPath(); ctx.moveTo(hipX + 2, hipY - 1); ctx.lineTo(hipX + 4, hipY - 1); ctx.lineTo(shX + 4, shY); ctx.lineTo(shX + 2, shY); ctx.fill();
+  ctx.strokeStyle = HP.hero[2]; ctx.lineWidth = 0.8; kline(shX + 1, shY + 0.5, hipX - 1, hipY - 2.5);   // the coat's crossed lapel
+  ctx.fillStyle = HP.hero[1]; ctx.fillRect(hipX - 4, hipY - 2, 8, 1); ctx.fillStyle = HP.hero[3]; ctx.fillRect(hipX - 4, hipY - 2, 3, 1);
   // head of living blue fire with two narrow, glowing eyes
   drawColdHead(hx, hy, t, hurt, sit);
   // saya (scabbard) worn at the hip: black lacquer, silver mouth ring and end cap
   const mx = hipX - 2, my = hipY - 3, su = Math.cos(2.75), sv = Math.sin(2.75);
-  ctx.lineCap = 'butt'; ctx.strokeStyle = '#0e121c'; ctx.lineWidth = 2.2; kline(mx, my, mx + su * 13, my + sv * 13);
-  ctx.strokeStyle = '#3d4c68'; ctx.lineWidth = 0.6; kline(mx + su * 2 - sv * 0.7, my + sv * 2 + su * 0.7, mx + su * 12 - sv * 0.7, my + sv * 12 + su * 0.7);
-  ctx.fillStyle = '#c9d6e8'; ctx.fillRect(Math.round(mx + su * 13) - 1, Math.round(my + sv * 13) - 1, 2, 2); ctx.fillRect(Math.round(mx) - 1, Math.round(my) - 1, 1, 2);
+  ctx.lineCap = 'butt'; ctx.strokeStyle = HP.ink; ctx.lineWidth = 2.2; kline(mx, my, mx + su * 13, my + sv * 13);
+  ctx.strokeStyle = HP.steel[1]; ctx.lineWidth = 0.6; kline(mx + su * 2 - sv * 0.7, my + sv * 2 + su * 0.7, mx + su * 12 - sv * 0.7, my + sv * 12 + su * 0.7);
+  ctx.fillStyle = HP.steel[7]; ctx.fillRect(Math.round(mx + su * 13) - 1, Math.round(my + sv * 13) - 1, 2, 2); ctx.fillRect(Math.round(mx) - 1, Math.round(my) - 1, 1, 2);
   if (P.sheathed) {
     // the hilt rides at the saya's mouth: guard, wrapped grip, pommel cap
     const gx = mx - su * 0.8, gy = my - sv * 0.8;
-    ctx.strokeStyle = '#8fb3d9'; ctx.lineWidth = 1.2; kline(gx + sv * 1.8, gy - su * 1.8, gx - sv * 1.8, gy + su * 1.8);
-    ctx.strokeStyle = '#1a2233'; ctx.lineWidth = 1.7; kline(gx - su * 0.6, gy - sv * 0.6, gx - su * 5, gy - sv * 5);
-    ctx.fillStyle = '#9fb8d8'; ctx.fillRect(Math.round(gx - su * 2.2), Math.round(gy - sv * 2.2), 1, 1); ctx.fillRect(Math.round(gx - su * 3.8), Math.round(gy - sv * 3.8), 1, 1);
-    ctx.fillStyle = '#e6eef8'; ctx.fillRect(Math.round(gx - su * 5.4), Math.round(gy - sv * 5.4), 1, 1);
+    ctx.strokeStyle = HP.steel[5]; ctx.lineWidth = 1.2; kline(gx + sv * 1.8, gy - su * 1.8, gx - sv * 1.8, gy + su * 1.8);
+    ctx.strokeStyle = HP.heroCoat[0]; ctx.lineWidth = 1.7; kline(gx - su * 0.6, gy - sv * 0.6, gx - su * 5, gy - sv * 5);
+    ctx.fillStyle = HP.steel[5]; ctx.fillRect(Math.round(gx - su * 2.2), Math.round(gy - sv * 2.2), 1, 1); ctx.fillRect(Math.round(gx - su * 3.8), Math.round(gy - sv * 3.8), 1, 1);
+    ctx.fillStyle = HP.steel[7]; ctx.fillRect(Math.round(gx - su * 5.4), Math.round(gy - sv * 5.4), 1, 1);
     if (P.sheathT > 0) { const k = P.sheathT / 0.18, g = ctx.createRadialGradient(gx, gy, 0, gx, gy, 6); g.addColorStop(0, `rgba(230,246,255,${0.9 * k})`); g.addColorStop(1, 'rgba(160,215,255,0)'); ctx.fillStyle = g; ctx.fillRect(gx - 6, gy - 6, 12, 12);
       ctx.fillStyle = `rgba(255,255,255,${k})`; ctx.fillRect(Math.round(gx), Math.round(gy) - 3, 1, 7); ctx.fillRect(Math.round(gx) - 3, Math.round(gy), 7, 1); }
   }
@@ -289,7 +289,7 @@ function drawHeroBody(cx, by, f, t, sit) {
     }
   } else if (!P.sheathed) drawKatana(hand, ux, uy, px, py, HBLADE * (P.bladeVis == null ? 1 : P.bladeVis), t);
   // front arm
-  ctx.lineCap = 'round'; ctx.strokeStyle = '#2a3348'; ctx.lineWidth = 2; kline(fs.x, fs.y, armHand ? armHand.x : P.sheathed ? mx - su * 1.5 : hand.x, armHand ? armHand.y : P.sheathed ? my - sv * 1.5 : hand.y);
+  ctx.lineCap = 'round'; ctx.strokeStyle = HP.steel[0]; ctx.lineWidth = 2; kline(fs.x, fs.y, armHand ? armHand.x : P.sheathed ? mx - su * 1.5 : hand.x, armHand ? armHand.y : P.sheathed ? my - sv * 1.5 : hand.y);
   ctx.lineCap = 'butt';
   ctx.restore();
 }

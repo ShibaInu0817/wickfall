@@ -28,18 +28,18 @@ function drawKiln(cx0, t) {
     if (hot > 0) { const g = ctx.createLinearGradient(0, floorY - 30, 0, floorY); g.addColorStop(0, 'rgba(255,140,60,0)'); g.addColorStop(1, `rgba(255,150,60,${0.14 * hot})`); ctx.fillStyle = g; ctx.fillRect(a, floorY - 30, b - a, 30); }
     // two wax pillars hold the bridge up
     for (const k of [1 / 3, 2 / 3]) { const sx = Math.round(x0 + (x1 - x0) * k - cx0); if (sx < -8 || sx > W + 8) continue;
-      ctx.fillStyle = '#c9ba93'; ctx.fillRect(sx - 4, floorY + 6, 8, H - floorY); ctx.fillStyle = '#efe3c2'; ctx.fillRect(sx - 4, floorY + 6, 4, H - floorY); ctx.fillStyle = '#fff7e2'; ctx.fillRect(sx - 3, floorY + 6, 1, surf - floorY - 6);
+      ctx.fillStyle = C.waxSh; ctx.fillRect(sx - 4, floorY + 6, 8, H - floorY); ctx.fillStyle = C.wax; ctx.fillRect(sx - 4, floorY + 6, 4, H - floorY); ctx.fillStyle = C.waxHi; ctx.fillRect(sx - 3, floorY + 6, 1, surf - floorY - 6);
       ctx.fillStyle = mixC('#ff8a2a', '#2a1e1a', cool); ctx.fillRect(sx - 4, surf - 1, 8, 3); }
     // the bridge deck: white wax planks with gaps you can see the lava through
     const sh = G.shake > 2 ? Math.round(rand(-1, 1)) : 0;
     for (let x = Math.floor(x0 / 12) * 12; x < x1; x += 12) {
       const sx = x - cx0; if (sx < -12 || sx > W) continue;
       const dy = sh * ((x / 12) % 2 ? 1 : -1);
-      ctx.fillStyle = '#c9ba93'; ctx.fillRect(sx, floorY + dy, 11, 6);
-      ctx.fillStyle = '#efe3c2'; ctx.fillRect(sx, floorY + dy, 11, 4);
-      ctx.fillStyle = '#fff7e2'; ctx.fillRect(sx + 1, floorY + dy, 9, 1);
+      ctx.fillStyle = C.waxSh; ctx.fillRect(sx, floorY + dy, 11, 6);
+      ctx.fillStyle = C.wax; ctx.fillRect(sx, floorY + dy, 11, 4);
+      ctx.fillStyle = C.waxHi; ctx.fillRect(sx + 1, floorY + dy, 9, 1);
       ctx.fillStyle = hot > 0.05 ? `rgba(255,${150 + Math.round(60 * Math.sin(t * 4 + x))},70,${0.9 * hot + 0.1})` : '#1a1210'; ctx.fillRect(sx + 11, floorY, 1, 6);
-      if (ih(x, 5) % 4 === 0) { ctx.fillStyle = '#c9ba93'; ctx.fillRect(sx + 3 + (ih(x, 6) % 5), floorY + 6 + dy, 2, 2 + ih(x, 7) % 3); }
+      if (ih(x, 5) % 4 === 0) { ctx.fillStyle = C.waxSh; ctx.fillRect(sx + 3 + (ih(x, 6) % 5), floorY + 6 + dy, 2, 2 + ih(x, 7) % 3); }
     }
   }
   // props on the bridge
@@ -50,11 +50,11 @@ function drawKiln(cx0, t) {
     const e = 1 - Math.pow(1 - L.k, 3), x = L.x * T - cx0, y = Math.round(L.y * T + (1 - e) * 36), w = L.w * T;
     if (x + w < 0 || x > W) continue;
     ctx.globalAlpha = Math.min(1, L.k * 2);
-    ctx.fillStyle = '#7a6a48'; ctx.fillRect(x - 1, y - 1, w + 2, 7);
-    ctx.fillStyle = '#c9ba93'; ctx.fillRect(x, y, w, 6);
-    ctx.fillStyle = '#efe3c2'; ctx.fillRect(x, y, w, 4);
-    ctx.fillStyle = '#fff7e2'; ctx.fillRect(x, y, w, 1);
-    for (let i = 0; i < L.w * 2; i++) { const hx = ih(L.x * 7 + i, L.y), len = 2 + hx % 5; if (hx % 3 === 0) continue; ctx.fillStyle = '#c9ba93'; ctx.fillRect(x + i * 8 + (hx % 6), y + 6, 2, len); ctx.fillStyle = '#efe3c2'; ctx.fillRect(x + i * 8 + (hx % 6), y + 6 + len, 2, 1); }
+    ctx.fillStyle = C.waxDk; ctx.fillRect(x - 1, y - 1, w + 2, 7);
+    ctx.fillStyle = C.waxSh; ctx.fillRect(x, y, w, 6);
+    ctx.fillStyle = C.wax; ctx.fillRect(x, y, w, 4);
+    ctx.fillStyle = C.waxHi; ctx.fillRect(x, y, w, 1);
+    for (let i = 0; i < L.w * 2; i++) { const hx = ih(L.x * 7 + i, L.y), len = 2 + hx % 5; if (hx % 3 === 0) continue; ctx.fillStyle = C.waxSh; ctx.fillRect(x + i * 8 + (hx % 6), y + 6, 2, len); ctx.fillStyle = C.wax; ctx.fillRect(x + i * 8 + (hx % 6), y + 6 + len, 2, 1); }
     ctx.globalAlpha = 1;
   }
 }
@@ -64,18 +64,18 @@ function drawProp(p, cx0, t, floorY) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(p.r);
   if (p.kind === 'crate') {
     ctx.fillStyle = '#2a1c14'; ctx.fillRect(-6, -10, 12, 10); ctx.fillStyle = '#6e4e2e'; ctx.fillRect(-5, -9, 10, 8); ctx.fillStyle = '#8a6a40'; ctx.fillRect(-5, -9, 10, 1); ctx.fillRect(-5, -5, 10, 1);
-    ctx.fillStyle = '#4a3420'; ctx.fillRect(-5, -9, 1, 8); ctx.fillRect(4, -9, 1, 8); ctx.fillStyle = '#efe3c2'; ctx.fillRect(-2, -11, 4, 2);
+    ctx.fillStyle = '#4a3420'; ctx.fillRect(-5, -9, 1, 8); ctx.fillRect(4, -9, 1, 8); ctx.fillStyle = C.wax; ctx.fillRect(-2, -11, 4, 2);
   } else if (p.kind === 'jar') {
     ctx.fillStyle = '#2a1c14'; ctx.fillRect(-4, -10, 8, 10); ctx.fillStyle = '#9a5a34'; ctx.fillRect(-3, -9, 6, 8); ctx.fillStyle = '#c47a48'; ctx.fillRect(-3, -9, 2, 7);
-    ctx.fillStyle = '#efe3c2'; ctx.fillRect(-3, -11, 6, 2); ctx.fillStyle = '#c9ba93'; ctx.fillRect(-2, -9, 1, 2);
+    ctx.fillStyle = C.wax; ctx.fillRect(-3, -11, 6, 2); ctx.fillStyle = C.waxSh; ctx.fillRect(-2, -9, 1, 2);
   } else {
     const n = p.kind === 'candles' ? 3 : 1;
-    for (let i = 0; i < n; i++) { const cx = (i - (n - 1) / 2) * 4, h = 6 - (i % 2) * 2; ctx.fillStyle = '#efe3c2'; ctx.fillRect(cx - 1, -h, 3, h); ctx.fillStyle = '#c9ba93'; ctx.fillRect(cx + 1, -h, 1, h); ctx.fillStyle = '#2a2222'; ctx.fillRect(cx, -h - 2, 1, 2); drawFlame(cx + 0.5, -h - 2, 0.55, t + i + p.x, C.flame, C.core); }
+    for (let i = 0; i < n; i++) { const cx = (i - (n - 1) / 2) * 4, h = 6 - (i % 2) * 2; ctx.fillStyle = C.wax; ctx.fillRect(cx - 1, -h, 3, h); ctx.fillStyle = C.waxSh; ctx.fillRect(cx + 1, -h, 1, h); ctx.fillStyle = '#2a2222'; ctx.fillRect(cx, -h - 2, 1, 2); drawFlame(cx + 0.5, -h - 2, 0.55, t + i + p.x, C.flame, C.core); }
   }
   ctx.restore();
 }
 // one plate of the wyrm's shell: dark bronze, a lit ridge, molten seams. Broken open (arm 0) the seams blaze.
-const WY = { body:'#4a3426', shade:'#2a1c14', hi:'#8a6a48', rim:'#160f0b', spike:'#6e5238' };
+const WY = { body:'#4a3426', shade:'#2e1a15', hi:'#977644', rim:'#190d0b', spike:'#725436' };
 function wyrmSeg(x, y, r, fl, hot, t, i, arm, flashA) {
   r *= 1.25;
   const w = Math.round(r * 2), h = Math.round(r * 1.8), x0 = Math.round(x - r), y0 = Math.round(y - h / 2);
@@ -95,12 +95,12 @@ function wyrmSeg(x, y, r, fl, hot, t, i, arm, flashA) {
 function drawWyrmCap(x, top, k, glint, t) {
   if (k <= 0) return;
   const w = Math.round(18 * (0.4 + 0.6 * k)), h = Math.max(2, Math.round(7 * k)), x0 = Math.round(x - w / 2), y0 = Math.round(top - h + 2);
-  ctx.fillStyle = '#7a6a48'; ctx.fillRect(x0 - 1, y0 - 1, w + 2, h + 2);
-  ctx.fillStyle = '#c9ba93'; ctx.fillRect(x0, y0, w, h);
-  ctx.fillStyle = '#efe3c2'; ctx.fillRect(x0, y0, w, h - 2);
-  ctx.fillStyle = '#fff7e2'; ctx.fillRect(x0 + 1, y0, w - 2, 1);
-  ctx.fillStyle = '#efe3c2'; ctx.fillRect(x0 + 2, y0 + h, 2, 3); ctx.fillRect(x0 + w - 5, y0 + h, 2, 4);
-  ctx.fillStyle = '#e2d6b4'; ctx.fillRect(x0 + 3, y0 - 2, 3, 1); ctx.fillRect(x0 + w - 7, y0 - 2, 4, 1);
+  ctx.fillStyle = C.waxDk; ctx.fillRect(x0 - 1, y0 - 1, w + 2, h + 2);
+  ctx.fillStyle = C.waxSh; ctx.fillRect(x0, y0, w, h);
+  ctx.fillStyle = C.wax; ctx.fillRect(x0, y0, w, h - 2);
+  ctx.fillStyle = C.waxHi; ctx.fillRect(x0 + 1, y0, w - 2, 1);
+  ctx.fillStyle = C.wax; ctx.fillRect(x0 + 2, y0 + h, 2, 3); ctx.fillRect(x0 + w - 5, y0 + h, 2, 4);
+  ctx.fillStyle = '#e7d3b1'; ctx.fillRect(x0 + 3, y0 - 2, 3, 1); ctx.fillRect(x0 + w - 7, y0 - 2, 4, 1);
   if (glint > 0) { const gx = x0 + Math.round(((t * 1.6) % 1) * w); ctx.fillStyle = `rgba(255,255,255,${glint})`; ctx.fillRect(gx, y0, 2, 1); ctx.fillRect(gx - 1, y0 + 1, 1, 1); }
 }
 function drawWyrmHead(x, y, f, B, fl, t, p2) {
@@ -221,7 +221,7 @@ function drawWyrm(cx0, t, B) {
   // the broken planks where it came up
   if ((B.rise > 0.1 && B.state !== 'leap') || B.state === 'stun') {
     const x = B.hx - cx0;
-    ctx.fillStyle = '#efe3c2'; for (const [d, r] of [[-18, -0.5], [-12, -0.25], [12, 0.25], [18, 0.5]]) { ctx.save(); ctx.translate(Math.round(x + d), floorY - 2); ctx.rotate(r); ctx.fillRect(-3, -1, 6, 3); ctx.restore(); }
+    ctx.fillStyle = C.wax; for (const [d, r] of [[-18, -0.5], [-12, -0.25], [12, 0.25], [18, 0.5]]) { ctx.save(); ctx.translate(Math.round(x + d), floorY - 2); ctx.rotate(r); ctx.fillRect(-3, -1, 6, 3); ctx.restore(); }
     const g = ctx.createRadialGradient(x, floorY, 0, x, floorY, 22); g.addColorStop(0, 'rgba(255,170,80,.55)'); g.addColorStop(1, 'rgba(255,120,40,0)'); ctx.fillStyle = g; ctx.fillRect(x - 22, floorY - 12, 44, 14);
   }
 }
@@ -317,7 +317,7 @@ function drawPupaBody(x, floorY, crack, fl, t, o) {
   // its legs punch through the shell
   if (o.claws) for (let i = 0; i < 2; i++) { const c = o.claws[i]; if (c <= 0) continue; const s = i ? 1 : -1, bx = x + s * 12, by = top + 17 + i * 3, len = 9 * c, j = Math.sin(t * 40 + i) * 1.2;
     ctx.strokeStyle = fl ? '#fff' : '#1e0c08'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + s * len * 0.6, by - 4 + j); ctx.lineTo(bx + s * len, by + 2 + j); ctx.stroke();
-    ctx.fillStyle = '#c9ba93'; ctx.fillRect(Math.round(bx + s * len) - 1, Math.round(by + 2 + j), 2, 2); }
+    ctx.fillStyle = C.waxSh; ctx.fillRect(Math.round(bx + s * len) - 1, Math.round(by + 2 + j), 2, 2); }
 }
 // six thin legs: dangling in flight, reaching forward with hooked feet when it attacks, splayed when it stands
 function drawMothLegs(mx, my, f, mode, t, fl) {
@@ -332,7 +332,7 @@ function drawMothLegs(mx, my, f, mode, t, fl) {
     ctx.moveTo(bx, by); ctx.lineTo(kx, ky); ctx.lineTo(ex, ey); ends.push([ex, ey]);
   }
   ctx.stroke();
-  ctx.fillStyle = fl ? '#fff' : '#c9ba93'; for (const [ex, ey] of ends) ctx.fillRect(Math.round(ex), Math.round(ey), 1, 1);
+  ctx.fillStyle = fl ? '#fff' : C.waxSh; for (const [ex, ey] of ends) ctx.fillRect(Math.round(ex), Math.round(ey), 1, 1);
 }
 // the Cinder Moth: four burning wings with eye-spots, a fuzzy wax collar, feathered antennae and dark red eyes
 function drawMothFigure(mx, my, f, k, o) {
@@ -352,7 +352,7 @@ function drawMothFigure(mx, my, f, k, o) {
     const tipX = mx + s * span - f * fold * 14, tipY = my - 12 - F * 14 + wet * 18 + fold * 6, L = (u) => base + (tipX - base) * u;
     ctx.fillStyle = '#2a120c'; ctx.beginPath(); ctx.moveTo(base, my - 4); ctx.quadraticCurveTo(L(0.5), my - 22 - F * 12 + wet * 12 + fold * 12, tipX, tipY); ctx.quadraticCurveTo(L(0.83), my + 2 - F * 4 + wet * 12, base, my + 3); ctx.fill();
     ctx.fillStyle = wc('#561a10', glow); ctx.beginPath(); ctx.moveTo(base, my - 3); ctx.quadraticCurveTo(L(0.5), my - 20 - F * 12 + wet * 12 + fold * 12, tipX - s * 2, tipY + 1); ctx.quadraticCurveTo(L(0.8), my + 1 - F * 4 + wet * 12, base, my + 2); ctx.fill();
-    ctx.fillStyle = wc('#8e3820', glow); ctx.beginPath(); ctx.moveTo(L(0.31), my - 8 - F * 6 + wet * 6); ctx.quadraticCurveTo(L(0.62), my - 16 - F * 11 + wet * 10 + fold * 8, tipX - s * 3, tipY + 2); ctx.quadraticCurveTo(L(0.62), my - 4 - F * 6 + wet * 8, L(0.31), my - 4 - F * 4 + wet * 6); ctx.fill();
+    ctx.fillStyle = wc('#974821', glow); ctx.beginPath(); ctx.moveTo(L(0.31), my - 8 - F * 6 + wet * 6); ctx.quadraticCurveTo(L(0.62), my - 16 - F * 11 + wet * 10 + fold * 8, tipX - s * 3, tipY + 2); ctx.quadraticCurveTo(L(0.62), my - 4 - F * 6 + wet * 8, L(0.31), my - 4 - F * 4 + wet * 6); ctx.fill();
     // torn trailing edge and moth-eaten holes
     if (!fl && unf > 0.5) { ctx.fillStyle = '#140604'; const c2x = L(0.83), c2y = my + 2 - F * 4 + wet * 12;
       for (const u of [0.45, 0.62, 0.78]) { const v = 1 - u, nx = v * v * tipX + 2 * u * v * c2x + u * u * base, ny = v * v * tipY + 2 * u * v * c2y + u * u * (my + 3); ctx.beginPath(); ctx.moveTo(nx - 2, ny + 1); ctx.lineTo(nx, ny - 3); ctx.lineTo(nx + 2, ny + 1); ctx.fill(); }
@@ -360,7 +360,7 @@ function drawMothFigure(mx, my, f, k, o) {
     // eye-spot: a pale staring eye whose pupil follows you
     if (unf > 0.4) { const ex = L(0.55), ey = my - 6 + (tipY - (my - 6)) * 0.45, r = 3.6 * Math.min(1, (unf - 0.4) / 0.4) * (1 - fold * 0.3), lk = o.look || { x:0, y:0 };
       ctx.fillStyle = fl ? '#fff' : '#140604'; ctx.beginPath(); ctx.ellipse(ex, ey, r + 0.8, r * 0.8 + 0.8, 0, 0, TAU); ctx.fill();
-      ctx.fillStyle = fl ? '#fff' : '#d8c8a0'; ctx.beginPath(); ctx.ellipse(ex, ey, r, r * 0.8, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = fl ? '#fff' : '#ddc79d'; ctx.beginPath(); ctx.ellipse(ex, ey, r, r * 0.8, 0, 0, TAU); ctx.fill();
       if (!fl) { const px = ex + lk.x * r * 0.4, py = ey + lk.y * r * 0.3; ctx.fillStyle = p2 ? '#a01810' : '#5a1008'; ctx.beginPath(); ctx.arc(px, py, r * 0.55, 0, TAU); ctx.fill(); ctx.fillStyle = '#050101'; ctx.fillRect(Math.round(px) - 1, Math.round(py) - 1, 2, 2); ctx.fillStyle = 'rgba(255,240,220,.8)'; ctx.fillRect(Math.round(px - r * 0.3), Math.round(py - r * 0.35), 1, 1); } }
     // burning edge
     if (!fl && unf > 0.6) { ctx.fillStyle = glow > 0.2 ? `rgba(255,255,240,${glow})` : `rgba(255,${p2 ? 140 : 190},90,.9)`; ctx.fillRect(Math.round(tipX - s * 2), Math.round(tipY), 2, 2); ctx.fillRect(Math.round(hx - s), Math.round(hy - 1), 2, 1); }
@@ -372,25 +372,25 @@ function drawMothFigure(mx, my, f, k, o) {
   for (let i = 3; i >= 0; i--) { const ax = mx - f * (4 + i * 4), ay = my + 2 + i * 0.5 + (o.legs === 'grip' ? i * 1.5 : 0), r = 5 - i * 0.8;
     ctx.fillStyle = '#2a120c'; ctx.beginPath(); ctx.arc(ax, ay, r + 1, 0, TAU); ctx.fill(); ctx.fillStyle = fl ? '#fff' : '#5a2a1a'; ctx.beginPath(); ctx.arc(ax, ay, r, 0, TAU); ctx.fill();
     ctx.fillStyle = fl ? '#fff' : `rgba(255,${p2 ? 110 : 160},60,.9)`; ctx.fillRect(Math.round(ax) - 1, Math.round(ay - r) + 1, 2, 1);
-    if (!fl) { ctx.fillStyle = '#8c8478'; ctx.fillRect(Math.round(ax + (i % 2 ? 1 : -2)), Math.round(ay - r - 1), 1, 2); ctx.fillRect(Math.round(ax), Math.round(ay + r - 1), 1, 2); } }
+    if (!fl) { ctx.fillStyle = '#94736b'; ctx.fillRect(Math.round(ax + (i % 2 ? 1 : -2)), Math.round(ay - r - 1), 1, 2); ctx.fillRect(Math.round(ax), Math.round(ay + r - 1), 1, 2); } }
   // thorax and the pale wax collar
   ctx.fillStyle = '#2a120c'; ctx.beginPath(); ctx.ellipse(mx, my, 8, 7, 0, 0, TAU); ctx.fill();
-  ctx.fillStyle = fl ? '#fff' : '#efe3c2'; ctx.beginPath(); ctx.ellipse(mx + f * 1, my - 1, 7, 6, 0, 0, TAU); ctx.fill();
-  ctx.fillStyle = fl ? '#fff' : '#c9ba93'; for (let i = -3; i <= 3; i += 2) ctx.fillRect(Math.round(mx + i), Math.round(my + 3), 1, 2);
+  ctx.fillStyle = fl ? '#fff' : C.wax; ctx.beginPath(); ctx.ellipse(mx + f * 1, my - 1, 7, 6, 0, 0, TAU); ctx.fill();
+  ctx.fillStyle = fl ? '#fff' : C.waxSh; for (let i = -3; i <= 3; i += 2) ctx.fillRect(Math.round(mx + i), Math.round(my + 3), 1, 2);
   // the white wax saddle left over from the pupa: soft enough to dive through
   if (o.saddle > 0) { const sw = Math.round(16 * (0.4 + 0.6 * o.saddle)), sh = Math.max(2, Math.round(5 * o.saddle)), sx = Math.round(mx - sw / 2 - f), sy = Math.round(my - 6 - sh);
-    ctx.fillStyle = '#c9ba93'; ctx.fillRect(sx, sy, sw, sh + 2); ctx.fillStyle = o.armorT > 0 ? '#ffffff' : '#efe3c2'; ctx.fillRect(sx, sy, sw, sh);
-    if (o.armorT > 0) { ctx.strokeStyle = `rgba(255,255,255,${o.armorT / 0.22})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(mx, my, 26 + (0.22 - o.armorT) * 40, 14 + (0.22 - o.armorT) * 24, 0, 0, TAU); ctx.stroke(); } ctx.fillStyle = '#fff7e2'; ctx.fillRect(sx + 1, sy, sw - 2, 1);
-    ctx.fillStyle = '#efe3c2'; ctx.fillRect(sx + 2, sy + sh + 2, 2, 2); ctx.fillRect(sx + sw - 4, sy + sh + 2, 2, 3);
+    ctx.fillStyle = C.waxSh; ctx.fillRect(sx, sy, sw, sh + 2); ctx.fillStyle = o.armorT > 0 ? '#ffffff' : C.wax; ctx.fillRect(sx, sy, sw, sh);
+    if (o.armorT > 0) { ctx.strokeStyle = `rgba(255,255,255,${o.armorT / 0.22})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(mx, my, 26 + (0.22 - o.armorT) * 40, 14 + (0.22 - o.armorT) * 24, 0, 0, TAU); ctx.stroke(); } ctx.fillStyle = C.waxHi; ctx.fillRect(sx + 1, sy, sw - 2, 1);
+    ctx.fillStyle = C.wax; ctx.fillRect(sx + 2, sy + sh + 2, 2, 2); ctx.fillRect(sx + sw - 4, sy + sh + 2, 2, 3);
     if (o.glint > 0) { const gx = sx + Math.round((((o.t || 0) * 1.6) % 1) * sw); ctx.fillStyle = `rgba(255,255,255,${o.glint})`; ctx.fillRect(gx, sy, 2, 1); } }
   // head: a fuzzy dark skull, two small hooked palps, and big dark red eyes that glow from inside
   ctx.save(); if (o.hj) { ctx.translate(mx + f * 9, my - 2); ctx.rotate(o.hj); ctx.translate(-(mx + f * 9), -(my - 2)); }
   const hx = mx + f * 9, hy = my - 2, eye = o.stun ? 0 : (o.eye == null ? 1 : o.eye), hot = o.eyeHot ? 1 : 0;
   ctx.fillStyle = '#1a0a06'; ctx.beginPath(); ctx.arc(hx, hy, 6, 0, TAU); ctx.fill();
   ctx.fillStyle = fl ? '#fff' : '#3a1a10'; ctx.beginPath(); ctx.arc(hx, hy, 5, 0, TAU); ctx.fill();
-  ctx.fillStyle = fl ? '#fff' : '#efe3c2'; ctx.fillRect(Math.round(hx - f * 5), Math.round(hy - 4), 1, 2); ctx.fillRect(Math.round(hx - f * 6), Math.round(hy), 1, 2);
-  ctx.fillStyle = fl ? '#fff' : '#c9ba93'; ctx.fillRect(Math.round(hx + f * 3), Math.round(hy + 4), 1, 3); ctx.fillRect(Math.round(hx + f * 5), Math.round(hy + 3), 1, 3);
-  ctx.strokeStyle = fl ? '#fff' : '#b8a888'; ctx.lineWidth = 1; ctx.beginPath();
+  ctx.fillStyle = fl ? '#fff' : C.wax; ctx.fillRect(Math.round(hx - f * 5), Math.round(hy - 4), 1, 2); ctx.fillRect(Math.round(hx - f * 6), Math.round(hy), 1, 2);
+  ctx.fillStyle = fl ? '#fff' : C.waxSh; ctx.fillRect(Math.round(hx + f * 3), Math.round(hy + 4), 1, 3); ctx.fillRect(Math.round(hx + f * 5), Math.round(hy + 3), 1, 3);
+  ctx.strokeStyle = fl ? '#fff' : '#bb9c81'; ctx.lineWidth = 1; ctx.beginPath();
   if (o.legs === 'reach') { ctx.moveTo(hx + f * 4, hy + 4); ctx.lineTo(hx + f * 13, hy + 7); }
   else { ctx.moveTo(hx + f * 4, hy + 4); ctx.quadraticCurveTo(hx + f * 8, hy + 6, hx + f * 7, hy + 9); ctx.quadraticCurveTo(hx + f * 5, hy + 10, hx + f * 5, hy + 8); }
   ctx.stroke();
@@ -415,9 +415,9 @@ function drawMothFigure(mx, my, f, k, o) {
     ctx.fillStyle = `rgba(255,40,30,${0.6 + 0.4 * pulse})`; ctx.fillRect(Math.round(hx - f * 1), Math.round(hy - 5), 1, 1); ctx.fillRect(Math.round(hx + f * 1), Math.round(hy - 6), 1, 1); ctx.fillRect(Math.round(hx + f * 3), Math.round(hy - 5), 1, 1);
     if (hot) { ctx.fillStyle = 'rgba(255,90,70,.75)'; ctx.fillRect(Math.round(ex - 7), Math.round(ey), 14, 1); ctx.fillRect(Math.round(ex), Math.round(ey - 5), 1, 10); }
   }
-  ctx.strokeStyle = fl ? '#fff' : '#e8d8b0'; ctx.lineWidth = 1;
+  ctx.strokeStyle = fl ? '#fff' : '#ecdeb1'; ctx.lineWidth = 1;
   for (const s of [-1, 1]) { const ax = hx + f * 2, ay = hy - 4, tx = ax + f * (8 - fold * 10) + s * 3, ty = ay - 10 + (flat ? 6 : 0) + fold * 7 + wet * 5; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.quadraticCurveTo(ax + f * 2, ty + 2, tx, ty); ctx.stroke();
-    for (let j = 1; j < 4; j++) { const u = j / 4, px = ax + (tx - ax) * u, py = ay + (ty - ay) * u; ctx.fillStyle = fl ? '#fff' : '#c9ba93'; ctx.fillRect(Math.round(px - f), Math.round(py), 2, 1); } }
+    for (let j = 1; j < 4; j++) { const u = j / 4, px = ax + (tx - ax) * u, py = ay + (ty - ay) * u; ctx.fillStyle = fl ? '#fff' : C.waxSh; ctx.fillRect(Math.round(px - f), Math.round(py), 2, 1); } }
   ctx.restore();
 }
 function drawMoth(cx0, t, B) {
@@ -489,7 +489,7 @@ function drawCocoon(e, cx0, t) {
   const g = ctx.createRadialGradient(0, 9, 0, 0, 9, 12); g.addColorStop(0, `rgba(255,170,90,${0.18 + 0.15 * pulse})`); g.addColorStop(1, 'rgba(255,140,60,0)'); ctx.fillStyle = g; ctx.fillRect(-12, -3, 24, 24);
   ctx.fillStyle = '#6e5e46'; ctx.beginPath(); ctx.ellipse(0, 8, 6, 9, 0, 0, TAU); ctx.fill();
   ctx.fillStyle = fl ? '#fff' : '#e8dcc0'; ctx.beginPath(); ctx.ellipse(0, 8, 5, 8, 0, 0, TAU); ctx.fill();
-  ctx.fillStyle = fl ? '#fff' : '#fff7e2'; ctx.fillRect(-3, 2, 2, 8);
+  ctx.fillStyle = fl ? '#fff' : C.waxHi; ctx.fillRect(-3, 2, 2, 8);
   ctx.fillStyle = fl ? '#fff' : '#b8a888'; for (let i = 0; i < 4; i++) ctx.fillRect(-5 + (i % 2), 3 + i * 3, 10 - (i % 2) * 2, 1);
   ctx.fillStyle = `rgba(255,${150 + Math.round(60 * pulse)},80,${0.5 + 0.4 * pulse})`; ctx.fillRect(-1, 7, 2, 3);
   ctx.restore();
@@ -500,7 +500,7 @@ function drawCinderMoth(e, cx0, t) {
   for (const s of [-1, 1]) { ctx.fillStyle = '#2a120c'; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + s * 8, cy - 2 - flap); ctx.lineTo(cx + s * 6, cy + 3); ctx.fill();
     ctx.fillStyle = fl ? '#fff' : '#d4632a'; ctx.beginPath(); ctx.moveTo(cx + s, cy); ctx.lineTo(cx + s * 7, cy - 2 - flap); ctx.lineTo(cx + s * 5, cy + 2); ctx.fill();
     ctx.fillStyle = fl ? '#fff' : '#ffd27a'; ctx.fillRect(Math.round(cx + s * 5) - (s < 0 ? 1 : 0), Math.round(cy - 1 - flap / 2), 1, 1); }
-  ctx.fillStyle = '#2a120c'; ctx.fillRect(cx - 2, cy - 2, 4, 6); ctx.fillStyle = fl ? '#fff' : '#efe3c2'; ctx.fillRect(cx - 1, cy - 2, 2, 2); ctx.fillStyle = fl ? '#fff' : '#ff8a3a'; ctx.fillRect(cx - 1, cy + 1, 2, 2);
+  ctx.fillStyle = '#2a120c'; ctx.fillRect(cx - 2, cy - 2, 4, 6); ctx.fillStyle = fl ? '#fff' : C.wax; ctx.fillRect(cx - 1, cy - 2, 2, 2); ctx.fillStyle = fl ? '#fff' : '#ff8a3a'; ctx.fillRect(cx - 1, cy + 1, 2, 2);
   ctx.fillStyle = '#ffffff'; ctx.fillRect(cx - 1, cy - 3, 1, 1); ctx.fillRect(cx + 1, cy - 3, 1, 1);
 }
 
