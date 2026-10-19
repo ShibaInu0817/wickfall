@@ -2,6 +2,11 @@
 
 Wickfall is in beta. Versions follow `MAJOR.MINOR.PATCH`: a patch fixes or rebalances, a minor version adds content, 1.0.0 leaves beta.
 
+## v0.1.2-beta · 2026-10-19
+
+- Touch: the Skill button now sits next to Jump and Dash, so a Wax Dive in mid-air is one short slide; Focus moves to Skill's old spot. Layouts you arranged yourself are kept.
+- Touch: the Arrange buttons icon no longer slips off the right edge when touch controls first appear on the title screen.
+
 ## v0.1.1-beta · 2026-10-19
 
 Fewer places to get stuck.
