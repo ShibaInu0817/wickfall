@@ -64,7 +64,8 @@ wickfall/
 ├── build/                   artifact.html: the game page without head.html, for claude.ai (generated)
 ├── .claude/skills/          project skills for Claude: workflow, adding content (heroes, enemies, bosses, stages), feel and polish
 ├── media/                   trailer, teaser, screenshots and the link-preview image
-├── site.json                the public address, title and slogan (fills the link-preview tags)
+├── site.json                version, public address, title and slogan (fills the version label and link-preview tags)
+├── CHANGELOG.md             what changed in each version
 ├── .github/workflows/       GitHub Pages deploy
 ├── tests/                   regression tests (fast stub tests, plus browser tests in tests/browser)
 └── tools/
@@ -85,3 +86,11 @@ tools/test.sh --all                             # plus the browser tests (needs 
 
 Every push to `main` builds the game and deploys `dist/` to GitHub Pages (`.github/workflows/pages.yml`).
 To host it elsewhere, upload the contents of `dist/` together to any static host and serve it over http(s); opened from disk, the music is blocked.
+
+### Releasing a patch
+
+1. Bump `version` in `site.json` (it shows on the title and pause screens).
+2. Add a line to [CHANGELOG.md](CHANGELOG.md).
+3. Commit, tag and push: `git tag v0.1.1-beta && git push && git push --tags`.
+
+Keep saves compatible: progress lives in players' browsers (`wf-` keys), so convert old saves if their shape changes.

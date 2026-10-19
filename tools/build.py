@@ -32,7 +32,8 @@ def game():
     assert js.count('/*@@SAMPLES@@*/{}') == 1, 'the script needs one /*@@SAMPLES@@*/{} marker'
     js = js.replace('/*@@SAMPLES@@*/{}', json.dumps(sm, separators=(',', ':')))
     assert page.count('@@STYLE@@') == 1 and page.count('@@SCRIPT@@') == 1, 'page.html needs one @@STYLE@@ and one @@SCRIPT@@'
-    return page.replace('@@STYLE@@', css).replace('@@SCRIPT@@', js)
+    ver = json.loads(read(os.path.join(ROOT, 'site.json')))['version']   # shown on the title and pause screens
+    return page.replace('@@STYLE@@', css).replace('@@SCRIPT@@', js).replace('@@VERSION@@', ver)
 
 def main(argv):
     html = game()

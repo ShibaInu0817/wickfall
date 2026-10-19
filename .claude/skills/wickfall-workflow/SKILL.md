@@ -109,6 +109,10 @@ tools/test.sh --all                 # + browser tests (Playwright, Chromium at /
 - Sounds in the trailer are the game's own: each scene logs its `sfx` calls, `render_sfx.cjs` renders them offline, `assemble.py` mixes them with the music.
 - `site.json` holds the public URL, title and slogan; `build.py` fills them into `src/head.html` (link-preview tags). `.github/workflows/pages.yml` builds and deploys `dist/` on push to `main`.
 
+## Versions
+
+`version` in `site.json` (e.g. `0.1.0-beta`) is the one source; the build fills `@@VERSION@@` in the page (title and pause screens). A fix or rebalance bumps the patch, new content the minor. Each release: bump, add a line to `CHANGELOG.md`, commit, tag `v<version>`, push with tags.
+
 ## Wrap-up checklist
 
 1. All tests pass, plus a screenshot of anything visual.

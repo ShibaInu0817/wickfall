@@ -90,7 +90,7 @@ function setOverlay0(kind) {
       <div class="rpgwin cmd"><h4>${CHARS[G.char].name} · ${CHARS[G.char].tag}</h4>
         ${items.map((it, i) => `<button type="button" class="rpgbtn${i === hi ? ' on' : ''}" data-action="hm" data-i="${i}">${it.label}</button>`).join('')}
       </div>
-      <div class="hint">${tip('Tap a command', '↑ ↓ choose · Enter confirm · ← → swap hero')}</div>
+      <div class="hint">${tip('Tap a command', '↑ ↓ choose · Enter confirm · ← → swap hero')}</div><div class="ver">v@@VERSION@@</div>
     </div>`;
     G.campIn = false;
     return;
@@ -161,7 +161,7 @@ function setOverlay0(kind) {
         <div class="pskills">${skills}</div>
         <p class="pnote">Each skill costs a third of the wax vessel.</p>
       </div>
-      <div class="hint">${tip('Tap a command', '↑ ↓ choose · Enter confirm · P or Esc resume')}</div>
+      <div class="hint">${tip('Tap a command', '↑ ↓ choose · Enter confirm · P or Esc resume')}</div><div class="ver">v@@VERSION@@</div>
     </div>`;
   }
   if (kind === 'won') {
