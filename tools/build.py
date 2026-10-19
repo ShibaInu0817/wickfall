@@ -48,10 +48,12 @@ def main(argv):
     write(os.path.join(DIST, 'lab.html'), read(os.path.join(SRC, 'lab-head.html')).rstrip('\n') + '\n' + html.rstrip('\n') + '\n\n</html>\n')
     for p in glob.glob(os.path.join(SRC, 'labs', '*.html')) + glob.glob(os.path.join(SRC, 'audio', '*.mp3')) + glob.glob(os.path.join(SRC, 'pwa', '*')):
         shutil.copy2(p, DIST)
-    # marketing media that the site itself serves: the link-preview card, the trailer and the teaser
-    for f in ('social-card.png', 'trailer.mp4', 'teaser.webm', 'teaser.gif'):
+    # marketing media that the site itself serves: the link-preview card, the trailers (the homepage plays the 720p one) and the teaser
+    for f in ('social-card.png', 'trailer.mp4', 'trailer-720p.mp4', 'teaser.webm', 'teaser.gif'):
         p = os.path.join(ROOT, 'media', f)
         if os.path.exists(p): os.makedirs(os.path.join(DIST, 'media'), exist_ok=True); shutil.copy2(p, os.path.join(DIST, 'media', f))
+    # the homepage, served beside the game at /homepage/
+    shutil.copytree(os.path.join(SRC, 'homepage'), os.path.join(DIST, 'homepage'))
     print(f'dist/index.html  {len(doc.encode()):,} bytes')
     if '--tests' in argv:
         script = html[html.index('<script>\n(() => {') + len('<script>\n'):html.rindex('</script>')]

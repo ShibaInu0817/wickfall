@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wickfall</title>
+<meta name="description" content="A small candle goes down into the dark, where every flame is going out. A candlelit platformer you can play free in your browser.">
+<meta property="og:title" content="Wickfall"><meta property="og:description" content="Every flame goes out. Not yours. A candlelit platformer, free in your browser."><meta property="og:image" content="https://shibainu0817.github.io/wickfall/media/social-card.png"><meta property="og:url" content="https://shibainu0817.github.io/wickfall/homepage/"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="media/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Silkscreen&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<style>
+/* Wickfall homepage ("Candlelight", after Hollow Knight's site): the camp at night behind an engraved title; the trailer
+   framed like an altar piece; the story in three lines; the world in three living scenes; the heroes moving as they do in
+   the game; the keepers in shadow, each with its last words; how to play; a gallery; one last flame to follow.
+   One dark look on purpose: the game's own night, its wax, flame and moss, its engraved small caps and pixel labels. */
+:root {
+  --night:#07080c; --deep:#0b0e16; --stone:#10141d; --slate:#1b2130; --line:#262c3a; --frame:#c9a64e; --frame-hi:#f2c46a; --frame-lo:#3a2a12;
+  --wax:#efe3c2; --wax-dim:#c9ba93; --muted:#8f8a7a; --flame:#f2a541; --core:#fff1c1; --ember:#e2553f; --moss:#9fdcd0; --cold:#8fd8ff;
+  --f-display:"IM Fell English SC","Iowan Old Style",Georgia,serif; --f-body:"Alegreya Sans","Gill Sans",system-ui,sans-serif; --f-px:"Silkscreen","Courier New",monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--night);color:var(--wax);font:400 1.1rem/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:inherit} img,video,canvas{max-width:100%;display:block}
+::selection{background:var(--flame);color:#1a1208}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--night)}
+:focus-visible{outline:3px solid var(--core);outline-offset:3px}
+.px{font-family:var(--f-px);letter-spacing:.22em;text-transform:uppercase}
+
+/* ---------- nav: clear over the hero, solid once you scroll */
+.nav{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:20;transition:background .3s,box-shadow .3s}
+.nav.solid{background:rgba(7,8,12,.92);box-shadow:0 1px 0 var(--line);backdrop-filter:blur(6px)}
+.nav .wrap{display:flex;align-items:center;gap:24px;padding-block:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-size:1.4rem;letter-spacing:.06em;color:#f6e7bf}
+.brand canvas{width:14px;height:22px;image-rendering:pixelated}
+.nav nav{margin-left:auto;display:flex;align-items:center;gap:24px;font-family:var(--f-px);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase}
+.nav nav a{text-decoration:none;color:var(--wax-dim)} .nav nav a:hover{color:var(--core)}
+.nav .play{padding:9px 16px;border:2px solid var(--flame);border-radius:3px;color:var(--flame)!important}
+.nav .play:hover{background:var(--flame);color:#1a1208!important}
+@media (max-width:720px){.nav nav a:not(.play){display:none}}
+
+/* ---------- hero: the camp at night */
+.hero{position:relative;overflow:hidden;display:grid;align-items:start;min-height:clamp(560px,92vh,900px)}
+.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 70%}
+.hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,12,.8) 0%,rgba(7,8,12,.15) 38%,rgba(7,8,12,0) 58%,rgba(7,8,12,.55) 82%,var(--night) 100%)}
+.hero canvas.embers{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:16px;padding-block:clamp(96px,14vh,150px) 40px}
+.title{position:relative;margin:0;font:400 clamp(3.8rem,12.5vw,9.2rem)/.86 var(--f-display);letter-spacing:.045em;color:#f6e7bf;text-shadow:0 .055em 0 #3a2410,0 0 .5em rgba(242,165,65,.4)}
+.title canvas{position:absolute;left:50%;top:-.6em;width:.22em;height:.35em;transform:translateX(-50%);image-rendering:pixelated;filter:drop-shadow(0 0 12px rgba(242,165,65,.8))}
+.filigree{width:min(420px,80vw);height:22px;color:var(--frame)}
+.slogan{margin:0;font:400 clamp(1.3rem,3vw,1.9rem)/1.2 var(--f-display);letter-spacing:.05em;color:var(--wax)}
+.ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:10px}
+.btn{position:relative;display:inline-flex;align-items:center;gap:12px;padding:15px 28px;border:2px solid var(--frame);border-radius:3px;font-family:var(--f-px);font-size:.84rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--wax);background:rgba(10,12,18,.55);cursor:pointer;transition:filter .2s,transform .2s}
+.btn.primary{background:var(--flame);border-color:var(--flame);color:#1a1208;box-shadow:0 0 30px rgba(242,165,65,.35)}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn svg{width:14px;height:14px}
+.meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 20px;font-family:var(--f-px);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wax-dim)}
+.meta span::before{content:"";display:inline-block;width:5px;height:5px;margin-right:9px;transform:rotate(45deg) translateY(-2px);background:var(--flame)}
+.down{position:absolute;left:50%;bottom:18px;z-index:2;transform:translateX(-50%);color:var(--wax-dim);font-family:var(--f-px);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;text-decoration:none;display:grid;justify-items:center;gap:6px}
+.down i{width:10px;height:10px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{50%{transform:rotate(45deg) translate(3px,3px)}}
+
+/* ---------- shared section furniture */
+section{padding-block:clamp(64px,9vw,110px)}
+.kicker{display:block;text-align:center;font-family:var(--f-px);font-size:.7rem;letter-spacing:.34em;text-transform:uppercase;color:var(--moss);margin-bottom:12px}
+h2{margin:0;font:400 clamp(2.1rem,5vw,3.4rem)/1 var(--f-display);letter-spacing:.05em;color:#f6e7bf;text-align:center;text-wrap:balance}
+.sub{margin:16px auto 0;max-width:46ch;text-align:center;color:var(--wax-dim)}
+.orn{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--frame)}
+.orn i{height:1px;width:min(30vw,240px);background:linear-gradient(90deg,transparent,var(--frame))} .orn i:last-child{transform:scaleX(-1)}
+.orn b{width:9px;height:9px;transform:rotate(45deg);background:var(--flame);box-shadow:0 0 12px var(--flame)}
+/* the game's window frame: gold, a dark inner line, diamond studs at the top corners */
+.frame{position:relative;border:2px solid var(--frame);border-radius:5px;background:linear-gradient(#161d30,#0b0f1c);box-shadow:inset 0 0 0 2px var(--frame-lo)}
+.frame::before,.frame::after{content:"";position:absolute;top:-7px;width:11px;height:11px;background:var(--frame-hi);transform:rotate(45deg);z-index:1}
+.frame::before{left:-7px}.frame::after{right:-7px}
+
+/* ---------- trailer: the altar piece */
+.altar-wrap{position:relative;margin:44px auto 0;max-width:1000px}
+.altar{padding:12px;box-shadow:inset 0 0 0 2px var(--frame-lo),0 0 0 7px var(--night),0 0 0 8px #2c2414,0 40px 100px rgba(242,165,65,.13)}
+.altar video{width:100%;aspect-ratio:16/9;background:#000;border-radius:2px}
+.altar-wrap .corner{position:absolute;width:64px;height:64px;color:var(--frame);pointer-events:none}
+.altar-wrap .corner.bl{left:-22px;bottom:-22px;transform:scaleY(-1)} .altar-wrap .corner.br{right:-22px;bottom:-22px;transform:scale(-1,-1)}
+@media (max-width:640px){.altar-wrap .corner{display:none}}
+.cap{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-family:var(--f-px);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- story: three lines */
+.story{position:relative;text-align:center;background:radial-gradient(ellipse at 50% 50%,rgba(242,165,65,.07),transparent 60%)}
+.story .lines{display:grid;gap:22px;justify-items:center}
+.story p{margin:0;max-width:28ch;font:400 clamp(1.45rem,3.4vw,2.25rem)/1.3 var(--f-display);letter-spacing:.03em}
+.story p:nth-child(2){color:var(--wax-dim)} .story p:nth-child(3){color:var(--flame);text-shadow:0 0 22px rgba(242,165,65,.35)}
+
+/* ---------- world: three living scenes, alternating */
+.rows{display:grid;gap:clamp(48px,7vw,90px);margin-top:56px}
+.row{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.row.flip>.scene{order:2}
+@media (max-width:860px){.row{grid-template-columns:1fr}.row.flip>.scene{order:0}}
+.scene{padding:8px}
+.scene video{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:2px;background:#000}
+.row .txt{min-width:0}
+.row .num{font-family:var(--f-px);font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--moss)}
+.row h3{margin:10px 0 0;font:400 clamp(1.9rem,3.6vw,2.6rem)/1.02 var(--f-display);letter-spacing:.04em;color:#f6e7bf;text-wrap:balance}
+.row p{margin:14px 0 0;color:var(--wax-dim);max-width:44ch}
+.row b{color:var(--flame);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:3px;background:var(--stone);font-family:var(--f-px);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--wax-dim)}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+
+/* ---------- heroes: they move as they do in the game; hover or focus to see the full combo */
+.heroes{background:linear-gradient(180deg,transparent,rgba(95,163,154,.05) 40%,transparent)}
+.party{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:52px}
+@media (max-width:900px){.party{grid-template-columns:1fr;max-width:520px;margin-inline:auto}}
+.pcard{padding:18px 20px 22px;display:grid;gap:10px;min-width:0;outline-offset:6px}
+.pcard .stage{position:relative;height:210px;margin:-6px -8px 4px;border-radius:2px;overflow:hidden;background:radial-gradient(ellipse at 50% 92%,rgba(242,165,65,.2),transparent 62%),linear-gradient(#0d1220,#080b13)}
+.pcard.cold .stage{background:radial-gradient(ellipse at 50% 92%,rgba(143,216,255,.2),transparent 62%),linear-gradient(#0d1220,#080b13)}
+.pcard .stage::after{content:"";position:absolute;left:0;right:0;bottom:26px;height:1px;background:linear-gradient(90deg,transparent,#3a3226,transparent)}
+.pcard canvas{position:absolute;left:calc(50% - 200px);top:-196px;width:704px;height:448px;max-width:none;image-rendering:pixelated}   /* 4x the game's pixels: the hero (column 50, feet on row 95) stands centred on the stage's floor line */
+.pcard .tag{position:absolute;right:16px;top:14px;z-index:2;font-family:var(--f-px);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--frame-hi)}
+.pcard h3{margin:0;font:400 2.1rem/1 var(--f-display);color:#f6e7bf}
+.pcard p{margin:0;color:var(--wax-dim);font-size:1rem}
+.stats{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;align-items:center;margin-top:4px;font-family:var(--f-px);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.bar{display:flex;gap:4px}.bar i{width:13px;height:7px;background:#262c3a;border-radius:1px}.bar i.on{background:var(--flame)}
+.pcard.cold .bar i.on{background:var(--cold)}
+.hint{margin:22px auto 0;text-align:center;font-family:var(--f-px);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- keepers: shadows with burning eyes, and their last words */
+.keepers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;margin-top:52px}
+@media (max-width:900px){.keepers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.keepers{grid-template-columns:1fr}}
+.keeper{padding:8px 8px 14px;display:grid;gap:12px;min-width:0}
+.keeper .pic{position:relative;border:2px solid var(--frame-lo);border-radius:2px;overflow:hidden;background:#05070b}
+.keeper .pic img{width:100%;aspect-ratio:2/1;object-fit:cover;image-rendering:pixelated;transition:transform .7s ease,filter .7s ease;filter:brightness(.9)}
+.keeper:hover .pic img,.keeper:focus-within .pic img{transform:scale(1.07) rotate(-.6deg);filter:brightness(1.1)}
+.keeper .pic span{position:absolute;left:8px;top:6px;font-family:var(--f-px);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--moss)}
+.keeper h3{margin:0 6px;font:400 1.35rem/1.05 var(--f-display);color:#f6e7bf}
+.keeper .who{margin:0 6px;font-family:var(--f-px);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)} .keeper .who b{color:var(--flame);font-weight:400}
+.keeper blockquote{margin:0 6px;font:italic 400 1.02rem/1.35 var(--f-body);color:var(--wax-dim)}
+.keeper blockquote::before{content:"“"} .keeper blockquote::after{content:"”"}
+.below{margin:34px auto 0;text-align:center;font:400 1.3rem/1.3 var(--f-display);color:var(--muted);letter-spacing:.03em}
+.below b{color:var(--ember);font-weight:400}
+
+/* ---------- how to play */
+.play-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;margin-top:52px}
+@media (max-width:900px){.play-grid{grid-template-columns:1fr;max-width:560px;margin-inline:auto}}
+.how{padding:22px;display:grid;gap:14px;align-content:start;min-width:0}
+.how h3{margin:0;font:400 1.6rem/1 var(--f-display);color:#f6e7bf}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:center}
+.keys span{color:var(--wax-dim);font-size:.98rem}
+kbd{display:inline-flex;gap:4px;font-family:var(--f-px);font-size:.62rem;letter-spacing:.06em;color:var(--wax)}
+kbd i{font-style:normal;min-width:26px;padding:5px 7px;border:1px solid #4a4436;border-bottom-width:3px;border-radius:4px;background:#141925;text-align:center}
+.how p{margin:0;color:var(--wax-dim);font-size:1rem}
+
+/* ---------- gallery with a lightbox */
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:48px}
+@media (max-width:760px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gallery button{all:unset;cursor:zoom-in;position:relative;border:2px solid var(--frame-lo);border-radius:3px;overflow:hidden;display:block}
+.gallery button:focus-visible{outline:3px solid var(--core);outline-offset:3px}
+.gallery img{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .5s ease}
+.gallery button:hover img{transform:scale(1.04)}
+dialog{max-width:min(1200px,94vw);width:100%;padding:0;border:2px solid var(--frame);border-radius:4px;background:#000;color:var(--wax)}
+dialog::backdrop{background:rgba(3,4,7,.9)}
+dialog img{width:100%}
+dialog form{position:absolute;right:10px;top:10px} dialog button{font-family:var(--f-px);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;padding:8px 12px;border:1px solid var(--frame);border-radius:3px;background:rgba(7,8,12,.85);color:var(--wax);cursor:pointer}
+dialog p{margin:0;padding:12px 16px;font-family:var(--f-px);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wax-dim)}
+
+/* ---------- the last flame */
+.last{position:relative;overflow:hidden;text-align:center;padding-block:clamp(90px,12vw,150px)}
+.last::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 64%,rgba(242,165,65,.26),transparent 55%)}
+.last .wrap{position:relative;display:grid;justify-items:center;gap:18px}
+.last canvas{width:49px;height:77px;image-rendering:pixelated;filter:drop-shadow(0 0 18px rgba(242,165,65,.8))}
+.last .candle{width:22px;height:46px;margin-top:-6px;background:linear-gradient(90deg,var(--wax) 60%,var(--wax-dim) 60%);border-radius:2px 2px 0 0}
+footer{border-top:1px solid var(--slate);color:var(--muted);font-size:.94rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:space-between;align-items:center;padding-block:30px}
+footer nav{display:flex;flex-wrap:wrap;gap:18px;font-family:var(--f-px);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase}
+footer nav a{text-decoration:none} footer nav a:hover{color:var(--core)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero video,.scene video{display:none}.down i{animation:none}.keeper .pic img,.gallery img{transition:none}}
+@media (prefers-reduced-motion:no-preference){.hero .poster{display:none}}
+</style>
+<header class="nav" id="nav"><div class="wrap">
+  <a class="brand" href="#top"><canvas class="flame" width="7" height="11" aria-hidden="true"></canvas>Wickfall</a>
+  <nav aria-label="Sections"><a href="#trailer">Trailer</a><a href="#world">World</a><a href="#heroes">Heroes</a><a href="#keepers">Keepers</a><a href="#how">How to play</a><a class="play" href="../">Play free</a></nav>
+</div></header>
+
+<main id="top">
+  <section class="hero" aria-label="Wickfall" style="padding:0">
+    <img class="poster" src="media/hero-camp.jpg" alt="">
+    <video src="media/hero-camp.mp4" poster="media/hero-camp.jpg" autoplay muted loop playsinline aria-hidden="true"><source src="media/hero-camp.webm" type="video/webm"><source src="media/hero-camp.mp4" type="video/mp4"></video>
+    <div class="shade"></div><canvas class="embers" aria-hidden="true"></canvas>
+    <div class="inner wrap">
+      <h1 class="title"><canvas class="flame" width="7" height="11" aria-hidden="true"></canvas>Wickfall</h1>
+      <svg class="filigree" viewBox="0 0 420 22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 11h150M262 11h150"/><path d="M158 11c14 0 18-9 30-9s14 9 22 9 10-9 22-9 16 9 30 9"/><path d="M158 11c14 0 18 9 30 9s14-9 22-9 10 9 22 9 16-9 30-9"/></g><rect x="205" y="6" width="10" height="10" transform="rotate(45 210 11)" fill="#f2a541"/></svg>
+      <p class="slogan">Every flame goes out. Not yours.</p>
+      <div class="ctas"><a class="btn primary" href="../"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1l10 6-10 6z" fill="currentColor"/></svg>Play free in your browser</a><a class="btn" href="#trailer">Watch the trailer</a></div>
+      <div class="meta"><span>No download</span><span>Keyboard, gamepad or touch</span><span>Saves stay in your browser</span></div>
+    </div>
+    <a class="down" href="#trailer">Descend<i></i></a>
+  </section>
+
+  <section id="trailer"><div class="wrap">
+    <span class="kicker">Trailer</span><h2>Down into Underwick</h2>
+    <div class="altar-wrap">
+      <div class="frame altar"><video src="../media/trailer-720p.mp4" poster="media/poster-end.jpg" controls preload="metadata" playsinline></video></div>
+      <svg class="corner bl" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 60V20c0-9 7-16 16-16h40"/><path d="M12 60V28c0-9 7-16 16-16h32"/><circle cx="12" cy="12" r="4"/></g></svg>
+      <svg class="corner br" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 60V20c0-9 7-16 16-16h40"/><path d="M12 60V28c0-9 7-16 16-16h32"/><circle cx="12" cy="12" r="4"/></g></svg>
+      <div class="cap"><span>Official trailer · 1:14</span><span>Recorded in the game, nothing staged</span></div>
+    </div>
+  </div></section>
+
+  <div class="orn" aria-hidden="true"><i></i><b></b><i></i></div>
+
+  <section class="story" aria-label="The story"><div class="wrap lines">
+    <p>Every flame in Underwick was lit from one fire, far below.</p>
+    <p>One by one, they are going out.</p>
+    <p>A small flame goes down into the dark.</p>
+  </div></section>
+
+  <section id="world"><div class="wrap">
+    <span class="kicker">The world</span><h2>Light is all you carry</h2>
+    <p class="sub">A hand-lit world of moss, drowned foundries and a kiln that swallowed its fire, played at the pace you choose.</p>
+    <div class="rows">
+      <div class="row"><div class="frame scene"><video muted loop playsinline preload="none" poster="media/loop-hollowRun.jpg" data-loop><source src="media/loop-hollowRun.webm" type="video/webm"><source src="media/loop-hollowRun.mp4" type="video/mp4"></video></div>
+        <div class="txt"><span class="num">Descend</span><h3>Every room goes deeper</h3><p>Run, leap and pogo off spines through dripping caves, flooded locks and a hall of candelabra. Coins buy new skills from the blacksmiths, and walls are not always walls.</p>
+          <div class="chips"><span class="chip"><i style="--c:#5fa39a"></i>The Wick Depths</span><span class="chip"><i style="--c:#8f74b8"></i>The Sunken Chandlery</span><span class="chip"><i style="--c:#e2553f"></i>The Kiln Below</span></div></div></div>
+      <div class="row flip"><div class="frame scene"><video muted loop playsinline preload="none" poster="media/loop-warden.jpg" data-loop><source src="media/loop-warden.webm" type="video/webm"><source src="media/loop-warden.mp4" type="video/mp4"></video></div>
+        <div class="txt"><span class="num">Read the keepers</span><h3>Each one guards a flame</h3><p>Every keeper is a puzzle. Each attack has its own tell, its own sound and a way through, so a fight is learned, never guessed. There are no text hints in a fight, only what you see and hear.</p>
+          <div class="chips"><span class="chip"><i style="--c:#f2a541"></i>A tell for every attack</span><span class="chip"><i style="--c:#fff1c1"></i>A finishing move for every hero</span></div></div></div>
+      <div class="row"><div class="frame scene"><video muted loop playsinline preload="none" poster="media/loop-finisher.jpg" data-loop><source src="media/loop-finisher.webm" type="video/webm"><source src="media/loop-finisher.mp4" type="video/mp4"></video></div>
+        <div class="txt"><span class="num">Spend your wax</span><h3>Wax is your fire</h3><p>Every strike fills your wax vessel. Spend it to <b>focus</b> an ember back, or on the skills you forge along the way.</p>
+          <div class="chips"><span class="chip"><i style="--c:#efe3c2"></i>Focus</span><span class="chip"><i style="--c:#f2a541"></i>Ember Bolt</span><span class="chip"><i style="--c:#8ff0e0"></i>Wax Dive</span><span class="chip"><i style="--c:#e2553f"></i>Flare Burst</span></div></div></div>
+    </div>
+  </div></section>
+
+  <section class="heroes" id="heroes"><div class="wrap">
+    <span class="kicker">Three heroes</span><h2>Choose your flame</h2>
+    <p class="sub">Each hero is a different way down: more embers to spare, or more to prove.</p>
+    <div class="party">
+      <article class="frame pcard" tabindex="0" data-hero="snuff" data-idle="60" data-combo="45"><div class="stage"><span class="tag">Normal</span><canvas width="176" height="112" aria-label="Wick, idle"></canvas></div>
+        <h3>Wick</h3><p>A little candle-spirit with a short sword and wide, sweeping slashes.</p>
+        <div class="stats"><span>Embers</span><div class="bar" aria-label="5 of 9"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div><span>Damage</span><div class="bar" aria-label="1 of 3"><i class="on"></i><i></i><i></i></div><span>Reach</span><div class="bar" aria-label="2 of 4"><i class="on"></i><i class="on"></i><i></i><i></i></div></div></article>
+      <article class="frame pcard" tabindex="0" data-hero="knight" data-idle="60" data-combo="78"><div class="stage"><span class="tag">Easier</span><canvas width="176" height="112" aria-label="Lampknight, idle"></canvas></div>
+        <h3>Lampknight</h3><p>Armoured, with a two-handed greatsword and a heavy four-hit combo that ends in a fire cleave.</p>
+        <div class="stats"><span>Embers</span><div class="bar" aria-label="7 of 9"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div><span>Damage</span><div class="bar" aria-label="2 of 3"><i class="on"></i><i class="on"></i><i></i></div><span>Reach</span><div class="bar" aria-label="3 of 4"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div></article>
+      <article class="frame pcard cold" tabindex="0" data-hero="hero" data-idle="60" data-combo="99"><div class="stage"><span class="tag">Easiest</span><canvas width="176" height="112" aria-label="Wick Hero, idle"></canvas></div>
+        <h3>Wick Hero</h3><p>Crowned with blue fire, carrying a polished katana. Its finisher cuts everything in a wide sphere ahead.</p>
+        <div class="stats"><span>Embers</span><div class="bar" aria-label="9 of 9"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div><span>Damage</span><div class="bar" aria-label="3 of 3"><i class="on"></i><i class="on"></i><i class="on"></i></div><span>Reach</span><div class="bar" aria-label="4 of 4"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div></article>
+    </div>
+    <p class="hint">Hover or focus a hero to see the full combo</p>
+  </div></section>
+
+  <section id="keepers"><div class="wrap">
+    <span class="kicker">The keepers</span><h2>Every keeper, a puzzle</h2>
+    <p class="sub">You will learn their names when you meet them. Their last words are all they leave behind.</p>
+    <div class="keepers">
+      <article class="frame keeper"><div class="pic"><img src="media/pv1_boss.png" alt="A keeper in shadow with two burning eyes"><span>Chapter 1</span></div><h3>The Wick Depths</h3><p class="who">Keeper · <b>? ? ?</b></p><blockquote>Keep it… warm…</blockquote></article>
+      <article class="frame keeper"><div class="pic"><img src="media/pv2_boss.png" alt="A keeper hanging in shadow"><span>Chapter 2</span></div><h3>The Sunken Chandlery</h3><p class="who">Keeper · <b>? ? ?</b></p><blockquote>They were… so bright…</blockquote></article>
+      <article class="frame keeper"><div class="pic"><img src="media/pv3_boss.png" alt="A coiled keeper in shadow"><span>Chapter 3</span></div><h3>The Kiln Below</h3><p class="who">Keeper · <b>? ? ?</b></p><blockquote>It was… mine…</blockquote></article>
+      <article class="frame keeper"><div class="pic"><img src="media/pv4_boss.png" alt="A hooded keeper with a scythe in shadow"><span>Chapter 4 · Beta</span></div><h3>The Choir Loft</h3><p class="who">Keeper · <b>? ? ?</b></p><blockquote>Not… yours…</blockquote></article>
+    </div>
+    <p class="below">And under the cold kiln, something <b>darker</b> still burns.</p>
+  </div></section>
+
+  <section id="how"><div class="wrap">
+    <span class="kicker">How to play</span><h2>Play it anywhere a browser runs</h2>
+    <div class="play-grid">
+      <div class="frame how"><h3>Keyboard</h3>
+        <div class="keys"><kbd><i>←</i><i>→</i></kbd><span>Move</span><kbd><i>Space</i></kbd><span>Jump (hold for higher)</span><kbd><i>X</i></kbd><span>Slash, ↑ or ↓ to aim</span><kbd><i>Shift</i></kbd><span>Dash</span><kbd><i>F</i></kbd><span>Focus: wax back into an ember</span><kbd><i>E</i></kbd><span>Skill</span></div></div>
+      <div class="frame how"><h3>Gamepad</h3>
+        <div class="keys"><kbd><i>Stick</i></kbd><span>Move, aim slashes</span><kbd><i>A</i></kbd><span>Jump</span><kbd><i>X</i></kbd><span>Slash</span><kbd><i>RB</i><i>RT</i></kbd><span>Dash</span><kbd><i>B</i></kbd><span>Focus</span><kbd><i>Y</i></kbd><span>Skill</span></div><p>Menus follow the pad too. Start pauses.</p></div>
+      <div class="frame how"><h3>Touch</h3><p>A stick on the left and buttons on the right, built for phones and tablets. Move and resize the buttons in the layout editor, then play full screen.</p></div>
+    </div>
+  </div></section>
+
+  <section aria-label="Gallery" style="padding-top:0"><div class="wrap">
+    <span class="kicker">From below</span><h2>Captured in the game</h2>
+    <div class="gallery" id="gallery">
+      <button type="button" data-cap="Wickhollow, the first cave"><img src="media/s01.jpg" alt="Wick in a mossy cavern lit by small candles"></button>
+      <button type="button" data-cap="Chandler’s Hall"><img src="media/s02.jpg" alt="A violet hall of pillars and candelabra"></button>
+      <button type="button" data-cap="A keeper on the wax bridge"><img src="media/s04.jpg" alt="Wick facing a moth keeper on a wax bridge"></button>
+      <button type="button" data-cap="The camp, between descents"><img src="media/s06.jpg" alt="The three heroes resting at camp"></button>
+      <button type="button" data-cap="The duel in the Choir Loft"><img src="media/s-loft.jpg" alt="The loft gone dark around Wick and the wax keeper"></button>
+      <button type="button" data-cap="Above the molten kiln"><img src="media/s09.jpg" alt="A fight above the molten kiln"></button>
+    </div>
+  </div></section>
+
+  <section class="last" aria-label="Play"><div class="wrap">
+    <canvas class="flame" width="7" height="11" aria-hidden="true"></canvas><div class="candle" aria-hidden="true"></div>
+    <h2>Your flame is still lit</h2>
+    <a class="btn primary" href="../"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1l10 6-10 6z" fill="currentColor"/></svg>Play free in your browser</a>
+    <div class="meta"><span>Free</span><span>No account</span><span>Desktop and mobile</span></div>
+  </div></section>
+</main>
+<footer><div class="wrap"><span>Wickfall · Every flame goes out. Not yours.</span><nav aria-label="Footer"><a href="#trailer">Trailer</a><a href="#heroes">Heroes</a><a href="#how">How to play</a><a href="../">Play</a></nav></div></footer>
+
+<dialog id="lightbox"><form method="dialog"><button type="submit">Close</button></form><img alt=""><p></p></dialog>
+<script>
+(() => {
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // the game's flame, a handful of pixels, flickering
+  const flames = [...document.querySelectorAll('canvas.flame')].map(c => c.getContext('2d'));
+  // embers rising over the camp
+  const ec = document.querySelector('canvas.embers'), eg = ec.getContext('2d'), E = [];
+  const size = () => { const r = ec.getBoundingClientRect(); ec.width = Math.max(1, r.width / 2 | 0); ec.height = Math.max(1, r.height / 2 | 0); };
+  size(); addEventListener('resize', size);
+  for (let i = 0; i < 46; i++) E.push({ x:Math.random(), y:Math.random(), v:0.02 + Math.random() * 0.05, w:Math.random() * 6.28, s:Math.random() < 0.25 ? 2 : 1 });
+  // the heroes, drawn frame by frame from the game's own animation strips
+  const cards = [...document.querySelectorAll('.pcard')].map(el => { const h = el.dataset.hero, img = { idle:new Image(), combo:new Image() };
+    img.idle.src = `media/sp_${h}_idle.png`; img.combo.src = `media/sp_${h}_combo.png`;
+    return { el, g:el.querySelector('canvas').getContext('2d'), img, n:{ idle:+el.dataset.idle, combo:+el.dataset.combo }, mode:'idle', t0:0 }; });
+  for (const c of cards) { const go = m => () => { if (c.mode !== m) { c.mode = m; c.t0 = performance.now(); } };
+    c.el.addEventListener('pointerenter', go('combo')); c.el.addEventListener('focus', go('combo')); c.el.addEventListener('pointerleave', go('idle')); c.el.addEventListener('blur', go('idle')); }
+  const frame = now => {
+    const t = now / 1000;
+    for (const g of flames) { g.clearRect(0, 0, 7, 11); const f = Math.round(Math.sin(t * 9) + Math.sin(t * 14) * 0.6);
+      g.fillStyle = '#e2553f'; g.fillRect(2, 3 - f * 0.5, 3, 7); g.fillRect(1, 6, 5, 4); g.fillStyle = '#f2a541'; g.fillRect(3, 1 - f, 1, 3); g.fillRect(2, 4, 3, 5); g.fillStyle = '#fff1c1'; g.fillRect(3, 6, 1, 3); }
+    eg.clearRect(0, 0, ec.width, ec.height);
+    for (const p of E) { p.y -= p.v * 0.016; if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); } const x = (p.x + Math.sin(t * 0.8 + p.w) * 0.01) * ec.width, y = p.y * ec.height, a = Math.min(1, (1 - p.y) * 3) * (0.5 + 0.5 * Math.sin(t * 3 + p.w));
+      eg.fillStyle = `rgba(242,165,65,${0.8 * a})`; eg.fillRect(x | 0, y | 0, p.s, p.s); }
+    for (const c of cards) { const im = c.img[c.mode], n = c.n[c.mode]; if (!im.complete || !im.naturalWidth) continue;
+      let f = Math.floor((now - c.t0) / (1000 / 30)); if (c.mode === 'combo' && f >= n + 18) { c.t0 = now; f = 0; } f = Math.min(n - 1, f % (c.mode === 'idle' ? n : n + 18));
+      c.g.clearRect(0, 0, 176, 112); c.g.drawImage(im, f * 176, 0, 176, 112, 0, 0, 176, 112); }
+    if (!still) requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+  if (still) setTimeout(() => frame(300), 400);
+  // the world's scenes play only while you can see them
+  const loops = [...document.querySelectorAll('video[data-loop]')];
+  if (!still && 'IntersectionObserver' in window) { const io = new IntersectionObserver(es => { for (const e of es) { const v = e.target; if (e.isIntersecting) { v.preload = 'auto'; v.play().catch(() => {}); } else v.pause(); } }, { threshold:0.35 }); loops.forEach(v => io.observe(v)); }
+  // nav turns solid once you leave the hero
+  const nav = document.getElementById('nav'), onScroll = () => nav.classList.toggle('solid', scrollY > 60); addEventListener('scroll', onScroll, { passive:true }); onScroll();
+  // gallery lightbox
+  const lb = document.getElementById('lightbox');
+  document.getElementById('gallery').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const im = b.querySelector('img');
+    lb.querySelector('img').src = im.src; lb.querySelector('img').alt = im.alt; lb.querySelector('p').textContent = b.dataset.cap; if (lb.showModal) lb.showModal(); });
+  lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
+})();
+</script>
+</body>
+</html>
