@@ -55,7 +55,7 @@ function tDummy(x, hit) {   // the straw practice dummy from the party preview
   const g = ctx, rock = Math.sin(hit * 30) * hit * 0.6;
   g.save(); g.translate(x, TFY); g.rotate(rock); g.fillStyle = '#5a4126'; g.fillRect(-1, -22, 2, 22); g.fillStyle = hit > 0.15 ? '#fff1c1' : '#b08a4e'; g.fillRect(-5, -20, 10, 12); g.fillStyle = '#8a6a38'; g.fillRect(-5, -14, 10, 1); g.fillRect(-7, -18, 14, 2); g.fillStyle = '#c9a25e'; g.fillRect(-3, -26, 6, 6); g.restore();
 }
-const tWaxHit = (x, y) => { burst(x, y, 22, { spd:190, life:0.6, colors:[C.wax, '#fff7e2', C.core], size:2, g:300, ang:-Math.PI / 2, spread:1.4 }); G.fx.push({ k:'ring', x, y, t:0.4, max:0.4, r:56, c:'239,227,194' }); G.spells.push({ k:'quake', x, y, life:0.4, max:0.4 }); };
+const tWaxHit = (x, y) => { burst(x, y, 22, { spd:190, life:0.6, colors:[C.wax, C.waxHi, C.core], size:2, g:300, ang:-Math.PI / 2, spread:1.4 }); G.fx.push({ k:'ring', x, y, t:0.4, max:0.4, r:56, c:'239,227,194' }); G.spells.push({ k:'quake', x, y, life:0.4, max:0.4 }); };
 const tBolt = () => G.spells.push({ k:'bolt', x:P.x + P.w, y:P.y, w:22, h:12, vx:300, life:2, t:0 });
 const KILN = ['#1a0c08', '#5a2410'];
 // each scene: L = loop length; run(S, c, hit, dt) poses the hero and props for loop time c; hit(t) is true on the frame that crosses t

@@ -24,7 +24,7 @@ function drawWickSlash(cx, by, f) {
     }
     ctx.closePath(); ctx.fill();
   };
-  band(g.Rx + 3, g.Ry + 2.5, thick + 4, `rgba(176,188,214,${0.32 * fade})`);   // soft outer haze
+  band(g.Rx + 3, g.Ry + 2.5, thick + 4, `rgba(170,150,210,${0.32 * fade})`);   // soft outer haze
   band(g.Rx, g.Ry, thick, `rgba(250,250,255,${0.96 * fade})`);                // the white crescent
   band(g.Rx - thick * 0.55, g.Ry - thick * 0.45, thick * 0.35, `rgba(205,214,236,${0.55 * fade})`); // inner shading
   // speed lines just outside the edge
@@ -40,13 +40,13 @@ function drawWickSlash(cx, by, f) {
 // Wick's short sword: leather grip, brass pommel and guard, a steel blade with a fuller and a bright edge, pointed tip
 function drawWickSword(hx, hy, dx, dy) {
   const px = -dy, py = dx, L = 9;
-  ctx.lineCap = 'butt'; ctx.strokeStyle = '#4a3426'; ctx.lineWidth = 1.4; kline(hx - dx * 2.5, hy - dy * 2.5, hx + dx * 0.6, hy + dy * 0.6);
+  ctx.lineCap = 'butt'; ctx.strokeStyle = HP.leather[1]; ctx.lineWidth = 1.4; kline(hx - dx * 2.5, hy - dy * 2.5, hx + dx * 0.6, hy + dy * 0.6);
   ctx.fillStyle = C.brass; ctx.fillRect(Math.round(hx - dx * 3.2) - 0.5, Math.round(hy - dy * 3.2) - 0.5, 1, 1);
   ctx.strokeStyle = C.brass; ctx.lineWidth = 1.2; kline(hx + dx * 1.1 + px * 2, hy + dy * 1.1 + py * 2, hx + dx * 1.1 - px * 2, hy + dy * 1.1 - py * 2);
   const b0x = hx + dx * 1.6, b0y = hy + dy * 1.6, sx = hx + dx * (L - 0.5), sy = hy + dy * (L - 0.5), tx = hx + dx * (L + 1.6), ty = hy + dy * (L + 1.6);
-  ctx.fillStyle = '#c9d3e2'; ctx.beginPath(); ctx.moveTo(b0x + px * 0.85, b0y + py * 0.85); ctx.lineTo(sx + px * 0.75, sy + py * 0.75); ctx.lineTo(tx, ty);
+  ctx.fillStyle = HP.steel[6]; ctx.beginPath(); ctx.moveTo(b0x + px * 0.85, b0y + py * 0.85); ctx.lineTo(sx + px * 0.75, sy + py * 0.75); ctx.lineTo(tx, ty);
   ctx.lineTo(sx - px * 0.75, sy - py * 0.75); ctx.lineTo(b0x - px * 0.85, b0y - py * 0.85); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = '#7d8aa0'; ctx.lineWidth = 0.5; kline(b0x, b0y, hx + dx * (L - 2), hy + dy * (L - 2));        // fuller
+  ctx.strokeStyle = HP.steel[4]; ctx.lineWidth = 0.5; kline(b0x, b0y, hx + dx * (L - 2), hy + dy * (L - 2));        // fuller
   ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 0.5; kline(b0x + px * 0.6, b0y + py * 0.6, tx, ty);                  // edge catching the candlelight
 }
 
@@ -54,8 +54,8 @@ function drawWickSword(hx, hy, dx, dy) {
 // selective outline; fire, glow, streaks and smears are left exactly as drawn.
 const CRISP = { c:null, g:null, pal:{} };
 const CRISP_PAL = {
-  wick:['#18121f', '#211a14', '#2a2222', '#2a3c52', '#3a2a1e', '#3a3046', '#4a3426', '#4b6b8f', '#7c9cbd', '#7d8aa0', '#a7c4dd', '#c9ba93', '#c9d3e2', '#d9caa2', '#efe3c2', '#f2c46a', '#f7ecd2', '#fff7e2', '#ffffff', '#c79a4a'],
-  hero:['#0e121c', '#121826', '#123a6b', '#1a2030', '#1a2233', '#1a2440', '#1c2230', '#2a3348', '#2b3d66', '#2f78d8', '#3d4c68', '#4aa8ff', '#55657f', '#5cb2ff', '#7cc8ff', '#8a93a3', '#8fb3d9', '#9fb8d8', '#b4c3d8', '#b4f4ff', '#b9c2cf', '#c9d6e8', '#d3dae4', '#d9b46a', '#e6eef8', '#e6fbff', '#e8ecf2', '#ffffff']
+  wick:[HP.ink, HP.leather[0], HP.soot, HP.wick[0], HP.leather[1], HP.wick[1], HP.wick[2], HP.steel[4], HP.wick[3], C.waxSh, HP.steel[6], C.waxMid, C.wax, HP.brass[2], C.waxHi, '#ffffff', C.brass],
+  hero:[HP.ink, HP.hero[0], HP.heroCoat[0], HP.heroCoat[1], HP.steel[0], HP.heroCoat[2], HP.hero[1], HP.steel[1], HP.hero[2], HP.steel[2], HP.hero[3], HP.steel[4], HP.steel[5], HP.steel[6], HP.hero[4], HP.coldWax[0], HP.steel[7], HP.coldWax[1], C.brass, '#ffffff', HP.coldWax[2]]
 };
 function crispChar(id, fn, cx, by) {
   const real = ctx;
@@ -104,14 +104,14 @@ function drawWickBody(cx, by, f, t, sit) {
   else if (!P.grounded && P.vy < -60) sq = -1;
   const low = (sit ? 3 : P.healT > 0 ? 2 : idleBob()) + sq;
   // dash: faint streaks left behind at head and body height
-  if (P.dashT > 0) for (let i = 1; i <= 3; i++) { ctx.fillStyle = `rgba(239,227,194,${0.3 / i})`; ctx.fillRect(cx - f * (4 + i * 5) - 3, by - 13, 6, 1); ctx.fillStyle = `rgba(66,87,103,${0.4 / i})`; ctx.fillRect(cx - f * (4 + i * 5) - 3, by - 7, 6, 1); }
+  if (P.dashT > 0) for (let i = 1; i <= 3; i++) { ctx.fillStyle = `rgba(239,227,194,${0.3 / i})`; ctx.fillRect(cx - f * (4 + i * 5) - 3, by - 13, 6, 1); ctx.fillStyle = `rgba(58,43,75,${0.4 / i})`; ctx.fillRect(cx - f * (4 + i * 5) - 3, by - 7, 6, 1); }
 
   const tipHat = P.idleT > 3 && (P.idleT % 7) > 5.6 && (P.idleT % 7) < 6.5 ? -2 : 0;
   const lean = atk && P.atkDir === 'side' ? (p < 0.35 ? 2 : 1) * f : 0;   // a snap forward into the slash
   const bob = atk && P.atkDir === 'up' ? -1 : atk && P.atkDir === 'down' ? 1 : 0;
   // legs
   if (!sit) {
-    ctx.fillStyle = '#3a3046';
+    ctx.fillStyle = HP.wick[0];
     let l1 = 0, l2 = 0;
     if (P.grounded && Math.abs(P.vx) > 10) { const ph = Math.floor(P.anim * 12) % 4; l1 = [0, -1, 0, 1][ph]; l2 = -l1; }
     if (!P.grounded) { l1 = -1; l2 = 1; }
@@ -143,9 +143,9 @@ function drawWickBody(cx, by, f, t, sit) {
     const th = 0.95 + 0.03 * Math.sin(it * 2); shx = bx - f * 2; wx = bx - f * 4; wy = by - 5 + low; dx = -f * Math.cos(th); dy = Math.sin(th); behind = true;
   }
   const sword = () => {
-    ctx.lineCap = 'round'; ctx.strokeStyle = '#2a3c52'; ctx.lineWidth = 2; kline(shx, shy, wx, wy);   // arm
+    ctx.lineCap = 'round'; ctx.strokeStyle = HP.wick[0]; ctx.lineWidth = 2; kline(shx, shy, wx, wy);   // arm
     drawWickSword(wx, wy, dx, dy);
-    ctx.fillStyle = '#efe3c2'; ctx.fillRect(Math.round(wx) - 0.5, Math.round(wy) - 0.5, 1, 1);         // a little wax hand on the grip
+    ctx.fillStyle = C.wax; ctx.fillRect(Math.round(wx) - 0.5, Math.round(wy) - 0.5, 1, 1);         // a little wax hand on the grip
     ctx.lineCap = 'butt';
   };
   if (behind) sword();
@@ -154,39 +154,39 @@ function drawWickBody(cx, by, f, t, sit) {
   const fl = Math.sin(t * 11) * (spd > 0.5 || !P.grounded ? 0.8 : 0.25), topY = by - 9 + low + bob, hemY = by - 2 + (sit ? 1 : 0);
   const fX = bx + f * (4 - spd * 0.3), bX = bx - f * (7 + spd * 1.6 + (atk ? 2 : 0)), bY = hemY - lift - spd * 1.1 + fl;
   const m1 = fX + (bX - fX) / 3, m2 = fX + (bX - fX) * 2 / 3;
-  ctx.fillStyle = '#4b6b8f'; ctx.beginPath();
+  ctx.fillStyle = HP.wick[1]; ctx.beginPath();
   ctx.moveTo(bx - f * 4, topY - 1); ctx.lineTo(bx + f * 4, topY - 1); ctx.lineTo(bx + f * 5, topY + 2); ctx.lineTo(fX, hemY);
   ctx.lineTo(m1, hemY - 1); ctx.lineTo((m1 + m2) / 2, hemY + 0.5); ctx.lineTo(m2, (hemY + bY) / 2 - 1); ctx.lineTo(bX, bY);
   ctx.lineTo(bx - f * 6, topY + 2); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = '#2a3c52'; ctx.lineWidth = 0.9; kline(bx - f, topY + 2, m2, (hemY + bY) / 2 - 1.5);   // a fold in shadow
+  ctx.strokeStyle = HP.wick[0]; ctx.lineWidth = 0.9; kline(bx - f, topY + 2, m2, (hemY + bY) / 2 - 1.5);   // a fold in shadow
   // a pale trim along the ragged hem
-  ctx.strokeStyle = '#a7c4dd'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(fX, hemY); ctx.lineTo(m1, hemY - 1); ctx.lineTo((m1 + m2) / 2, hemY + 0.5); ctx.lineTo(m2, (hemY + bY) / 2 - 1); ctx.lineTo(bX, bY); ctx.stroke();
+  ctx.strokeStyle = HP.wick[3]; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(fX, hemY); ctx.lineTo(m1, hemY - 1); ctx.lineTo((m1 + m2) / 2, hemY + 0.5); ctx.lineTo(m2, (hemY + bY) / 2 - 1); ctx.lineTo(bX, bY); ctx.stroke();
   // his own flame lights the tops of his shoulders
-  ctx.fillStyle = '#f2c46a'; ctx.fillRect(Math.min(bx - f * 3, bx + f * 3), topY - 1, 6, 1);
-  ctx.fillStyle = '#7c9cbd'; ctx.fillRect(f > 0 ? bx + 2 : bx - 3, topY, 1, 5);
+  ctx.fillStyle = HP.brass[2]; ctx.fillRect(Math.min(bx - f * 3, bx + f * 3), topY - 1, 6, 1);
+  ctx.fillStyle = HP.wick[2]; ctx.fillRect(f > 0 ? bx + 2 : bx - 3, topY, 1, 5);
   // a belt with a small brass buckle and the empty scabbard at his hip
-  ctx.fillStyle = '#211a14'; ctx.fillRect(bx - 4, by - 5 + low + bob, 8, 1); ctx.fillStyle = C.brass; ctx.fillRect(bx + f, by - 5 + low + bob, 1, 1);
-  ctx.strokeStyle = '#3a2a1e'; ctx.lineWidth = 1.2; kline(bx - f * 3, by - 5 + low + bob, bx - f * 7, by - 2 + low + bob);
+  ctx.fillStyle = HP.leather[0]; ctx.fillRect(bx - 4, by - 5 + low + bob, 8, 1); ctx.fillStyle = C.brass; ctx.fillRect(bx + f, by - 5 + low + bob, 1, 1);
+  ctx.strokeStyle = HP.leather[1]; ctx.lineWidth = 1.2; kline(bx - f * 3, by - 5 + low + bob, bx - f * 7, by - 2 + low + bob);
   if (!behind) sword();
   // a candle head: cream wax with a soft melted rim and drips, a dark wick and a living flame
   const hy = by - 16 + low + bob, hx = bx, lit = f > 0 ? 1 : -1;
-  ctx.fillStyle = '#efe3c2'; ctx.fillRect(hx - 4, hy, 8, 8);
-  ctx.fillStyle = '#c9ba93'; ctx.fillRect(lit > 0 ? hx - 4 : hx + 3, hy + 1, 1, 7); ctx.fillRect(hx - 3, hy + 7, 6, 1);
-  ctx.fillStyle = '#fff7e2'; ctx.fillRect(hx - 4, hy, 8, 1); ctx.fillRect(lit > 0 ? hx + 2 : hx - 3, hy + 1, 1, 5);
+  ctx.fillStyle = C.wax; ctx.fillRect(hx - 4, hy, 8, 8);
+  ctx.fillStyle = C.waxSh; ctx.fillRect(lit > 0 ? hx - 4 : hx + 3, hy + 1, 1, 7); ctx.fillRect(hx - 3, hy + 7, 6, 1);
+  ctx.fillStyle = C.waxHi; ctx.fillRect(hx - 4, hy, 8, 1); ctx.fillRect(lit > 0 ? hx + 2 : hx - 3, hy + 1, 1, 5);
   // melted lip spilling over the rim, and two drips running down the wax
-  ctx.fillStyle = '#f7ecd2'; ctx.fillRect(hx - 5, hy, 1, 2); ctx.fillRect(hx + 4, hy, 1, 1);
+  ctx.fillStyle = C.waxHi; ctx.fillRect(hx - 5, hy, 1, 2); ctx.fillRect(hx + 4, hy, 1, 1);
   ctx.fillRect(hx - 2 * lit, hy + 1, 1, 3); ctx.fillRect(hx + 3 * lit, hy + 1, 1, 2);
-  ctx.fillStyle = '#d9caa2'; ctx.fillRect(hx - 2 * lit, hy + 4, 1, 1); ctx.fillRect(hx - 5, hy + 2, 1, 1);
+  ctx.fillStyle = C.waxMid; ctx.fillRect(hx - 2 * lit, hy + 4, 1, 1); ctx.fillRect(hx - 5, hy + 2, 1, 1);
   // a little wax collar where the head meets the cloak
-  ctx.fillStyle = '#d9caa2'; ctx.fillRect(hx - 3, hy + 8, 6, 1);
+  ctx.fillStyle = C.waxMid; ctx.fillRect(hx - 3, hy + 8, 6, 1);
   const blink = !sit && ((t % 3.7) < 0.1 || idleBlink()), eo = idleLook() && !atk ? -f : f;
-  ctx.fillStyle = '#18121f';
+  ctx.fillStyle = HP.ink;
   if (sit || blink) { ctx.fillRect(hx - 2 + eo, hy + 4, 2, 1); ctx.fillRect(hx + 1 + eo, hy + 4, 2, 1); }
-  else { ctx.fillRect(hx - 2 + eo, hy + 3, 1, 2); ctx.fillRect(hx + 1 + eo, hy + 3, 1, 2); ctx.fillStyle = '#fff7e2'; ctx.fillRect(hx - 2 + eo, hy + 3, 1, 1); ctx.fillRect(hx + 1 + eo, hy + 3, 1, 1); }
-  if (P.hurtT > 0) { ctx.fillStyle = '#18121f'; ctx.fillRect(hx - 1 + eo, hy + 6, 2, 1); }
+  else { ctx.fillRect(hx - 2 + eo, hy + 3, 1, 2); ctx.fillRect(hx + 1 + eo, hy + 3, 1, 2); ctx.fillStyle = C.waxHi; ctx.fillRect(hx - 2 + eo, hy + 3, 1, 1); ctx.fillRect(hx + 1 + eo, hy + 3, 1, 1); }
+  if (P.hurtT > 0) { ctx.fillStyle = HP.ink; ctx.fillRect(hx - 1 + eo, hy + 6, 2, 1); }
   // wick and flame: it streams back on a swing and swells while focusing
   const lean2 = atk ? -f * 1.2 : clamp(-P.vx / 90, -1.5, 1.5);
-  ctx.fillStyle = '#2a2222'; ctx.fillRect(hx, hy - 2, 1, 2);
+  ctx.fillStyle = HP.soot; ctx.fillRect(hx, hy - 2, 1, 2);
   const big = P.healT > 0 ? 1.25 + P.healT * 0.4 : 1;
   drawFlame(hx + 0.5 + lean2, hy - 2, big, t, P.hurtT > 0 ? C.ember : C.flame, C.core);
 }

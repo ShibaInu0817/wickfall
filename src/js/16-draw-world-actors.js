@@ -122,7 +122,7 @@ function buildTiles() {
           px1(ox + 1, py - 5, '#d8f6ff');
         } else if (th.name === 'hall') { // little brass candlestick
           x.fillStyle = '#8a6a30'; x.fillRect(ox - 1, py - 1, 3, 1); x.fillRect(ox, py - 3, 1, 2);
-          x.fillStyle = '#efe3c2'; x.fillRect(ox, py - 6, 1, 3); px1(ox, py - 7, '#ffe9a8');
+          x.fillStyle = C.wax; x.fillRect(ox, py - 6, 1, 3); px1(ox, py - 7, '#ffe9a8');
         } else { // melted wax stub with an ember
           x.fillStyle = '#cbbd98'; x.fillRect(ox, py - 3, 2, 3); px1(ox + 2, py - 1, '#cbbd98'); px1(ox, py - 4, th.accent);
         }

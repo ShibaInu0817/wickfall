@@ -82,7 +82,7 @@ function updateKnightPose(dt) {
     // dragging the tip scrapes sparks off the stone
     if (run && Math.abs(wrapAng(ang - floor)) < 0.2 && Math.random() < dt * 30) {
       const tp = knightTip();
-      G.parts.push({ x:tp.x + rand(-1, 1), y:tp.y - 1, vx:-P.face * rand(20, 70) - P.vx * 0.2, vy:rand(-70, -25), life:0.25, max:0.25, c:Math.random() < 0.5 ? '#ffd9a0' : Math.random() < 0.5 ? C.flame : '#ffffff', s:1, g:260 });
+      G.parts.push({ x:tp.x + rand(-1, 1), y:tp.y - 1, vx:-P.face * rand(20, 70) - P.vx * 0.2, vy:rand(-70, -25), life:0.25, max:0.25, c:Math.random() < 0.5 ? HP.lamp : Math.random() < 0.5 ? C.flame : '#ffffff', s:1, g:260 });
     }
     T.lean = run ? 1 : it > 0 ? 0.6 * Math.sin(it * 1.1) : 0;
     T.crouch = P.sit ? 3 : P.grounded ? (it > 0 ? 0.8 + 1.0 * Math.sin(it * 2.6) : 0.3) : 0;
@@ -114,7 +114,7 @@ function knightSmear(ox, oy, sm, fire, t) {
       drawFlame(ox + Math.cos(aa) * (R + 4), oy + Math.sin(aa) * (R + 4), 0.7 + 0.5 * f * Math.abs(Math.sin(t * 9 + i)), t * 1.4 + i, C.ember, C.flame);
     }
   } else {
-    knCrescent(ox, oy, R + 3, start, sm.a, 1.15, `rgba(143,240,224,${0.42 * f})`);
+    knCrescent(ox, oy, R + 3, start, sm.a, 1.15, `rgba(255,217,160,${0.42 * f})`);
     knCrescent(ox, oy, R, start, sm.a, 0.95, `rgba(236,244,255,${0.95 * f})`);
   }
   ctx.strokeStyle = `rgba(255,255,255,${f})`; ctx.lineWidth = fire ? 2 : 1.4;
@@ -125,11 +125,11 @@ function kline(x1, y1, x2, y2) { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo
 // greatsword: grip and pommel, crossguard, broad blade with a fuller
 function knightBlade(hand, ux, uy, px, py, fire, t, nofx) {
   ctx.lineCap = 'round';
-  ctx.strokeStyle = '#3a2a1e'; ctx.lineWidth = 1.5; kline(hand.x - ux * 3.5, hand.y - uy * 3.5, hand.x + ux, hand.y + uy);
+  ctx.strokeStyle = HP.leather[1]; ctx.lineWidth = 1.5; kline(hand.x - ux * 3.5, hand.y - uy * 3.5, hand.x + ux, hand.y + uy);
   ctx.fillStyle = C.brass; ctx.fillRect(Math.round(hand.x - ux * 4) - 1, Math.round(hand.y - uy * 4) - 1, 2, 2);
   ctx.strokeStyle = C.brass; ctx.lineWidth = 1.5; kline(hand.x + ux * 1.5 + px * 3, hand.y + uy * 1.5 + py * 3, hand.x + ux * 1.5 - px * 3, hand.y + uy * 1.5 - py * 3);
-  ctx.strokeStyle = fire ? '#ffd9a0' : '#d7e0ee'; ctx.lineWidth = 2.6; kline(hand.x + ux * 2, hand.y + uy * 2, hand.x + ux * KBLADE, hand.y + uy * KBLADE);
-  ctx.strokeStyle = fire ? C.ember : '#9aa7bd'; ctx.lineWidth = 0.8; kline(hand.x + ux * 3, hand.y + uy * 3, hand.x + ux * (KBLADE - 3), hand.y + uy * (KBLADE - 3));
+  ctx.strokeStyle = fire ? HP.lamp : HP.steel[7]; ctx.lineWidth = 2.6; kline(hand.x + ux * 2, hand.y + uy * 2, hand.x + ux * KBLADE, hand.y + uy * KBLADE);
+  ctx.strokeStyle = fire ? C.ember : HP.steel[5]; ctx.lineWidth = 0.8; kline(hand.x + ux * 3, hand.y + uy * 3, hand.x + ux * (KBLADE - 3), hand.y + uy * (KBLADE - 3));
   ctx.fillStyle = '#ffffff'; ctx.fillRect(Math.round(hand.x + ux * KBLADE) - 0.5, Math.round(hand.y + uy * KBLADE) - 0.5, 1, 1);
   if (fire && !nofx) for (let i = 0; i < 3; i++) drawFlame(hand.x + ux * (5 + i * 4), hand.y + uy * (5 + i * 4), 0.7, t * 1.3 + i, C.ember, C.flame);
 }
@@ -146,53 +146,53 @@ function knightPass(cx, by, f, t, sit, mode) {
   const R = { fs, hand, ux, uy, behind, fire, hurt, hx, hy, hipX, hipY, lsw };
   if (mode === 'B') {
     if (!behind) knightBlade(hand, ux, uy, px, py, fire, t, true);
-    ctx.lineCap = 'round'; ctx.strokeStyle = '#7b88a0'; ctx.lineWidth = 2; kline(fs.x, fs.y, hand.x, hand.y);
+    ctx.lineCap = 'round'; ctx.strokeStyle = HP.steel[4]; ctx.lineWidth = 2; kline(fs.x, fs.y, hand.x, hand.y);
     ctx.fillStyle = C.brass; ctx.fillRect(Math.round(hand.x - ux * 2) - 1, Math.round(hand.y - uy * 2) - 1, 2, 2);
     ctx.lineCap = 'butt'; ctx.restore(); return R;
   }
   if (behind) knightBlade(hand, ux, uy, px, py, fire, t, true);
   // cape trails behind the lean and the run
-  ctx.fillStyle = '#5a2430'; ctx.beginPath();
+  ctx.fillStyle = HP.knight[1]; ctx.beginPath();
   ctx.moveTo(shX - 1, shY + 1); ctx.lineTo(shX - 4, shY + 1);
   ctx.lineTo(hipX - 7 - Q.lean * 1.3 + Math.sin(t * 7) * 0.6 - clamp(Math.abs(P.vx) / 60, 0, 2), hipY + 2 - Math.max(0, Q.lean) * 0.4);
   ctx.lineTo(hipX - 2, hipY + 1); ctx.fill();
   { const tipX = hipX - 7 - Q.lean * 1.3 + Math.sin(t * 7) * 0.6 - clamp(Math.abs(P.vx) / 60, 0, 2), tipY = hipY + 2 - Math.max(0, Q.lean) * 0.4;
-    ctx.fillStyle = '#7a3442'; ctx.beginPath(); ctx.moveTo(shX - 2, shY + 1); ctx.lineTo(shX - 3, shY + 1); ctx.lineTo(tipX + 2, tipY - 1); ctx.lineTo(hipX - 3, hipY); ctx.fill();
-    ctx.fillStyle = '#3a1620'; ctx.fillRect(Math.round(tipX), Math.round(tipY) - 1, 2, 1); ctx.fillRect(Math.round(tipX) + 3, Math.round(tipY), 1, 1); }
+    ctx.fillStyle = HP.knight[2]; ctx.beginPath(); ctx.moveTo(shX - 2, shY + 1); ctx.lineTo(shX - 3, shY + 1); ctx.lineTo(tipX + 2, tipY - 1); ctx.lineTo(hipX - 3, hipY); ctx.fill();
+    ctx.fillStyle = HP.knight[0]; ctx.fillRect(Math.round(tipX), Math.round(tipY) - 1, 2, 1); ctx.fillRect(Math.round(tipX) + 3, Math.round(tipY), 1, 1); }
   // back arm reaches the lower grip
-  ctx.lineCap = 'round'; ctx.strokeStyle = '#5d6a82'; ctx.lineWidth = 2; kline(bs.x, bs.y, hand2.x, hand2.y);
+  ctx.lineCap = 'round'; ctx.strokeStyle = HP.steel[2]; ctx.lineWidth = 2; kline(bs.x, bs.y, hand2.x, hand2.y);
   // legs: back foot planted, front foot strides into the swing
-  ctx.lineCap = 'butt'; ctx.strokeStyle = '#2b3140'; ctx.lineWidth = 2;
+  ctx.lineCap = 'butt'; ctx.strokeStyle = HP.steel[0]; ctx.lineWidth = 2;
   let ffx, bfx;
   if (P.grounded && Math.abs(P.vx) > 20 && !(P.atkT > 0)) { const sw = Math.sin(P.anim * 14) * 2; ffx = cx + 1 + sw; bfx = cx - 2 - sw; }
   else { ffx = cx + 1 + Q.stride; bfx = cx - 2 - Q.stride * 0.4; }
   const footY = P.grounded ? fy : fy - 1;
   if (!sit) { kline(hipX - 1.5, hipY, bfx, footY); kline(hipX + 1.5, hipY, ffx, footY);
-    ctx.fillStyle = '#9aa7bd'; ctx.fillRect(Math.round((hipX - 1.5 + bfx) / 2) - 1, Math.round((hipY + footY) / 2), 2, 1); ctx.fillRect(Math.round((hipX + 1.5 + ffx) / 2) - 1, Math.round((hipY + footY) / 2), 2, 1);
-    ctx.fillStyle = '#4a5468'; ctx.fillRect(Math.round(bfx) - 1, Math.round(footY) - 1, 3, 1); ctx.fillRect(Math.round(ffx) - 1, Math.round(footY) - 1, 3, 1); }
+    ctx.fillStyle = HP.steel[5]; ctx.fillRect(Math.round((hipX - 1.5 + bfx) / 2) - 1, Math.round((hipY + footY) / 2), 2, 1); ctx.fillRect(Math.round((hipX + 1.5 + ffx) / 2) - 1, Math.round((hipY + footY) / 2), 2, 1);
+    ctx.fillStyle = HP.steel[1]; ctx.fillRect(Math.round(bfx) - 1, Math.round(footY) - 1, 3, 1); ctx.fillRect(Math.round(ffx) - 1, Math.round(footY) - 1, 3, 1); }
   // torso leans from the hips
-  ctx.fillStyle = '#6d7a91'; ctx.beginPath();
+  ctx.fillStyle = HP.steel[3]; ctx.beginPath();
   ctx.moveTo(hipX - 4, hipY); ctx.lineTo(hipX + 4, hipY); ctx.lineTo(shX + 4, shY); ctx.lineTo(shX - 4, shY); ctx.fill();
-  ctx.fillStyle = '#9aa7bd'; ctx.beginPath();
+  ctx.fillStyle = HP.steel[5]; ctx.beginPath();
   ctx.moveTo(hipX + 2, hipY - 1); ctx.lineTo(hipX + 4, hipY - 1); ctx.lineTo(shX + 4, shY); ctx.lineTo(shX + 2, shY); ctx.fill();
   ctx.fillStyle = C.brass; ctx.fillRect(hipX - 4, hipY - 2, 8, 1);
-  { const sy = Math.round(shY + (hipY - shY) * 0.5), sx = Math.round(shX - 3 + (hipX - shX) * 0.5); ctx.fillStyle = '#5d6a82'; ctx.fillRect(sx, sy, 5, 1); }
-  ctx.fillStyle = '#ffe08a'; ctx.fillRect(hipX + 1, hipY - 2, 2, 1);
-  ctx.fillStyle = '#5a2430'; ctx.fillRect(hipX - 1, hipY - 1, 2, 3); ctx.fillStyle = '#7a3442'; ctx.fillRect(hipX - 1, hipY - 1, 1, 3);
-  ctx.fillStyle = '#9aa7bd'; ctx.beginPath(); ctx.ellipse(shX + 1, shY + 1.5, 3, 2, 0, Math.PI, 0); ctx.fill();
-  ctx.fillStyle = '#c4cee0'; ctx.fillRect(shX, shY, 2, 1);
+  { const sy = Math.round(shY + (hipY - shY) * 0.5), sx = Math.round(shX - 3 + (hipX - shX) * 0.5); ctx.fillStyle = HP.steel[2]; ctx.fillRect(sx, sy, 5, 1); }
+  ctx.fillStyle = HP.brass[3]; ctx.fillRect(hipX + 1, hipY - 2, 2, 1);
+  ctx.fillStyle = HP.knight[1]; ctx.fillRect(hipX - 1, hipY - 1, 2, 3); ctx.fillStyle = HP.knight[2]; ctx.fillRect(hipX - 1, hipY - 1, 1, 3);
+  ctx.fillStyle = HP.steel[5]; ctx.beginPath(); ctx.ellipse(shX + 1, shY + 1.5, 3, 2, 0, Math.PI, 0); ctx.fill();
+  ctx.fillStyle = HP.steel[6]; ctx.fillRect(shX, shY, 2, 1);
   // helm leads the body slightly
-  ctx.fillStyle = '#7b88a0'; ctx.fillRect(hx - 4, hy + 1, 8, 6); ctx.fillRect(hx - 3, hy, 6, 1);
-  ctx.fillStyle = '#5d6a82'; ctx.fillRect(hx - 4, hy + 1, 1, 6);
-  ctx.fillStyle = '#9aa7bd'; ctx.fillRect(hx + 3, hy + 1, 1, 5); ctx.fillRect(hx, hy + 1, 1, 2);
-  ctx.fillStyle = '#4a5468'; ctx.fillRect(hx - 4, hy + 6, 8, 1);
-  ctx.fillStyle = '#5d6a82'; ctx.fillRect(hx, hy + 5, 1, 1); ctx.fillRect(hx + 2, hy + 5, 1, 1);
+  ctx.fillStyle = HP.steel[4]; ctx.fillRect(hx - 4, hy + 1, 8, 6); ctx.fillRect(hx - 3, hy, 6, 1);
+  ctx.fillStyle = HP.steel[2]; ctx.fillRect(hx - 4, hy + 1, 1, 6);
+  ctx.fillStyle = HP.steel[5]; ctx.fillRect(hx + 3, hy + 1, 1, 5); ctx.fillRect(hx, hy + 1, 1, 2);
+  ctx.fillStyle = HP.steel[1]; ctx.fillRect(hx - 4, hy + 6, 8, 1);
+  ctx.fillStyle = HP.steel[2]; ctx.fillRect(hx, hy + 5, 1, 1); ctx.fillRect(hx + 2, hy + 5, 1, 1);
   ctx.fillStyle = hurt ? C.ember : C.flame; ctx.fillRect(hx - 1, hy + 3, 4, 1); ctx.fillStyle = C.core; ctx.fillRect(hx + 2, hy + 3, 1, 1);
-  ctx.fillStyle = C.brass; ctx.fillRect(hx - 2, hy - 1, 5, 1); ctx.fillStyle = '#f2c76a'; ctx.fillRect(hx - 2, hy - 1, 1, 1);
+  ctx.fillStyle = C.brass; ctx.fillRect(hx - 2, hy - 1, 5, 1); ctx.fillStyle = HP.brass[2]; ctx.fillRect(hx - 2, hy - 1, 1, 1);
   ctx.fillStyle = C.wax; ctx.fillRect(hx - 1, hy - 3, 3, 2); ctx.fillStyle = C.waxSh; ctx.fillRect(hx - 1, hy - 2, 1, 1); ctx.fillStyle = C.wax; ctx.fillRect(hx + 2, hy - 1, 1, 1);
   // lantern swings on the belt
   ctx.fillStyle = C.brass; ctx.fillRect(hipX + 4 + lsw, hipY - 4, 3, 4); ctx.fillStyle = C.core; ctx.fillRect(hipX + 5 + lsw, hipY - 3, 1, 2);
-  ctx.fillStyle = '#7a5a2a'; ctx.fillRect(hipX + 4 + lsw, hipY - 4, 3, 1); ctx.fillRect(hipX + 4 + lsw, hipY - 1, 3, 1); ctx.fillStyle = C.brass; ctx.fillRect(hipX + 5 + lsw, hipY - 5, 1, 1);
+  ctx.fillStyle = HP.brass[0]; ctx.fillRect(hipX + 4 + lsw, hipY - 4, 3, 1); ctx.fillRect(hipX + 4 + lsw, hipY - 1, 3, 1); ctx.fillStyle = C.brass; ctx.fillRect(hipX + 5 + lsw, hipY - 5, 1, 1);
   ctx.lineCap = 'butt';
   ctx.restore();
   return R;
@@ -214,7 +214,7 @@ function knightSnap(fn, cx, by, pass) {
   try { r = fn(); } finally { ctx = real; }
   const im = g.getImageData(x0, y0, x1 - x0, y1 - y0), d = im.data;
   // and every solid pixel takes the nearest of the knight's own colours, so plates meet with clean steps, not smudges
-  if (!KSNAP.pal) KSNAP.pal = ['#5a2430', '#7a3442', '#3a1620', '#5d6a82', '#2b3140', '#9aa7bd', '#4a5468', '#6d7a91', C.brass, '#ffe08a', '#c4cee0', '#7b88a0', C.flame, C.core, C.ember, '#f2c76a', C.wax, C.waxSh, '#7a5a2a', '#3a2a1e', '#d7e0ee', '#ffd9a0', '#ffffff'].map(hexRgb);
+  if (!KSNAP.pal) KSNAP.pal = [HP.knight[1], HP.knight[2], HP.knight[0], HP.steel[2], HP.steel[0], HP.steel[5], HP.steel[1], HP.steel[3], C.brass, HP.brass[3], HP.steel[6], HP.steel[4], C.flame, C.core, C.ember, HP.brass[2], C.wax, C.waxSh, HP.brass[0], HP.leather[1], HP.steel[7], HP.lamp, '#ffffff'].map(hexRgb);
   const pal = KSNAP.pal, cache = new Map();
   for (let k = 0; k < d.length; k += 4) {
     if (d[k + 3] < 96) { d[k + 3] = 0; continue; }
@@ -238,7 +238,7 @@ function knightSnap(fn, cx, by, pass) {
       if (src < 0) continue;                                // solid only below: a lit top edge, left open
       const r = d[src * 4], gg = d[src * 4 + 1], b = d[src * 4 + 2];
       const warm = r > gg + 30 && r > b + 10;
-      d[p * 4] = warm ? 42 : 22; d[p * 4 + 1] = warm ? 14 : 26; d[p * 4 + 2] = warm ? 22 : 40; d[p * 4 + 3] = 255;
+      d[p * 4] = warm ? 42 : 16; d[p * 4 + 1] = warm ? 14 : 22; d[p * 4 + 2] = warm ? 22 : 38; d[p * 4 + 3] = 255;
     }
     if (pass === 'A') { const keep = new Uint8Array(w * h); for (let p = 0; p < w * h; p++) keep[p] = d[p * 4 + 3]; KSNAP.lastA = { x0, y0, w, a:keep }; }
   }

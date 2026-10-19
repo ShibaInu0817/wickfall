@@ -8,6 +8,8 @@
 <p align="center">
   <a href="https://shibainu0817.github.io/wickfall/"><img src="https://img.shields.io/badge/%E2%96%B6%20Play%20free-in%20your%20browser-e8a24a?style=for-the-badge" alt="Play free in your browser"></a>
   &nbsp;
+  <a href="https://shibainu0817.github.io/wickfall/homepage/"><img src="https://img.shields.io/badge/Visit-the%20homepage-c9a64e?style=for-the-badge" alt="Visit the homepage"></a>
+  &nbsp;
   <a href="media/trailer.mp4"><img src="https://img.shields.io/badge/Watch-the%20trailer-2b2f3a?style=for-the-badge" alt="Watch the trailer"></a>
 </p>
 
@@ -62,6 +64,7 @@ wickfall/
 │   ├── js/                  the game script, split into numbered parts joined in order (one shared scope)
 │   ├── audio/               the music tracks; sfx/ holds the slash sounds (embedded into the page by the build)
 │   ├── labs/                Boss Lab and Black Wick Skill Lab pages (they embed the game as lab.html)
+│   ├── homepage/            the homepage and its media, served at /homepage/ beside the game
 │   ├── pwa/                 home-screen manifest and icons
 │   └── lab-head.html        the three lines that turn the game into lab.html
 ├── dist/                    what you deploy (generated; do not edit)

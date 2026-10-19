@@ -384,7 +384,7 @@ body:has(.pause-page) #hudLayer{visibility:hidden}
 .hudlayer{position:absolute;inset:0;container-type:size;pointer-events:none;z-index:2}
 .hud{position:absolute;left:3.2cqw;top:calc(6.5cqh + 1.5cqw);display:flex;align-items:center;gap:1.6cqw}
 .vessel{width:8.6cqw;height:8.6cqw;filter:drop-shadow(0 .3cqw .6cqw rgba(0,0,0,.5))}
-.vwax{fill:#c9ba93;transition:y .25s ease-out}.vwax.ok{fill:#efe3c2}
+.vwax{fill:#cf9e7d;transition:y .25s ease-out}.vwax.ok{fill:#efe3c2}
 .vshine{fill:rgba(255,255,255,.18)}
 .vring{stroke:#7b7766}.vring.ok{stroke:#efe3c2}
 .vfocus{stroke:#f2a541;stroke-linecap:round}
