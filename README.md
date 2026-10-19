@@ -26,6 +26,10 @@ It runs in the browser on desktop and phone, with no download, no account and no
     <td><img src="media/screenshots/05-caption.png" alt="End it with a finishing move."></td>
     <td><img src="media/screenshots/06-caption.png" alt="Three heroes, three ways to fight."></td>
   </tr>
+
+https://github.com/user-attachments/assets/08b3d84f-7bf7-4e06-a8b8-6914a9d486b8
+
+
   <tr>
     <td><img src="media/screenshots/07-caption.png" alt="Secrets in the stone."></td>
     <td><img src="media/screenshots/08-caption.png" alt="Something answers from below."></td>
