@@ -5,7 +5,7 @@ const fns={}; for (const n of ['arc','ellipse','moveTo','lineTo','quadraticCurve
 const ctx=new Proxy(fns,{get:(t,k)=>k==='createLinearGradient'||k==='createRadialGradient'?()=>grad:(k in t?t[k]:noop),set:(t,k,v)=>{t[k]=v;return true}});
 function el(){return {getContext:()=>ctx,querySelector:()=>el(),querySelectorAll:()=>[],addEventListener:noop,removeEventListener:noop,classList:{toggle:noop,add:noop,remove:noop,contains:()=>false},setAttribute:noop,appendChild:noop,dataset:{},style:{setProperty:noop,removeProperty:noop},textContent:'',innerHTML:'',hidden:false,clientWidth:740,clientHeight:360,offsetWidth:100,offsetHeight:40,getBoundingClientRect:()=>({left:0,top:0,right:100,bottom:100,width:100,height:100}),setPointerCapture:noop,blur:noop,closest:()=>null,open:false,scrollIntoView:noop,width:0,height:0}}
 const handlers={};
-global.window=global; window.addEventListener=(k,f)=>{(handlers[k]=handlers[k]||[]).push(f)}; window.innerWidth=800; window.innerHeight=400;
+global.window=global; window.UW_NOTIPS=true; window.addEventListener=(k,f)=>{(handlers[k]=handlers[k]||[]).push(f)}; window.innerWidth=800; window.innerHeight=400;
 global.document={getElementById:()=>el(),createElement:()=>el(),querySelectorAll:()=>[],querySelector:()=>el(),addEventListener:noop,body:el(),documentElement:el(),activeElement:null};
 global.matchMedia=()=>({matches:false,addEventListener:noop}); global.localStorage={getItem:()=>null,setItem:noop};
 global.screen={width:800,height:400}; global.navigator={};
@@ -46,7 +46,7 @@ function place(tx,ty){ const P=__P(); P.x=tx*16+3; P.y=(ty||13)*16-P.h; P.vx=0; 
 function press(code,n){ key('keydown',code); frames(n||2); key('keyup',code); }
 function main(){
   const out={};
-  for (const c of ['wick','knight','snuff','hero']) {
+  for (const c of ['wick','knight','hero']) {
     const r={};
     // chapter 1: coins and the smith
     __new(c,'ch1'); frames(3); const G=__G();
@@ -82,7 +82,7 @@ function main(){
   for (const c in out) console.log(c, JSON.stringify(out[c]));
 }
 function bossMain(){
-  for (const c of ['wick','snuff','knight','hero']) {
+  for (const c of ['wick','knight','hero']) {
     __new(c,'ch2'); __room(6,'a'); frames(3); const G=__G(), P=__P();
     let minB=99, src={}; let errs=0, states={}, maxWick=0, bolts=0, minHp=99, hits=0, boss0=null, waxLow=0;
     key('keydown','ArrowRight'); frames(40); key('keyup','ArrowRight');

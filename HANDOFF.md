@@ -11,7 +11,7 @@ For new heroes, enemies, bosses or rooms, read `wickfall-content`; for sound, fe
 - **Keep it light:** no login, no database, no server; saves stay in localStorage under `wf-` keys.
 - **Story:** short, hollow lines.
 - **Boss fights:**
-  - no text hints;
+  - no text hints while fighting (one paused tip on the retry after repeated falls is fine);
   - every attack has its own visible and audible tell;
   - the player is never stuck without wax.
 - **Colour-blind safe:** never signal by colour alone; shapes must differ too.

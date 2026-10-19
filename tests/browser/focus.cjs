@@ -1,7 +1,7 @@
 // Menus: moving with keys shows one unmistakable selection; the default button stops looking selected; the chapter 3 shadow renders.
 const { chromium } = require('playwright');
 (async () => {
-  const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium', args:['--headless=new'], ignoreDefaultArgs:['--headless=old'] });
+  const b = await chromium.launch({ ...(require('fs').existsSync('/opt/pw-browsers/chromium') && { executablePath:'/opt/pw-browsers/chromium' }), args:['--headless=new'], ignoreDefaultArgs:['--headless=old'] });
   const pg = await b.newPage({ viewport:{ width:1100, height:700 } }); const errs = []; pg.on('pageerror', e => errs.push(e.message));
   await pg.goto('file://' + process.cwd() + '/test.html'); await pg.waitForTimeout(900);
   const box = async n => { await (await pg.$('#gameWrap')).screenshot({ path:n }); };

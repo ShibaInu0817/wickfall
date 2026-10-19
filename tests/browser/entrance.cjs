@@ -1,7 +1,7 @@
 // The Black Wick's entrance: input locked and HUD hidden while it plays, then the duel starts; the recorded slash decodes.
 const { chromium } = require('playwright');
 (async () => {
-  const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium', args:['--headless=new', '--autoplay-policy=no-user-gesture-required'], ignoreDefaultArgs:['--headless=old'] });
+  const b = await chromium.launch({ ...(require('fs').existsSync('/opt/pw-browsers/chromium') && { executablePath:'/opt/pw-browsers/chromium' }), args:['--headless=new', '--autoplay-policy=no-user-gesture-required'], ignoreDefaultArgs:['--headless=old'] });
   const pg = await b.newPage({ viewport:{ width:960, height:544 } }); const errs = []; pg.on('pageerror', e => errs.push(e.message));
   await pg.goto('file://' + process.cwd() + '/test.html'); await pg.waitForTimeout(900);
   await pg.mouse.click(300, 300); await pg.evaluate(() => __smp()); await pg.waitForTimeout(600);

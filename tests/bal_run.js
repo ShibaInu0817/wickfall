@@ -5,7 +5,7 @@ const fns={}; for (const n of ['arc','ellipse','moveTo','lineTo','quadraticCurve
 const ctx=new Proxy(fns,{get:(t,k)=>k==='createLinearGradient'||k==='createRadialGradient'?()=>grad:(k in t?t[k]:noop),set:(t,k,v)=>{t[k]=v;return true}});
 function el(){return {getContext:()=>ctx,querySelector:()=>el(),querySelectorAll:()=>[],addEventListener:noop,removeEventListener:noop,classList:{toggle:noop,add:noop,remove:noop,contains:()=>false},setAttribute:noop,appendChild:noop,dataset:{},style:{setProperty:noop,removeProperty:noop},textContent:'',innerHTML:'',hidden:false,clientWidth:740,clientHeight:360,offsetWidth:100,offsetHeight:40,getBoundingClientRect:()=>({left:0,top:0,right:100,bottom:100,width:100,height:100}),setPointerCapture:noop,blur:noop,closest:()=>null,open:false,scrollIntoView:noop,width:0,height:0}}
 const handlers={};
-global.window=global; window.addEventListener=(k,f)=>{(handlers[k]=handlers[k]||[]).push(f)}; window.innerWidth=800; window.innerHeight=400;
+global.window=global; window.UW_NOTIPS=true; window.addEventListener=(k,f)=>{(handlers[k]=handlers[k]||[]).push(f)}; window.innerWidth=800; window.innerHeight=400;
 global.document={getElementById:()=>el(),createElement:()=>el(),querySelectorAll:()=>[],querySelector:()=>el(),addEventListener:noop,body:el(),documentElement:el(),activeElement:null};
 global.matchMedia=()=>({matches:false,addEventListener:noop}); global.localStorage={getItem:()=>null,setItem:noop};
 global.screen={width:800,height:400}; global.navigator={};
@@ -28,14 +28,14 @@ function wisp(c){
   let reach=null; frames(900, i=>{ if(reach==null && (e.dead || Math.hypot(e.x-P.x,e.y-P.y)<14)) reach=(i/60).toFixed(1); });
   return { secondsToReachIdleHero:reach, hitsTaken:G.hits };
 }
-for (const c of ['snuff','knight','hero']) { console.log(c, 'slag', [6,14,24].map(g=>JSON.stringify(slagBehind(c,g))).join(' ')); console.log(c,'wisp',JSON.stringify(wisp(c))); }
+for (const c of ['wick','knight','hero']) { console.log(c, 'slag', [6,14,24].map(g=>JSON.stringify(slagBehind(c,g))).join(' ')); console.log(c,'wisp',JSON.stringify(wisp(c))); }
 function slagApproach(c){
   const {G,P}=flat(c); const e=__mk.slag(14*16, 12*16); e.dir=1; G.enemies.push(e); frames(150); // let a trail build
-  P.x = e.x - 90; P.y = e.y + e.h - P.h; let burn=0, t=0, hits0=G.hits; const reach = c==='snuff'?8:16;
+  P.x = e.x - 90; P.y = e.y + e.h - P.h; let burn=0, t=0, hits0=G.hits; const reach = c==='wick'?8:16;
   frames(420, i=>{ if(e.dead) return; t=i; P.face=1; const gap = e.x - (P.x+P.w);
     for (const pd of G.puddles) if (P.x+P.w > pd.x+2 && P.x < pd.x+pd.w-2) { burn++; break; }
     if (gap > reach) { key('keydown','ArrowRight'); } else { key('keyup','ArrowRight'); if(i%18===0) key('keydown','KeyX'); if(i%18===2) key('keyup','KeyX'); } });
   key('keyup','ArrowRight');
   return { killed:!!e.dead||e.hp<=0, sec:+(t/60).toFixed(1), inFireSec:+(burn/60).toFixed(2), hits:G.hits-hits0 };
 }
-for (const c of ['snuff','knight','hero']) console.log(c,'approach',JSON.stringify(slagApproach(c)));
+for (const c of ['wick','knight','hero']) console.log(c,'approach',JSON.stringify(slagApproach(c)));

@@ -1,15 +1,15 @@
 // ---------- finishing moves: when a boss falls, the hero ends it with a move of their own (one per hero, per boss)
 const FIN = {
   warden:{
-    snuff:{ name:'Last Light', dur:2.4, desc:'Three crossing dash-cuts through the Warden, then a leap and a downward plunge into its crown that snuffs all three of its flames.' },
+    wick:{ name:'Last Light', dur:2.4, desc:'Three crossing dash-cuts through the Warden, then a leap and a downward plunge into its crown that snuffs all three of its flames.' },
     knight:{ name:'Pyre Cleave', dur:2.3, desc:'He hauls the burning claymore overhead and splits the Warden down the middle; a column of fire roars up through the seam.' },
     hero:{ name:'Frozen Severance', dur:2.5, desc:'He sheathes, the world goes dark, and he is suddenly past it. A single white line hangs in the air; at the click of the blade the Warden slides apart, frozen.' } },
   chandler:{
-    snuff:{ name:'Cut the Chain', dur:2.5, desc:'He springs up to the chain that holds it, cuts it with an up-sweep, and the Chandler crashes to the floor in a spray of candles.' },
+    wick:{ name:'Cut the Chain', dur:2.5, desc:'He springs up to the chain that holds it, cuts it with an up-sweep, and the Chandler crashes to the floor in a spray of candles.' },
     knight:{ name:'Rising Pyre', dur:2.5, desc:'He drives the claymore into the stone beneath it; a geyser of fire erupts upward, engulfs the Chandler and brings it down.' },
     hero:{ name:'Moonfall', dur:2.7, desc:'He vanishes into the air. Eight blue cuts appear around the Chandler one by one; he lands behind it, sheathes, and it shatters like ice.' } },
   moth:{
-    snuff:{ name:'Wingclip', dur:2.4, desc:'He vaults over the fallen moth and clips both burning wings in one crossing cut; they drift down as ash and the last of its fire gutters out.' },
+    wick:{ name:'Wingclip', dur:2.4, desc:'He vaults over the fallen moth and clips both burning wings in one crossing cut; they drift down as ash and the last of its fire gutters out.' },
     knight:{ name:'Kiln Breaker', dur:2.4, desc:'He leaps, brings the claymore down across its back, and the kiln fire it stole roars up out of it in a pillar.' },
     hero:{ name:'Severed Wings', dur:2.6, desc:'Two strokes, left and right, too fast to see. Two white lines cross over the moth; at the click of the blade its wings fall away like frost.' } }
 };
@@ -37,14 +37,14 @@ function drawDowned(cx0, t) {
   ctx.strokeStyle = '#3a2a12'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 7, 0, TAU); ctx.stroke();
   if (k > 0) { ctx.strokeStyle = '#f2a541'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 7, -Math.PI / 2, -Math.PI / 2 + k * TAU); ctx.stroke(); }
   ctx.fillStyle = '#f6e7bf'; ctx.beginPath(); ctx.moveTo(x, y - 4 - (near ? pulse : 0)); ctx.lineTo(x + 3.5, y + 1 - (near ? pulse : 0)); ctx.lineTo(x - 3.5, y + 1 - (near ? pulse : 0)); ctx.fill(); ctx.fillRect(x - 1, y, 2, 3);
-  if (near) { ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '7px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#f2c46a'; gtext(TOUCH ? 'PUSH UP · FINISH' : 'HOLD ↑ · FINISH', x, y - 13); }
+  if (near) { ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '9px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#f2c46a'; gtext(TOUCH ? 'PUSH UP · FINISH' : 'HOLD ↑ · FINISH', x, y - 15); }
   ctx.restore();
 }
 // when each finisher's killing blow lands (seconds into the move): the riser peaks and the big hit plays there
-const FIN_KILL = { 'warden:snuff':1.5, 'chandler:snuff':0.82, 'moth:snuff':0.62, 'warden:knight':0.5, 'chandler:knight':0.5, 'moth:knight':0.52, 'warden:hero':1.3, 'chandler:hero':1.4, 'moth:hero':1.45 };
+const FIN_KILL = { 'warden:wick':1.5, 'chandler:wick':0.82, 'moth:wick':0.62, 'warden:knight':0.5, 'chandler:knight':0.5, 'moth:knight':0.52, 'warden:hero':1.3, 'chandler:hero':1.4, 'moth:hero':1.45 };
 function startFinish(B) {
   if (!B) return;
-  const kind = B.kind === 'chandler' ? 'chandler' : B.kind === 'moth' ? 'moth' : 'warden', hero = ROSTER.includes(G.char) ? G.char : 'snuff', def = FIN[kind][hero];
+  const kind = B.kind === 'chandler' ? 'chandler' : B.kind === 'moth' ? 'moth' : 'warden', hero = ROSTER.includes(G.char) ? G.char : 'wick', def = FIN[kind][hero];
   const gy = kind === 'chandler' || kind === 'moth' ? 13 * T : B.y + B.h, bcx = B.x + B.w / 2, side = (P.x + P.w / 2) < bcx ? -1 : 1;
   G.finish = { t:0, kind, hero, B, def, gy, side, bcx, once:{}, hideP:false, hideB:false, split:0, cut:false, vy:0, lines:[], dim:0, fire:-1, geyser:-1, jump:null, killT:FIN_KILL[kind + ':' + hero] || 1, punch:0 };
   B.finished = true; sfx('finStart', hero);
@@ -54,7 +54,7 @@ function startFinish(B) {
 }
 function finPlace(x, y) { const F = G.finish; P.x = x - P.w / 2; P.y = (y == null ? F.gy : y) - P.h; P.grounded = y == null; P.vx = 0; P.vy = 0; }
 function finArc(F, x0, y0, x1, y1, t0, t1, h) { const k = clamp((F.t - t0) / (t1 - t0), 0, 1); finPlace(x0 + (x1 - x0) * k, y0 + (y1 - y0) * k - Math.sin(k * Math.PI) * h); P.grounded = false; return k; }
-function finSnuffSwing(dir, alt) { P.atkDir = dir; P.atkT = SN.dur; P.alt = !!alt; P.atkHit = new Set(); }
+function finWickSwing(dir, alt) { P.atkDir = dir; P.atkT = SN.dur; P.alt = !!alt; P.atkHit = new Set(); }
 function finKnightSlam() { const sw = knightSwing('side', 4, true); Object.assign(P, { atkDir:'side', combo:4, fin:false, swing:sw, atkDur:sw.d, atkT:sw.d, swFrom:P.swAng, struck:false, landed:false }); }
 function finHeroCut() { const sw = heroSwing('side', 1, false); Object.assign(P, { atkDir:'side', combo:1, fin:false, swing:sw, atkDur:sw.d, atkT:sw.d, swFrom:P.swAng, struck:0, hWin:-1, comboT:0 }); }
 function finCrash(F) {
@@ -78,17 +78,17 @@ function updateFinish(dt) {
   if (!F.swelled && t >= F.killT - swl) { F.swelled = true; sfx('finSwell', F.killT - t); }
   if (!F.blown && t >= F.killT) { F.blown = true; F.punch = 1; sfx('finBlow', F.hero); }
   F.punch = Math.max(0, F.punch - dt * 2.5);
-  if (k === 'warden:snuff') {
+  if (k === 'warden:wick') {
     once('a', 0, () => { finPlace(bcx + sd * 40); P.face = -sd; });
     [0.35, 0.6, 0.85].forEach((at, i) => once('d' + i, at, () => {
       const d = i % 2 ? sd : -sd, y = top + B.h * (0.3 + 0.18 * i), ang = (i % 2 ? 0.22 : -0.22);
-      finPlace(bcx + d * 36); P.face = -d; finSnuffSwing('side', i % 2);
+      finPlace(bcx + d * 36); P.face = -d; finWickSwing('side', i % 2);
       G.fx.push({ k:'slash', x:bcx, y, ang, t:0.25, max:0.25, len:80 }); impact(bcx, y, ang, true);
       sfx('nSlash', i % 2 === 1); sfx('finCut', i); G.shake = Math.max(G.shake, 6); B.flash = 0.08; G.hitstop = Math.max(G.hitstop, 0.04);
     }));
     once('leap', 1.05, () => sfx('finLeap'));
     if (t >= 1.05 && t < 1.38) { if (!F.jump) F.jump = { x:P.x + P.w / 2 }; finArc(F, F.jump.x, F.gy, bcx, top - 30, 1.05, 1.38, 10); P.face = sd; }
-    once('p', 1.38, () => finSnuffSwing('down'));
+    once('p', 1.38, () => finWickSwing('down'));
     if (t >= 1.38 && t < 1.5) finPlace(bcx, top - 30 + (t - 1.38) / 0.12 * 30);
     once('hit', 1.5, () => {
       G.shake = Math.max(G.shake, 14); G.hitstop = Math.max(G.hitstop, 0.12); screenFlash(0.5, 0.15, '255,230,180'); sfx('bslam'); sfx('hit'); B.state = 'dead'; B.flash = 0.1;
@@ -98,11 +98,11 @@ function updateFinish(dt) {
     });
     if (t >= 1.5 && t < 1.9) { finArc(F, bcx, top, bcx + sd * 36, F.gy, 1.5, 1.9, 12); P.face = -sd; }
     once('land', 1.9, () => { finPlace(bcx + sd * 36); P.face = -sd; P.landT = 0.14; dust(P.x + P.w / 2, F.gy, 6); });
-  } else if (k === 'chandler:snuff') {
+  } else if (k === 'chandler:wick') {
     once('a', 0, () => { finPlace(bcx + sd * 26); P.face = -sd; });
     once('leap', 0.4, () => sfx('finLeap'));
     if (t >= 0.4 && t < 0.78) { if (!F.jump) F.jump = { x:P.x + P.w / 2 }; finArc(F, F.jump.x, F.gy, bcx + sd * 6, top - 6 + P.h, 0.4, 0.78, 6); P.face = -sd; }
-    once('up', 0.74, () => finSnuffSwing('up'));
+    once('up', 0.74, () => finWickSwing('up'));
     once('cut', 0.82, () => {
       F.cut = true; F.vy = -40; B.state = 'dead';
       impact(bcx, top - 10, -Math.PI / 2, true); sfx('nSlash'); sfx('hit'); tone2(1400, 0.4, 'triangle', 0.06, 0.6); G.shake = Math.max(G.shake, 6); G.hitstop = Math.max(G.hitstop, 0.08);
@@ -110,12 +110,12 @@ function updateFinish(dt) {
     });
     if (t >= 0.82 && !F.once.land) { F.pvy = (F.pvy == null ? -120 : F.pvy) + 900 * dt; P.y = Math.min(F.gy - P.h, P.y + F.pvy * dt); P.x += (bcx + sd * 40 - P.w / 2 - P.x) * Math.min(1, dt * 5); P.face = -sd; P.grounded = false;
       if (P.y >= F.gy - P.h) { F.once.land = 1; finPlace(P.x + P.w / 2); P.face = -sd; P.landT = 0.14; dust(P.x + P.w / 2, F.gy, 6); } }
-  } else if (k === 'moth:snuff') {
+  } else if (k === 'moth:wick') {
     once('a', 0, () => { finPlace(bcx + sd * 40); P.face = -sd; });
     once('leap', 0.3, () => sfx('finLeap'));
     if (t >= 0.3 && t < 0.62) { if (!F.jump) F.jump = { x:P.x + P.w / 2 }; finArc(F, F.jump.x, F.gy, bcx, top - 18, 0.3, 0.62, 14); P.face = -sd; }
     once('clip', 0.62, () => {
-      finSnuffSwing('side', true); B.noWings = true; B.flash = 0.1;
+      finWickSwing('side', true); B.noWings = true; B.flash = 0.1;
       for (const a of [-0.5, 0.5]) G.fx.push({ k:'slash', x:bcx, y:top + 4, ang:a, t:0.3, max:0.3, len:96 });
       impact(bcx, top + 4, 0.4, true); sfx('nSlash', true); sfx('hit'); sfx('mScreech'); G.shake = Math.max(G.shake, 9); G.hitstop = Math.max(G.hitstop, 0.12); screenFlash(0.45, 0.12, '255,220,170');
       for (let i = 0; i < 26; i++) { const s = i % 2 ? 1 : -1; G.parts.push({ x:bcx + s * rand(6, 34), y:top + rand(-8, 8), vx:s * rand(10, 60), vy:rand(-60, -10), life:rand(1.2, 2), max:2, c:['#8a3218', '#d4632a', '#ffe08a', '#2a120c'][i % 4], s:Math.random() < 0.5 ? 3 : 2, g:40 }); }

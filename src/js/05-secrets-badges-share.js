@@ -86,6 +86,8 @@ const BADGES = [
   ['embers', 'Spare Flame', 'Find every hidden ember.']
 ];
 const ACH = (() => { try { return JSON.parse(localStorage.getItem('wf-ach') || '{}') || {}; } catch (_) { return {}; } })();
+// badges from before the rename keyed Wick's party runs as 'snuff'
+for (const k of ['party1', 'party2', 'party3']) { const p = ACH[k]; if (p && p.snuff) { p.wick = 1; delete p.snuff; try { localStorage.setItem('wf-ach', JSON.stringify(ACH)); } catch (_) {} } }
 function achSave() { try { localStorage.setItem('wf-ach', JSON.stringify(ACH)); } catch (_) {} }
 function earn(id) {
   if (ACH[id] || LAB.on || G.gal) return false;

@@ -1,6 +1,6 @@
 const { chromium } = require('playwright');
 (async () => {
-  const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium', args:['--headless=new'], ignoreDefaultArgs:['--headless=old'] });
+  const b = await chromium.launch({ ...(require('fs').existsSync('/opt/pw-browsers/chromium') && { executablePath:'/opt/pw-browsers/chromium' }), args:['--headless=new'], ignoreDefaultArgs:['--headless=old'] });
   for (const [name, vp] of [['iphone-se', { width:667, height:375 }], ['iphone-14', { width:844, height:390 }], ['android', { width:915, height:412 }]]) {
     const ctx = await b.newContext({ viewport:vp, deviceScaleFactor:2, isMobile:true, hasTouch:true });
     const pg = await ctx.newPage();

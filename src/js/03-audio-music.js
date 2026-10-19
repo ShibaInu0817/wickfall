@@ -150,7 +150,7 @@ function updateBgm() {
   }
   let vol = BGM.cur === 'c3wyrm' || BGM.cur === 'c3moth' || BGM.cur === 'boss' ? 0.42 : 0.5, cut = 18000;
   if (G.state === 'title') vol = 0.6;
-  else if (G.state === 'paused') { vol = 0.3; cut = 700; }
+  else if (G.state === 'paused' || G.state === 'tip') { vol = 0.3; cut = 700; }
   else if (G.state === 'won') vol = 0.55;
   else if (G.abyss && G.abyss.in != null) vol = Math.max(0.12, 0.5 - G.abyss.in * 0.1);
   else if (G.cine && !G.cine.roared) vol = 0.05;
@@ -308,7 +308,7 @@ const SFX = {
     ring([[1760, 1], [2640, 0.7], [3520, 0.5], [4710, 0.35], [5920, 0.25]], 1.2, 0.04);
     for (let i = 0; i < 6; i++) shing(2800 + Math.random() * 3600, 0.018, 0.04 + i * 0.07);
     frost(1.0, 0.07, 0.15); }),
-  // Snuff: a quick airy swish (pitch alternates with the stroke) and a crisp, bright hit
+  // Wick: a quick airy swish (pitch alternates with the stroke) and a crisp, bright hit
   nSlash:alt => { const v = (alt ? 1.12 : 1) * (0.96 + Math.random() * 0.08);
     nsweep(0.1, 0.3, 'bandpass', 800 * v, 3400 * v, 1.1); nsweep(0.07, 0.09, 'highpass', 4200 * v, 6500 * v, 0.7, 0.015); tone2(260 * v, 0.05, 'triangle', 0.025, 1.5); },
   nHit:() => { nsweep(0.025, 0.3, 'highpass', 5000, 2500, 0.7); nsweep(0.07, 0.3, 'bandpass', 2200, 700, 1.3, 0.004);

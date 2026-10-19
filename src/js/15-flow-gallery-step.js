@@ -47,13 +47,13 @@ function loadRoom(i, entry) {
 function finishTutorial() {
   try { localStorage.setItem('wf-tut', '1'); } catch (_) {}
   startFade(() => {
-    resetPlayer(); P.hp = P.maxHp; P.wax = 0; G.time = 0; G.deaths = 0; G.cp = { room:FIRST }; G.hinted = {};
+    resetPlayer(); P.hp = P.maxHp; P.wax = 0; G.time = 0; G.deaths = 0; G.cp = { room:FIRST }; G.hinted = {}; G.tipQ = []; G.bossFalls = {}; $('tipCard').hidden = true;
     loadRoom(FIRST, 'P'); setTimeout(() => toast('Lesson done. Rest at shrines to save your progress.', 3600), 2900);
   });
 }
 function startFade(cb) { if (G.fadeDir === 1) return; G.fadeDir = 1; G.fadeCb = cb; }
 function pickChar(id) {
-  if (id === 'wick') id = 'snuff';
+  id = heroId(id);
   if (!CHARS[id]) return;
   G.char = id; try { localStorage.setItem('wf-char', id); } catch (_) {}
   if (G.state === 'title') setOverlay('title');
@@ -75,8 +75,8 @@ const HOME_ITEMS = [
   { id:'chars', label:'Characters (Beta)', help:() => 'Every hero, foe and boss, animated live, with stats, tells and how to beat them.' },
   { id:'howto', label:'How to Play', help:() => 'Controls, Focus, skills and shrines.' }
 ];
-const HERO_STATS = { wick:{ Speed:4, Reach:2, Power:2 }, snuff:{ Speed:4, Reach:3, Power:2 }, knight:{ Speed:2, Reach:3, Power:4 }, hero:{ Speed:5, Reach:4, Power:5 } };
-const HERO_LINE = { wick:'brass hook', snuff:'pin, wide slash', knight:'two-handed greatsword', hero:'cold-flame blade' };
+const HERO_STATS = { wick:{ Speed:4, Reach:3, Power:2 }, knight:{ Speed:2, Reach:3, Power:4 }, hero:{ Speed:5, Reach:4, Power:5 } };
+const HERO_LINE = { wick:'pin, wide slash', knight:'two-handed greatsword', hero:'cold-flame blade' };
 function homeAct(i) {
   const it = HOME_ITEMS[i]; sfx('chime');
   if (it.id === 'descend') goMenu('select');
@@ -220,7 +220,7 @@ function newGame(mode) {
   releaseAll(); resetPlayer(); P.maxHp = heroMaxHp(); P.hp = P.maxHp; P.wax = 0;
   G.chapter = ch; G.coins = 0; G.coinGot = {}; G.lit = {}; G.broken = {};
   G.assisted = COMF.assist; G.bossHits0 = null; G.embersGot = {};
-  G.bossDown = false; G.time = 0; G.deaths = 0; G.hits = 0; G.rankRes = null; G.duel = false; G.rush = null; G.cp = { room:first }; G.hinted = {}; G.winT = 0; G.fade = 0; G.fadeDir = 0;
+  G.bossDown = false; G.time = 0; G.deaths = 0; G.hits = 0; G.rankRes = null; G.duel = false; G.rush = null; G.cp = { room:first }; G.hinted = {}; G.tipQ = []; G.bossFalls = {}; $('tipCard').hidden = true; G.winT = 0; G.fade = 0; G.fadeDir = 0;
   G.skills = Object.assign({}, CHAPTERS[ch].skills); G.vig = 0; G.flash.t = 0; syncSkillUI();
   G.state = 'play'; setOverlay(null); setPauseLabels('Pause');
   loadRoom(first, 'P');
@@ -252,7 +252,7 @@ function step(dt) {
   if ((G.winT <= 0 || G.boss) && !(G.abyss && (G.abyss.in != null || G.abyss.crackIn != null))) G.time += dt;
   if (P.locked > 0) {
     P.locked -= dt;
-    if (P.locked <= 0) startFade(() => { P.x = P.safe.x; P.y = P.safe.y; P.vx = 0; P.vy = 0; P.inv = 0.8; });
+    if (P.locked <= 0) startFade(() => { P.x = P.safe.x; P.y = P.safe.y; P.vx = 0; P.vy = 0; P.inv = Math.max(P.inv, RESPAWN_INV); });
   } else {
     if (G.cine || G.uent || (G.boss && G.boss.state === 'pupa' && G.boss.pt > 2.6)) { I.hit = {}; for (const k in I.down) I.down[k] = false; }
     if (G.abyss && (G.abyss.in != null || G.abyss.crackIn != null)) { I.hit = {}; for (const k in I.down) I.down[k] = false; }
@@ -290,5 +290,6 @@ function step(dt) {
   G.shake = Math.max(0, G.shake - dt * (G.shake > 9 ? 15 : 22));   // big shakes linger a little longer
   if (G.jolt || G.joltV) { G.joltV = (G.joltV || 0) + (-260 * (G.jolt || 0) - 16 * (G.joltV || 0)) * dt; G.jolt = (G.jolt || 0) + G.joltV * dt; if (Math.abs(G.jolt) < 0.05 && Math.abs(G.joltV) < 1) G.jolt = G.joltV = 0; }
   if (G.winT > 0) { G.winT -= dt; if (G.winT <= 0) { if (G.rush && !G.rush.ended) rushNext(); else { G.state = 'won'; setOverlay('won'); } } }
+  tickTips(dt);
 }
 

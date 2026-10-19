@@ -1,14 +1,14 @@
-// ---------- Snuff: a little candle-snuffer with a pin. Same stats as Wick; a wide, flat, nail-style crescent on every swing.
+// ---------- Wick: a little candle-spirit with a pin (short sword); a wide, flat, nail-style crescent on every swing.
 const SN = { dur:0.2, cd:0.3 };
-function snuffSlashGeom(dir, cx, by, f) {
+function wickSlashGeom(dir, cx, by, f) {
   // local space: the crescent opens toward +x; mirrored and rotated into place
   if (dir === 'up') return { ox:cx, oy:by - 9, rot:-Math.PI / 2, sx:1, sy:f, Rx:28, Ry:23 };
   if (dir === 'down') return { ox:cx, oy:by - 6, rot:Math.PI / 2, sx:1, sy:-f, Rx:28, Ry:23 };
   return { ox:cx - f * 5, oy:by - 8, rot:0, sx:f, sy:P.alt ? -1 : 1, Rx:35, Ry:18 };
 }
-function drawSnuffSlash(cx, by, f) {
+function drawWickSlash(cx, by, f) {
   const p = clamp(1 - P.atkT / SN.dur, 0, 1); if (p >= 0.92) return;
-  const g = snuffSlashGeom(P.atkDir, cx, by, f);
+  const g = wickSlashGeom(P.atkDir, cx, by, f);
   const A0 = -1.35, A1 = 1.35, span = A1 - A0;
   const head = A0 + span * Math.min(1, p * 4.2);                // the edge whips across in the first quarter
   const tail = A0 + span * Math.max(0, (p - 0.3) / 0.62);       // then the crescent thins away toward its tip
@@ -54,7 +54,7 @@ function drawWickSword(hx, hy, dx, dy) {
 // selective outline; fire, glow, streaks and smears are left exactly as drawn.
 const CRISP = { c:null, g:null, pal:{} };
 const CRISP_PAL = {
-  snuff:['#18121f', '#211a14', '#2a2222', '#2a3c52', '#3a2a1e', '#3a3046', '#4a3426', '#4b6b8f', '#7c9cbd', '#7d8aa0', '#a7c4dd', '#c9ba93', '#c9d3e2', '#d9caa2', '#efe3c2', '#f2c46a', '#f7ecd2', '#fff7e2', '#ffffff', '#c79a4a'],
+  wick:['#18121f', '#211a14', '#2a2222', '#2a3c52', '#3a2a1e', '#3a3046', '#4a3426', '#4b6b8f', '#7c9cbd', '#7d8aa0', '#a7c4dd', '#c9ba93', '#c9d3e2', '#d9caa2', '#efe3c2', '#f2c46a', '#f7ecd2', '#fff7e2', '#ffffff', '#c79a4a'],
   hero:['#0e121c', '#121826', '#123a6b', '#1a2030', '#1a2233', '#1a2440', '#1c2230', '#2a3348', '#2b3d66', '#2f78d8', '#3d4c68', '#4aa8ff', '#55657f', '#5cb2ff', '#7cc8ff', '#8a93a3', '#8fb3d9', '#9fb8d8', '#b4c3d8', '#b4f4ff', '#b9c2cf', '#c9d6e8', '#d3dae4', '#d9b46a', '#e6eef8', '#e6fbff', '#e8ecf2', '#ffffff']
 };
 function crispChar(id, fn, cx, by) {
@@ -92,7 +92,7 @@ function crispChar(id, fn, cx, by) {
   real.save(); real.setTransform(1, 0, 0, 1, 0, 0); real.drawImage(CRISP.c, x0, y0, w, h, x0, y0, w, h); real.restore();
   return r;
 }
-function drawSnuffBody(cx, by, f, t, sit) {
+function drawWickBody(cx, by, f, t, sit) {
   const atk = P.atkT > 0, p = atk ? 1 - P.atkT / SN.dur : 1;
   // weight, the way a hand-animated platformer hero moves: stretch on take-off, squash on landing, a lunge into the slash
   const ddt = clamp(t - (P._lt == null ? t : P._lt), 0, 0.05); P._lt = t;
@@ -127,7 +127,7 @@ function drawSnuffBody(cx, by, f, t, sit) {
   let wx, wy, dx, dy, behind = false;
   if (atk) {
     // during a swing the blade leads the crescent's edge, then holds the follow-through
-    const g = snuffSlashGeom(P.atkDir, cx, by, f), a = -1.35 + 2.7 * Math.min(1, p * 4.2);
+    const g = wickSlashGeom(P.atkDir, cx, by, f), a = -1.35 + 2.7 * Math.min(1, p * 4.2);
     const lx = Math.cos(a) * g.sx, ly = Math.sin(a) * g.sy, c = Math.cos(g.rot), sn = Math.sin(g.rot);
     dx = lx * c - ly * sn; dy = lx * sn + ly * c; wx = bx + f * 2 + dx * 2; wy = by - 7 + low + bob + dy * 2;
   } else if (P.healT > 0 || sit) {

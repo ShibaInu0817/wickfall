@@ -90,7 +90,7 @@ Each boss has `type:'boss', kind:'x'` and a state machine. Touch these places; g
 10. **Boss Lab:** if it is complex, expose its states and sliders like `ch3/bosses.html` or `umlab/skills.html`. Labs talk to the game by postMessage (lab commands such as `speed`, `hold`, `ushow`).
 
 **Boss design rules the owner cares about:**
-- No text hints in a fight.
+- No text hints in a fight. A paused tip on the retry after repeated falls is allowed.
 - Every tell is unique.
 - A heavy attack shakes the screen (use `heavyShake(n)`).
 - Roars and screams are loud enough over the music.
@@ -106,10 +106,10 @@ Each boss has `type:'boss', kind:'x'` and a state machine. Touch these places; g
 Heroes are ids in `CHARS` and `ROSTER` (02). There are about 70 places that branch on the hero id. Find them all first:
 
 ```bash
-grep -n "G.char === '\|id === '\|=== 'knight'\|=== 'hero'\|=== 'snuff'" src/js/*.js
+grep -n "G.char === '\|id === '\|=== 'knight'\|=== 'hero'\|=== 'wick'" src/js/*.js
 ```
 
-- **Cheapest route:** reuse Wick's (`snuff`) paths. The `else` branches default to Wick, so give it new stats in `CHARS` and new drawing. For a distinct moveset, mirror the Lampknight (`knight`) pattern:
+- **Cheapest route:** reuse Wick's (`wick`) paths. The `else` branches default to Wick, so give it new stats in `CHARS` and new drawing. For a distinct moveset, mirror the Lampknight (`knight`) pattern:
   - a swing table `xSwing(dir, n, fin)` returning `{d, dmg, ...}`
   - pose updates (`updateKnightPose`)
   - a body draw (`drawKnightBody`, with `knightSnap` for crisp rotated pixels)

@@ -24,6 +24,7 @@ window.addEventListener('keydown', e => {
   { const sb = G.state === 'won' && overlay.querySelector('.sharebox'); if (sb) { if (e.code === 'Escape' || e.code === 'Backspace') { e.preventDefault(); sb.remove(); focusMenu(); } return; } }   // the score card keeps the keys while it is open
   if (G.story) { e.preventDefault(); if (!e.repeat) storyNext(e.code === 'Escape'); return; }
   if (G.descend) { e.preventDefault(); return; } // nothing interrupts the descent
+  if (G.state === 'tip') { e.preventDefault(); if (!e.repeat && (e.code === 'Space' || e.code === 'Enter' || e.code === 'Escape' || KEYMAP[e.code] === 'attack' || KEYMAP[e.code] === 'skill' || KEYMAP[e.code] === 'jump')) closeTip(); return; }
   if (G.state === 'title' && (e.code === 'Escape' || e.code === 'Backspace')) { e.preventDefault(); if (G.menu === 'home' && G.homeFocus === 'party') goMenu('home'); else if (G.menu === 'chapter') goMenu('select'); else if (G.menu !== 'home') goMenu('home'); sfx('blip'); return; }
   if (e.code === 'KeyP' || e.code === 'Escape') { e.preventDefault(); if (!e.repeat) togglePause(); return; }
   if (e.code === 'KeyM') { if (!e.repeat) toggleMute(); return; }
@@ -161,6 +162,7 @@ function pollPad() {
       if (sb && k === 'heal') { sb.remove(); focusMenu(); }
       else if (sb && (k === 'left' || k === 'right' || k === 'up' || k === 'down')) { const bs = [...sb.querySelectorAll('button')], i = bs.indexOf(document.activeElement); const nb = bs[(i + (k === 'left' || k === 'up' ? bs.length - 1 : 1)) % bs.length] || bs[0]; if (nb) nb.focus({ preventScroll:true }); }
       else if (sb && (k === 'jump' || k === 'attack')) { const f = document.activeElement; if (f && sb.contains(f)) f.click(); }
+      else if (G.state === 'tip') { if (k !== 'left' && k !== 'right' && k !== 'up' && k !== 'down') closeTip(); }
       else if (k === 'pause') togglePause();
       else if (G.state === 'title' && G.menu === 'home' && G.homeFocus !== 'party' && (k === 'up' || k === 'down')) homeMove(k === 'up' ? -1 : 1);
       else if (inMenu && G.menu !== 'select' && (k === 'up' || k === 'down' || ((k === 'left' || k === 'right') && G.menu !== 'home'))) menuNav(k);

@@ -278,15 +278,16 @@ function drawGates(cx0, t) {
       const bob = Math.sin(t * 4) * 2, a2 = near ? 1 : 0.45;
       ctx.save(); ctx.globalAlpha = a2; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       if (G.skills.dive) {
-        for (let i = 0; i < 2; i++) { const yy = my - 22 + i * 5 + bob; ctx.fillStyle = i ? '#f2a541' : '#fff1c1'; ctx.beginPath(); ctx.moveTo(mx - 4, yy); ctx.lineTo(mx + 4, yy); ctx.lineTo(mx, yy + 4); ctx.fill(); }
-        if (near) { ctx.font = '7px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#f2c46a'; gtext(TOUCH ? 'STICK ↓ + SPARK' : 'WAX DIVE  ↓ + E', mx, my - 30 + bob); }
+        markArrow(mx, my - 22 + bob);
+        if (near) { ctx.font = '9px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#f2c46a'; gtext(TOUCH ? 'STICK ↓ + SPARK' : 'WAX DIVE  ↓ + E', mx, my - 32 + bob); }
       } else if (near) {
-        ctx.font = '7px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#efe3c2'; gtext('WAX FLOOR', mx, my - 24 + bob);
+        ctx.font = '9px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#efe3c2'; gtext('WAX FLOOR', mx, my - 26 + bob);
       }
       ctx.restore();
     }
   }
   // braziers: an iron bowl hanging from a chain, cold or roaring
+  const bzNear = bz => !bz.lit && G.skills.bolt && Math.abs(bz.x - (P.x + P.w / 2)) < 150;
   for (const bz of G.braziers || []) {
     const x = Math.round(bz.x - cx0), y = bz.y; if (x < -30 || x > W + 30) continue;
     ctx.fillStyle = '#4a4e58'; for (let yy = T; yy < y - 6; yy += 3) ctx.fillRect(x, yy, 1, 2);
@@ -294,6 +295,10 @@ function drawGates(cx0, t) {
     ctx.fillStyle = '#5b6070'; ctx.fillRect(x - 6, y - 5, 12, 1);
     if (bz.lit) { drawFlame(x + 0.5, y - 4, 1.7, t * 1.3 + bz.x, C.flame, C.core); }
     else { ctx.fillStyle = '#5a2a20'; ctx.fillRect(x - 3, y - 6, 2, 1); ctx.fillRect(x + 1, y - 6, 2, 1); if ((t * 0.8 + bz.x) % 1 < 0.5) { ctx.fillStyle = 'rgba(120,120,130,.4)'; ctx.fillRect(x, y - 9 - ((t * 6) % 6), 1, 1); } }
+    if (bzNear(bz) && G.state !== 'title') { // point at the cold bowl until it is lit
+      const bob = Math.sin(t * 4) * 2; markArrow(x, y - 20 + bob);
+      ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '9px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = '#f2c46a'; gtext(TOUCH ? 'TAP SPARK' : 'EMBER BOLT  E', x, y - 30 + bob); ctx.restore();
+    }
   }
   if (!G.gates) return;
   for (const g of G.gates) {
@@ -366,11 +371,11 @@ function updateWorld() {
   if (G.cracks.size && !P.dead) {
     for (const k of G.cracks) { const [x, y] = k.split(',').map(Number); if (Math.abs(x * T + 8 - (P.x + P.w / 2)) < 56 && Math.abs(y * T - (P.y + P.h)) < 24) {
       if (G.skills.dive) waxNudge('a Wax Dive');
-      hint(G.skills.dive ? 'crack1' : 'crack0', G.skills.dive ? tip('This floor is soft white wax. Stand on it, hold the stick down and tap spark to Wax Dive through.', 'This floor is soft white wax. Stand on it and Wax Dive (↓ + E) through.') : 'This floor is soft white wax. Something hot and heavy could melt through it; maybe the blacksmith can help.', 4200); break; } }
+      if (G.skills.dive) showTip('crack1'); else hint('crack0', 'This floor is soft white wax. Something hot and heavy could melt through it; maybe the blacksmith can help.'); break; } }
   }
   for (const bz of G.braziers) { bz.t += 0.016;
     if (!bz.lit && Math.abs(bz.x - (P.x + P.w / 2)) < 170) waxNudge('Ember Bolt');
-    if (bz.openIn > 0 && (bz.openIn -= 1 / 120) <= 0) for (const g of G.gates) if (g.id === bz.id && !g.open) openGate(g); if (!bz.lit && Math.abs(bz.x - (P.x + P.w / 2)) < 150) hint('brazier', tip('A cold brazier, out of reach. Climb level with it and tap spark to fire Ember Bolt.', 'A cold brazier, out of reach. Climb level with it and press E to fire Ember Bolt.'), 4400); }
+    if (bz.openIn > 0 && (bz.openIn -= 1 / 120) <= 0) for (const g of G.gates) if (g.id === bz.id && !g.open) openGate(g); if (!bz.lit && Math.abs(bz.x - (P.x + P.w / 2)) < 150 && G.skills.bolt) showTip('brazier'); }
 }
 function openGate(g) {
   g.open = true; g.fade = 1;
@@ -423,9 +428,13 @@ function drawLight(cx0) {
 }
 const FLAME_SVG = '<svg viewBox="0 0 10 14"><path d="M5 0C6 3 9 5 9 8.5A4 4 0 0 1 1 8.5C1 5 4 3 5 0z" fill="CO"/><path d="M5 5c.6 1.6 2 2.6 2 4a2 2 0 0 1-4 0c0-1.4 1.4-2.4 2-4z" fill="CI"/></svg>';
 const hudLast = {};
+// the bobbing two-tone "here" arrow, pointing down at (x, y + 9)
+function markArrow(x, y) {
+  for (let i = 0; i < 2; i++) { const yy = y + i * 5; ctx.fillStyle = i ? '#f2a541' : '#fff1c1'; ctx.beginPath(); ctx.moveTo(x - 4, yy); ctx.lineTo(x + 4, yy); ctx.lineTo(x, yy + 4); ctx.fill(); }
+}
 function updateHUD() {
   const layer = $('hudLayer'); if (!layer) return;
-  const show = (G.state === 'play' || G.state === 'paused') && !G.cine && !G.finish && !G.descend;
+  const show = (G.state === 'play' || G.state === 'paused' || G.state === 'tip') && !G.cine && !G.finish && !G.descend;
   if (layer.hidden === show) layer.hidden = !show;
   if (!show) return;
   // embers: rebuilt only when health or max change
@@ -507,7 +516,7 @@ function drawHeroAt(id, x, by, face, sit, t, dt) {
   finally { Object.assign(P, saveP); G.char = save.char; muted = save.muted; G.shake = save.shake; G.parts = save.parts; G.fx = save.fx; G.flash = save.flash; G.hitstop = save.hitstop; }
 }
 const campCam = { x:W / 2, y:H / 2, z:1 };
-const CAMP_SX = 300, CAMP_GY = 224, CAMP_SPOTS = { knight:[-34, 1], snuff:[-17, 1], hero:[26, -1] };
+const CAMP_SX = 300, CAMP_GY = 224, CAMP_SPOTS = { knight:[-34, 1], wick:[-17, 1], hero:[26, -1] };
 function drawCamp(t) {
   const dt = Math.min(0.05, Math.max(0, t - campLast)); campLast = t;
   // where the camera wants to be
@@ -539,7 +548,7 @@ function drawCamp(t) {
   ctx.fillStyle = C.wax; ctx.fillRect(sx - 2, gy - 24, 5, 10); ctx.fillStyle = C.waxSh; ctx.fillRect(sx + 2, gy - 24, 1, 10); ctx.fillStyle = '#2a2222'; ctx.fillRect(sx, gy - 26, 1, 2);
   drawFlame(sx + 0.5, gy - 26, 1.3, t, C.flame, C.core);
   // the party: the chosen hero stands, the rest sit facing the flame
-  for (const id of ['knight', 'snuff', 'hero']) drawHeroAt(id, sx + CAMP_SPOTS[id][0], gy, CAMP_SPOTS[id][1], id !== G.char, t, dt);
+  for (const id of ['knight', 'wick', 'hero']) drawHeroAt(id, sx + CAMP_SPOTS[id][0], gy, CAMP_SPOTS[id][1], id !== G.char, t, dt);
   // the chosen hero gets a warm pool of light and a bobbing marker
   if (!G.descend && G.menu === 'home') {
     const hx = sx + CAMP_SPOTS[G.char][0], col = G.char === 'hero' ? '143,216,255' : '242,196,106', bob = Math.round(Math.sin(t * 3) * 1.5);

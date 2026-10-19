@@ -134,7 +134,7 @@ details.old[open]>summary{margin-bottom:24px}
       <div class="screenbar"><span>Click the game first.</span><span><kbd>← →</kbd> move</span><span><kbd>Space</kbd> jump</span><span><kbd>X</kbd> slash</span><span><kbd>E</kbd> bolt</span><span><kbd>↓</kbd>+<kbd>E</kbd> Wax Dive</span><span><kbd>F</kbd> focus</span><span><kbd>P</kbd> pause</span></div>
     </div>
     <div class="panel">
-      <div class="grp"><h3>Hero</h3><div class="seg" id="heroes"><button type="button" data-h="snuff" aria-pressed="true">Wick</button><button type="button" data-h="knight" aria-pressed="false">Lampknight</button><button type="button" data-h="hero" aria-pressed="false">Wick Hero</button></div></div>
+      <div class="grp"><h3>Hero</h3><div class="seg" id="heroes"><button type="button" data-h="wick" aria-pressed="true">Wick</button><button type="button" data-h="knight" aria-pressed="false">Lampknight</button><button type="button" data-h="hero" aria-pressed="false">Wick Hero</button></div></div>
       <div class="grp"><h3>Start</h3><div class="seg" id="starts"><button type="button" class="btnx go" data-s="1">Stage 1 · Wyrm</button><button type="button" class="btnx" data-s="2">Stage 2 · Moth</button><button type="button" class="btnx" data-s="1i">From the entrance</button><button type="button" class="btnx secret" data-s="3" id="secretBtn" hidden>??? · The Black Wick</button></div></div>
       <div class="read" aria-live="polite">
         <div class="st" id="rState">Loading…</div>
@@ -658,8 +658,8 @@ requestAnimationFrame(tick);
     navigator.clipboard.writeText(txt).then(() => toast('Copied. Paste it to me in the chat.'), () => toast(txt));
   });
   // hero and start
-  let hero = 'snuff';
-  try { hero = localStorage.getItem('uwlab-hero') || 'snuff'; } catch (_) {}
+  let hero = 'wick';
+  try { hero = localStorage.getItem('uwlab-hero') || 'wick'; if (hero === 'snuff') hero = 'wick'; } catch (_) {}
   const heroBtns = [...document.querySelectorAll('#heroes button')];
   const paintHero = () => heroBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.h === hero));
   paintHero();
@@ -687,7 +687,7 @@ requestAnimationFrame(tick);
   // live readout and the attempt log
   const $ = id => document.getElementById(id);
   const NAMES = { wyrm:'The Tallow Wyrm', moth:'The Cinder Moth', umbra:'The Black Wick' };
-  const HERO = { snuff:'Wick', knight:'Lampknight', hero:'Wick Hero' };
+  const HERO = { wick:'Wick', knight:'Lampknight', hero:'Wick Hero' };
   let log = []; try { log = JSON.parse(localStorage.getItem('uwlab-log') || '[]'); } catch (_) {}
   const paintLog = () => {
     $('logBody').innerHTML = log.length ? log.slice().reverse().map(r => `<tr><td>${HERO[r.hero] || r.hero}</td><td>${r.stage === 3 ? 'Black Wick' : r.stage === 2 ? 'Moth' : 'Wyrm'}</td><td>${r.time.toFixed(1)}s</td><td>${r.t1 != null ? r.t1.toFixed(1) + 's' : '–'}</td><td>${r.stuns} / ${r.mstuns}</td><td>${r.hits}</td><td>${r.deaths}</td><td>${changed(r.tune) || 'defaults'}</td></tr>`).join('')

@@ -365,61 +365,13 @@ function drawPlayer(cx0, t) {
   if (P.dead || (G.finish && G.finish.hideP)) return;
   if (P.inv > 0 && !G.finish && !(G.char === 'hero' && (P.atkT > 0 || P.sheathT > 0)) && Math.floor(t * 22) % 2 === 0 && P.locked <= 0) return;
   const cx = Math.round(P.x + P.w / 2 - cx0), by = Math.round(P.y + P.h), f = P.face;
-  const sit = P.sit, low = sit ? 3 : (G.char === 'wick' ? idleBob() : 0);
+  const sit = P.sit, low = sit ? 3 : 0;
   if (P.healT > 0) drawFocus(cx, by, t, false);
-  if (G.char === 'snuff') crispChar('snuff', () => drawSnuffBody(cx, by, f, t, sit), cx, by);
-  else if (G.char === 'hero') crispChar('hero', () => drawHeroBody(cx, by, f, t, sit), cx, by);
+  if (G.char === 'hero') crispChar('hero', () => drawHeroBody(cx, by, f, t, sit), cx, by);
   else if (G.char === 'knight') drawKnightBody(cx, by, f, t, sit, low);
-  else {
-  // hook on the back
-  if (P.atkT <= 0.08) { ctx.fillStyle = C.brass; ctx.fillRect(cx - f * 6, by - 12 + low, 1, 7); ctx.fillRect(cx - f * 6 - (f > 0 ? 0 : -1), by - 13 + low, f > 0 ? -2 : 2, 1); }
-  // legs
-  if (!sit) {
-    ctx.fillStyle = '#1b1424';
-    let l1 = 0, l2 = 0;
-    if (P.grounded && Math.abs(P.vx) > 10) { const ph = Math.floor(P.anim * 12) % 4; l1 = [0, -1, 0, 1][ph]; l2 = -l1; }
-    if (!P.grounded) { l1 = -1; l2 = 1; }
-    ctx.fillRect(cx - 3, by - 3 + Math.min(0, l1), 2, 3 - Math.abs(Math.min(0, l1)));
-    ctx.fillRect(cx + 1, by - 3 + Math.min(0, l2), 2, 3 - Math.abs(Math.min(0, l2)));
-  }
-  // cloak
-  const sway = clamp(-P.vx / 60, -2, 2), hemY = by - 2 + (sit ? 1 : 0);
-  ctx.fillStyle = C.cloak; ctx.beginPath();
-  ctx.moveTo(cx - 4, by - 9 + low); ctx.lineTo(cx + 4, by - 9 + low); ctx.lineTo(cx + 6 + sway, hemY); ctx.lineTo(cx - 6 + sway, hemY); ctx.fill();
-  ctx.fillStyle = C.cloakHi; ctx.fillRect(f > 0 ? cx + 3 : cx - 4, by - 9 + low, 1, 5);
-  // candle head
-  const hy = by - 16 + low;
-  ctx.fillStyle = C.wax; ctx.fillRect(cx - 4, hy, 8, 7);
-  ctx.fillStyle = C.waxSh; ctx.fillRect(f > 0 ? cx - 4 : cx + 3, hy + 1, 1, 6); ctx.fillRect(f > 0 ? cx + 2 : cx - 3, hy + 6, 1, 2);
-  ctx.fillStyle = C.wax; ctx.fillRect(f > 0 ? cx - 2 : cx + 1, hy + 7, 1, 2);
-  ctx.fillStyle = '#18121f';
-  const eo = idleLook() ? -f : f;
-  if (sit || idleBlink()) { ctx.fillRect(cx - 2 + eo, hy + 3, 2, 1); ctx.fillRect(cx + 1 + eo, hy + 3, 2, 1); }
-  else { ctx.fillRect(cx - 2 + eo, hy + 2, 1, 2); ctx.fillRect(cx + 1 + eo, hy + 2, 1, 2); }
-  ctx.fillStyle = '#2a2222'; ctx.fillRect(cx, hy - 2, 1, 2);
-  const big = P.healT > 0 ? 1.25 + P.healT * 0.4 : 1;
-  drawFlame(cx + 0.5, hy - 2, big, t, P.hurtT > 0 ? C.ember : C.flame, C.core);
-  }
-  if (G.char === 'snuff' && P.atkT > 0) drawSnuffSlash(cx, by, f);
+  else crispChar('wick', () => drawWickBody(cx, by, f, t, sit), cx, by);
+  if (G.char === 'wick' && P.atkT > 0) drawWickSlash(cx, by, f);
   if (P.healT > 0) drawFocus(cx, by, t, true);
-  // slash
-  if (G.char === 'wick' && P.atkT > 0.08) {
-    const k = 1 - (P.atkT - 0.08) / 0.12; let ox, oy, a0, a1;
-    if (P.atkDir === 'up') { ox = cx; oy = by - 12; a0 = -Math.PI + 0.45; a1 = -0.45; }
-    else if (P.atkDir === 'down') { ox = cx; oy = by - 2; a0 = 0.45; a1 = Math.PI - 0.45; }
-    else if (f > 0) { ox = cx + 4; oy = by - 8; a0 = -1.15; a1 = 1.15; }
-    else { ox = cx - 4; oy = by - 8; a0 = Math.PI - 1.15; a1 = Math.PI + 1.15; }
-    if (G.char === 'knight') {
-      if (P.combo % 2 === 0) { const tmp = a0; a0 = a1; a1 = tmp; } // alternate swing direction through the combo
-      drawKnightSlash(ox, oy, a0, a1, k);
-    } else {
-      const sweep = a0 + (a1 - a0) * Math.min(1, k * 1.6);
-      ctx.lineCap = 'round';
-      ctx.strokeStyle = `rgba(242,165,65,${0.55 * (1 - k * 0.6)})`; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(ox, oy, 15, a0, sweep); ctx.stroke();
-      ctx.strokeStyle = `rgba(239,227,194,${1 - k * 0.5})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(ox, oy, 16, a0, sweep); ctx.stroke();
-      ctx.lineCap = 'butt';
-    }
-  }
 }
 // Lampknight swing: a tapered crescent smear that whips through fast, lingers, then shrinks into its tip,
 // with the blade itself drawn at the leading edge

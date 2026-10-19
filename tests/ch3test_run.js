@@ -5,7 +5,7 @@ const fns={}; for (const n of ['arc','ellipse','moveTo','lineTo','quadraticCurve
 const ctx=new Proxy(fns,{get:(t,k)=>k==='createLinearGradient'||k==='createRadialGradient'?()=>grad:(k in t?t[k]:noop),set:(t,k,v)=>{t[k]=v;return true}});
 function el(){return {getContext:()=>ctx,querySelector:()=>el(),querySelectorAll:()=>[],addEventListener:noop,removeEventListener:noop,classList:{toggle:noop,add:noop,remove:noop,contains:()=>false},setAttribute:noop,appendChild:noop,dataset:{},style:{setProperty:noop,removeProperty:noop},textContent:'',innerHTML:'',hidden:false,clientWidth:740,clientHeight:360,offsetWidth:100,offsetHeight:40,getBoundingClientRect:()=>({left:0,top:0,right:100,bottom:100,width:100,height:100}),setPointerCapture:noop,blur:noop,closest:()=>null,open:false,scrollIntoView:noop,width:0,height:0}}
 const handlers={};
-global.window=global; window.addEventListener=(k,f)=>{(handlers[k]=handlers[k]||[]).push(f)}; window.innerWidth=800; window.innerHeight=400;
+global.window=global; window.UW_NOTIPS=true; window.addEventListener=(k,f)=>{(handlers[k]=handlers[k]||[]).push(f)}; window.innerWidth=800; window.innerHeight=400;
 global.document={getElementById:()=>el(),createElement:()=>el(),querySelectorAll:()=>[],querySelector:()=>el(),addEventListener:noop,body:el(),documentElement:el(),activeElement:null};
 global.matchMedia=()=>({matches:false,addEventListener:noop}); global.localStorage={getItem:()=>null,setItem:noop};
 global.screen={width:800,height:400}; global.navigator={};
@@ -15,7 +15,7 @@ eval(src.replace("'use strict';","'use strict'; global.__G=()=>G; global.__P=()=
 const key=(type,code)=>handlers[type].forEach(f=>f({code,repeat:false,preventDefault:noop}));
 const R=()=>__F.ROOMS(), idx=id=>R().findIndex(d=>d.id===id);
 function frames(n, fn){ let errs=0; for(let i=0;i<n;i++){ now+=8.33; if(fn) fn(i); try{ rafCb(now);}catch(e){ errs++; if(errs<4) console.log('ERR',e.message, e.stack.split('\n').slice(1,3).join(' | ')); } } return errs; }
-const hero=process.env.HC||'snuff';
+const hero=process.env.HC||'wick';
 // 1. every chapter 3 room loads and runs
 __new(hero,'ch3'); let G=__G();
 console.log('start', G.room.def.id, 'skills', JSON.stringify(G.skills), 'wax', __P().wax, 'chapter', G.chapter);

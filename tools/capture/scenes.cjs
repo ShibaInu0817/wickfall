@@ -11,11 +11,11 @@ S.hollowRun = { frames:230, setup:`__stage({ ch:1, room:'hollow', hero:'hero', x
   if ((tx > 9.4 && tx < 10.6) || (tx > 14.3 && tx < 15.6) || (tx > 37.2 && tx < 38.4) || (tx > 27.6 && tx < 28.6)) press('jump'); else if (P.vy > -40) release('jump');`) };
 
 // the alcove inside the Wickhollow pillar: walk into the rock, it fades, the lore stone speaks
-S.alcove = { frames:300, setup:`__stage({ ch:1, room:'hollow', hero:'snuff', x:26.2, god:true, notoast:true, nobanner:true }); G.enemies = [];` + ctl(`
+S.alcove = { frames:300, setup:`__stage({ ch:1, room:'hollow', hero:'wick', x:26.2, god:true, notoast:true, nobanner:true }); G.enemies = [];` + ctl(`
   if (i < 70) press('right'); else release('right');`) };
 
 // pogo across the Drip's spine field
-S.pogo = { frames:240, setup:`__stage({ ch:1, room:'drip', hero:'snuff', x:9, y:9, god:true, notoast:true, nobanner:true }); G.enemies = G.enemies.filter(e => e.type !== 'flyer' && e.type !== 'wisp'); P.vy = -60;` + ctl(`
+S.pogo = { frames:240, setup:`__stage({ ch:1, room:'drip', hero:'wick', x:9, y:9, god:true, notoast:true, nobanner:true }); G.enemies = G.enemies.filter(e => e.type !== 'flyer' && e.type !== 'wisp'); P.vy = -60;` + ctl(`
   press('right'); press('down');
   if (!P.grounded && P.vy > 40 && P.y + P.h > 13 * T - 26 && P.atkT <= 0) press('attack'); else release('attack');
   if (P.grounded) { press('jump'); } else if (P.vy > 0) release('jump');`) };
@@ -90,7 +90,7 @@ S.stair = { frames:220, setup:`__stage({ ch:3, room:'stair', hero:'knight', x:19
   else release('up');`) };
 
 // the Locks: a puppet swinging and the eel leaping from the spine pit
-S.locks = { frames:200, setup:`__stage({ ch:2, room:'locks', hero:'snuff', x:38, god:true, notoast:true, nobanner:true });` + ctl(`
+S.locks = { frames:200, setup:`__stage({ ch:2, room:'locks', hero:'wick', x:38, god:true, notoast:true, nobanner:true });` + ctl(`
   if (i > 20 && i < 140) press('right'); else release('right');
   if (i === 70) press('jump'); if (i === 84) release('jump');`) };
 
