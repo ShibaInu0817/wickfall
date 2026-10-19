@@ -263,9 +263,10 @@ function safeInsets() {
 const CTL_BASE = { stick:150, jump:84, attack:84, dash:64, heal:58, skill:58, bar:40 };
 const CTL_NAME = { stick:'Movement stick', jump:'Jump', attack:'Slash', dash:'Dash', heal:'Focus', skill:'Skill', bar:'Menu buttons' };
 const LAYOUT_V = 2;
+// Jump in the corner; Slash, Dash and Skill one slide from it (Wax Dive is a jump, then ↓ + Skill); Focus, used standing still, furthest out
 const DEF_LAYOUT = () => ({ v:LAYOUT_V, s:1, o:0.45, ctl:{
   stick:{ x:0.13, y:0.74, s:1 }, jump:{ x:0.915, y:0.78, s:1 }, attack:{ x:0.80, y:0.83, s:1 },
-  dash:{ x:0.925, y:0.50, s:1 }, heal:{ x:0.815, y:0.555, s:1 }, skill:{ x:0.72, y:0.64, s:1 }, bar:{ x:0.92, y:0.10, s:1 } } });
+  dash:{ x:0.925, y:0.50, s:1 }, heal:{ x:0.72, y:0.64, s:1 }, skill:{ x:0.815, y:0.555, s:1 }, bar:{ x:0.92, y:0.10, s:1 } } });
 let LAYOUT = DEF_LAYOUT();
 try {
   const j = JSON.parse(localStorage.getItem('wf-layout') || 'null');

@@ -113,7 +113,7 @@ function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   // a slow device (long frames for ~2.5 s in play) switches to lighter effects: fewer fire puffs, particles and motes
   if (G.state === 'play' && !document.hidden) { frame.ema = (frame.ema || 0.016) * 0.95 + dt * 0.05; frame.slow = frame.ema > 0.021 ? (frame.slow || 0) + dt : 0; if (frame.slow > 2.5 && !G.lite) G.lite = true; }
-  { const m = G.state !== 'play' || !!G.descend; if (m !== frame.menu) { frame.menu = m; $('gameWrap').classList.toggle('menu', m); if (m) padReset(); } }
+  { const m = G.state !== 'play' || !!G.descend; if (m !== frame.menu) { frame.menu = m; $('gameWrap').classList.toggle('menu', m); if (m) padReset(); applyLayout(); } }   // menus hide some bar icons, so the bar is measured again
   pollPad();
   if (G.state === 'play') {
     acc += dt * (window.__uwTs || 1); let first = true;   // the skill lab can slow time down
