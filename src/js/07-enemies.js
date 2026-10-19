@@ -321,7 +321,7 @@ function hitEnemy(e, dmg = 1, o = {}) {
   const big = !!o.spell || !!o.fin || e.hp <= 0;
   impact(hx, hy, ang, big);
   if (e.type === 'boss') burst(hx, hy, 6, { spd:110, life:0.4, colors:[C.wax, C.waxSh, C.flame], size:2, g:300 });
-  sfx(o.hero ? 'hHit' : G.char === 'snuff' && !o.spell ? 'nHit' : G.char === 'knight' && !o.spell ? (o.fire ? 'kFireHit' : 'kHit') : 'hit');
+  sfx(o.hero ? 'hHit' : G.char === 'wick' && !o.spell ? 'nHit' : G.char === 'knight' && !o.spell ? (o.fire ? 'kFireHit' : 'kHit') : 'hit');
   if (!o.spell) P.wax = Math.min(99, P.wax + (G.char === 'hero' ? 22 : 11));
   if (o.hero) {
     G.hitstop = Math.max(G.hitstop, 0.085);

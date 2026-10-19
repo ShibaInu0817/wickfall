@@ -117,7 +117,7 @@ function frame(now) {
   pollPad();
   if (G.state === 'play') {
     acc += dt * (window.__uwTs || 1); let first = true;   // the skill lab can slow time down
-    while (acc >= STEP) { step(STEP); acc -= STEP; if (first) { clearHits(); first = false; } }
+    while (acc >= STEP && G.state === 'play') { step(STEP); acc -= STEP; if (first) { clearHits(); first = false; } }
   } else { acc = 0; clearHits(); }
   if (G.descend) { G.descend.t += dt; if (G.descend.t >= DESCEND_T) { const m = G.descend.mode; G.descend = null; startRun(m); } }
   if (G.iris) { G.iris.t += dt; if (G.iris.t >= IRIS_T) G.iris = null; }
@@ -130,6 +130,7 @@ function frame(now) {
   updateBgm();
   if (G.state === 'title' && G.menu === 'home' && G.homeFocus === 'party' && !G.descend) drawPartyPreview(now / 1000, dt);
   if (G.state === 'title' && G.menu === 'chars') drawCharSheet(now);
+  if (G.state === 'tip') drawTipScene(now / 1000, dt);
   requestAnimationFrame(frame);
 }
 

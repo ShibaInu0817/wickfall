@@ -696,6 +696,8 @@ function mothParry(B, o) {
 // ----- the end of chapter 3: the abyss
 // After Flare Burst is forged, a blue vortex tears open over the cold kiln. Walk into it: it pulls the hero in,
 // the screen goes black, "To be continued..." is written out, and then the results come up.
+// the smith's last gift opens the abyss; a tip on screen (the new skill) holds it until it is closed
+function openAbyssAfterTip() { if (G.state === 'tip') setTimeout(openAbyssAfterTip, 300); else openAbyss(); }
 function openAbyss() {
   if (!G.room || G.room.def.id !== 'kiln' || G.abyss || G.state !== 'play') return;
   G.abyss = { x:Math.round(G.room.w * T / 2), y:13 * T - 36, t:0, open:0, in:null, gone:false, ps:[], hum:0, said:false };

@@ -2,7 +2,7 @@
 // Every frame is drawn by the same code the game uses, so it is always current.
 const CHAR_ANIMS = [['idle', 'Idle'], ['run', 'Run'], ['jump', 'Jump'], ['dash', 'Dash'], ['combo', 'Full combo'], ['up', 'Up-slash'], ['focus', 'Focus']];
 const CHAR_NOTES = {
-  snuff:{ moves:'Sweep · Back-sweep (alternates) · Up-sweep · Down-sweep (pogo), all with his short sword.',
+  wick:{ moves:'Sweep · Back-sweep (alternates) · Up-sweep · Down-sweep (pogo), all with his short sword.',
     notes:'Candle head: cream wax, melted rim with drips, dark wick, a flame that streams back on a swing. Short sword (leather grip, brass guard and pommel, steel blade with a bright edge) carried in his back hand, low at his side with the tip trailing behind so it never crosses his body. Slate-blue cape with a ragged pale-trimmed hem that streams with speed and lifts in a fall; shoulders lit by his own flame. Weight in whole pixels: sinks on landing and into each slash, rises on take-off. Dash leaves streaks; focus hunches over the planted sword.' },
   knight:{ moves:'Forehand · Backhand · Rising cut · Fire cleave (finisher).',
     notes:'Steel helm with a flame crest and amber visor, crimson cape, lantern at the hip. The claymore is always carried behind him: held low behind when standing, dragged with its tip on the floor when walking (throws sparks), trailed level in a jump, rested on the shoulder now and then. While carried behind it is drawn behind his body.' },

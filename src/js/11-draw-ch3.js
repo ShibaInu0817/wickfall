@@ -153,6 +153,7 @@ function drawWyrmHead(x, y, f, B, fl, t, p2) {
   }
   const above = !P.dead && !P.grounded && P.y + P.h < top + 4 && Math.abs(P.x + P.w / 2 - Math.round(G.cam.x) - x) < 70;
   if (!stun) drawWyrmCap(x, top, B.cap == null ? 1 : B.cap, above ? 0.95 : 0.4 + 0.3 * Math.sin(t * 3), t);
+  if (!stun && !P.dead && wyrmCapUp(B) && Math.abs(P.x + P.w / 2 - Math.round(G.cam.x) - x) < 70) markArrow(x, top - 22 + Math.sin(t * 4) * 2);   // dive here (no words in a fight)
   if (B.armorT > 0) { ctx.strokeStyle = `rgba(255,255,255,${B.armorT / 0.22})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(x, y, 20 + (0.22 - B.armorT) * 40, 16 + (0.22 - B.armorT) * 30, 0, 0, TAU); ctx.stroke(); }
   if (stun) for (let i = 0; i < 3; i++) { const a = t * 5 + i * TAU / 3; ctx.fillStyle = i % 2 ? '#ffe58a' : '#ffffff'; ctx.fillRect(Math.round(x + Math.cos(a) * 12), Math.round(top - 8 + Math.sin(a) * 3), 2, 2); }
 }
@@ -452,6 +453,7 @@ function drawMoth(cx0, t, B) {
   ctx.save(); ctx.translate(mx, my); ctx.rotate(B.tilt || 0); ctx.scale(1.3, 1.3); ctx.translate(-mx, -my);
   drawMothFigure(mx + ox, my + (down ? 2 : 0), f, wingK, { k2:st === 'slash' ? wingK * 0.7 : Math.sin(ph - 0.8), bob, look:{ x:lookX * f, y:lookY }, hj:B.tw > 0 && !down ? B.twA : 0, fold:B.fold || 0, legs, fl, glow, p2, t, flat:down || perch, stun:down, eye:st === 'dead' ? 0 : 1, eyeHot:['rushW', 'rush', 'slamW', 'slamDrop', 'sweepW', 'sweep', 'slashGo', 'slash'].includes(st), noWings:B.noWings, saddle:down ? 0 : (B.cap == null ? 1 : B.cap), armorT:B.armorT || 0, glint:!P.dead && !P.grounded && P.y + P.h < B.y ? 0.95 : 0.3 + 0.2 * Math.sin(t * 3) });
   ctx.restore();
+  if (!down && !P.dead && B.cap >= 1 && st !== 'hatch' && Math.abs(P.x + P.w / 2 - (mx + cx0)) < 70) markArrow(mx, Math.round(B.y) - 22 + Math.sin(t * 4) * 2);   // dive onto its back
   if (st === 'stun') for (let i = 0; i < 3; i++) { const a = t * 5 + i * TAU / 3; ctx.fillStyle = i % 2 ? '#ffe58a' : '#ffffff'; ctx.fillRect(Math.round(mx + f * 8 + Math.cos(a) * 9), Math.round(my - 12 + Math.sin(a) * 3), 2, 2); }
   // the wing slash itself: a pale crescent in front of it
   if (B.slashFx > 0) { const a = B.slashFx / 0.16, cx = mx + f * 16, up = B.slashN % 2 ? -1 : 1, a0 = f > 0 ? -1.3 : Math.PI + 1.3, a1 = f > 0 ? 1.3 : Math.PI - 1.3;

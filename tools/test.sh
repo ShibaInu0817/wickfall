@@ -4,6 +4,7 @@
 #   tools/test.sh --all    stub tests + browser tests
 set -e
 cd "$(dirname "$0")/.."
+export NODE_PATH="${NODE_PATH:-$(npm root -g 2>/dev/null)}"   # a global Playwright install
 python3 tools/build.py --tests
 cd tests
 for t in gstub.js chtest_run.js galtest_run.js cptest_run.js bosstest_run.js ch3test_run.js bal_run.js; do

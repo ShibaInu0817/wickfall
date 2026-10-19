@@ -1,12 +1,12 @@
 const { chromium } = require('playwright');
 (async () => {
-  const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium', args:['--headless=new'], ignoreDefaultArgs:['--headless=old'] });
+  const b = await chromium.launch({ ...(require('fs').existsSync('/opt/pw-browsers/chromium') && { executablePath:'/opt/pw-browsers/chromium' }), args:['--headless=new'], ignoreDefaultArgs:['--headless=old'] });
   const pg = await b.newPage({ viewport:{ width:1100, height:720 } }); const errs=[];
   pg.on('pageerror', e => errs.push(e.message)); pg.on('console', m => { if (m.type() === 'error' && !/mp3|Failed to load/.test(m.text())) errs.push(m.text()); });
   await pg.goto('file://' + process.cwd() + '/test.html'); await pg.waitForTimeout(800);
   const box = async n => { await (await pg.$('#gameWrap')).screenshot({ path:n }); };
   // real menu path: home -> chars
-  await pg.evaluate(() => __goChars('snuff')); await pg.waitForTimeout(400); await box('bx/p_hero.png');
+  await pg.evaluate(() => __goChars('wick')); await pg.waitForTimeout(400); await box('bx/p_hero.png');
   await pg.click('[data-action="cs-grp"][data-g="foes"]'); await pg.waitForTimeout(500); await box('bx/p_foes.png');
   await pg.click('[data-action="cs-hero"][data-id="slag"]'); await pg.waitForTimeout(1500); await box('bx/p_slag.png');
   await pg.click('[data-action="cs-grp"][data-g="bosses"]'); await pg.waitForTimeout(400);

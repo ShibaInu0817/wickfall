@@ -1,8 +1,9 @@
 // ---------- player
 const RUN = 118, GRAV = 1050, JUMP_V = 340, MAX_FALL = 380, COYOTE = 0.09;
+const RESPAWN_INV = 1.5;   // protection after a respawn or a spine return, long enough to step clear of whatever was there
 function atkBox() {
   const cx = P.x + P.w / 2, r = CH().reach * (P.fin ? 1.25 : 1);
-  if (G.char === 'snuff') {
+  if (G.char === 'wick') {
     if (P.atkDir === 'up') return { x:cx - 20, y:P.y - 23, w:40, h:28 };
     if (P.atkDir === 'down') return { x:cx - 20, y:P.y + P.h - 4, w:40, h:24 };
     return P.face > 0 ? { x:P.x + P.w - 2, y:P.y - 10, w:29, h:32 } : { x:P.x + 2 - 29, y:P.y - 10, w:29, h:32 };
@@ -29,7 +30,7 @@ function hurtPlayer(n, fromX) {
   if (G.gal && G.gal.god) { breakFocus(); P.inv = 0.4; G.shake = Math.max(G.shake, 3); sfx('clink'); return; }
   breakFocus();
   G.hits = (G.hits || 0) + 1;
-  P.hp -= n; P.inv = 1.3; P.hurtT = 0.25; P.healT = 0; P.dashT = 0; P.sit = false;
+  P.hp -= n; P.inv = 1.3; P.hitAt = G.time; P.hurtT = 0.25; P.healT = 0; P.dashT = 0; P.sit = false;
   const d = P.x + P.w / 2 < fromX ? -1 : 1;
   P.recoilT = 0.16; P.recoilV = d * 160; P.vy = -210;
   G.hitstop = 0.13; G.shake = 7; sfx('hurt'); buzz(45); hurtFx();
@@ -38,7 +39,7 @@ function hurtPlayer(n, fromX) {
 }
 function killPlayer() {
   P.dead = true; P.deadT = 1.5; P.hp = 0; G.deaths++;
-  { const B = G.boss; G.retryBoss = B && !G.bossDown && !G.duel && !G.rush && !G.gal && !LAB.on && !['dormant', 'dead', 'downed'].includes(B.state) ? G.ri : null; } sfx('die'); G.shake = 8; buzz([60, 40, 120]);
+  { const B = G.boss; G.retryBoss = B && !G.bossDown && !G.duel && !G.rush && !G.gal && !LAB.on && !['dormant', 'dead', 'downed'].includes(B.state) ? G.ri : null; if (G.retryBoss != null) { G.bossFalls = G.bossFalls || {}; G.bossFalls[B.kind] = (G.bossFalls[B.kind] || 0) + 1; G.retryKind = B.kind; } } sfx('die'); G.shake = 8; buzz([60, 40, 120]);
   burst(P.x + P.w / 2, P.y + 4, 40, { spd:160, life:1, colors:[C.wax, C.flame, C.cloak, C.core], size:2, g:120 });
 }
 function respawn() {
@@ -46,8 +47,10 @@ function respawn() {
     if (LAB.on && LAB.last) { const d = LAB.run ? LAB.run.deaths + 1 : 1; labStart(LAB.last); LAB.run.deaths = d; return; }
     if (G.rush) { G.rush.ended = true; G.state = 'won'; setOverlay('won'); return; }   // one fall and the rush is over
     if (G.duel) { startUmbraDuel(true); return; }   // fall in the duel and it starts again, falls counted
-    if (G.retryBoss != null) { const ri = G.retryBoss; G.retryBoss = null; resetPlayer(); P.hp = P.maxHp; P.wax = 99; P.inv = 0.8; G.quickCine = true; loadRoom(ri, 'a'); toast('Again.', 1400); return; }
-    resetPlayer(); P.hp = P.maxHp; P.wax = 0; P.inv = 0.8;
+    if (G.retryBoss != null) { const ri = G.retryBoss; G.retryBoss = null; resetPlayer(); P.hp = P.maxHp; P.wax = 99; P.inv = RESPAWN_INV; G.quickCine = true; loadRoom(ri, 'a'); toast('Again.', 1400);
+      if ((G.retryKind === 'wyrm' || G.retryKind === 'moth') && G.bossFalls[G.retryKind] >= 2) showTip(G.retryKind, 0.6);
+      return; }
+    resetPlayer(); P.hp = P.maxHp; P.wax = 0; P.inv = RESPAWN_INV;
     loadRoom(G.cp.room, 'S');
   });
 }
@@ -178,11 +181,11 @@ function updatePlayer(dt) {
       P.swing = sw; P.atkDur = sw.d; P.atkT = sw.d; P.atkCD = sw.d * (P.fin ? 0.95 : 0.72); P.comboT = sw.d + 0.35;
       P.swFrom = P.swAng; P.struck = false; P.landed = false;
       sfx(P.fin ? 'kIgnite' : 'kWind');
-    } else if (G.char === 'snuff') {
+    } else {
       P.fin = false; P.atkT = SN.dur; P.atkCD = SN.cd;
       P.alt = P.atkDir === 'side' && G.time - (P.lastSlash || -9) < 0.6 ? !P.alt : false; P.lastSlash = G.time;
       sfx('nSlash', P.alt);
-    } else { P.fin = false; P.atkT = 0.2; P.atkCD = 0.3; sfx('slash'); }
+    }
     P.atkHit = new Set(); P.atkSpike = false;
   }
   // skills
@@ -202,7 +205,7 @@ function updatePlayer(dt) {
 
   if (P.grounded) {
     const ty = Math.floor((P.y + P.h + 1) / T), l = tileAt(Math.floor((P.x - 3) / T), ty), r = tileAt(Math.floor((P.x + P.w + 3) / T), ty);
-    if ((l === 1 || l === 3) && (r === 1 || r === 3)) P.safe = { x:P.x, y:P.y };
+    if ((l === 1 || l === 3) && (r === 1 || r === 3) && !G.enemies.some(e => !e.dead && Math.abs(e.x + e.w / 2 - (P.x + P.w / 2)) < 48 && Math.abs(e.y + e.h / 2 - (P.y + P.h / 2)) < 32)) P.safe = { x:P.x, y:P.y };   // never return the hero next to a foe
   }
 
   // attack hits
@@ -233,7 +236,7 @@ function updatePlayer(dt) {
     const s = touchesSpike({ x:P.x + 2, y:P.y + 3, w:P.w - 4, h:P.h - 3 });
     if (s) {
       // in the tutorial spines only send you back
-      breakFocus(); if (!G.room.def.tut) P.hp--; G.hitstop = 0.14; G.shake = 7; sfx('hurt'); buzz(45); hurtFx(); P.sit = false; P.healT = 0; P.dive = false; P.flareT = 0;
+      breakFocus(); if (!G.room.def.tut && !(G.time - (P.hitAt ?? -9) < 1.3)) P.hp--; G.hitstop = 0.14; G.shake = 7; sfx('hurt'); buzz(45); hurtFx(); P.sit = false; P.healT = 0; P.dive = false; P.flareT = 0;   // knocked in by a hit: that hit already cost the ember
       burst(P.x + P.w / 2, P.y + 8, 16, { spd:140, life:0.5, colors:[C.ember, C.flame, C.bone], size:2, g:300 });
       if (G.gal && G.gal.god) P.hp = Math.max(P.hp, 1);
       if (P.hp <= 0) killPlayer();
@@ -367,7 +370,7 @@ function updateCoins(dt) {
   if (S.free) {
     if (S.near && !S.said) { S.said = true; if (!owned) toast(`Blacksmith: "You brought its fire back down. Let me forge it into ${sk.name}." ${tip('Push up.', 'Press ↑.')}`, 4600); }
     if (!S.near) S.said = false;
-    if (S.near && I.hit.up && !owned) { sfx('anvil'); learnSkill({ x:S.x + 8, y:S.y + 2, id:S.id }); if (G.chapter === 3 && G.room.def.id === 'kiln' && !G.gal) setTimeout(openAbyss, 2200); else G.winT = 4.2; }
+    if (S.near && I.hit.up && !owned) { sfx('anvil'); learnSkill({ x:S.x + 8, y:S.y + 2, id:S.id }); if (G.chapter === 3 && G.room.def.id === 'kiln' && !G.gal) setTimeout(openAbyssAfterTip, 2200); else G.winT = 4.2; }
     return;
   }
   if (S.near && !S.said) {
@@ -434,8 +437,7 @@ function learnSkill(r) {
   burst(r.x, r.y, 40, { spd:160, life:1, colors:[SK[r.id].col, C.core, '#ffffff'], size:2, g:-30 });
   G.fx.push({ k:'ring', x:r.x, y:r.y, t:0.5, max:0.5, r:60, c:'255,241,193' });
   P.wax = 99;
-  showBanner(SK[r.id].name, tip(SK[r.id].touch, SK[r.id].keys));
-  setTimeout(() => toast(SK[r.id].desc() + ' Costs 33 wax.', 4200), 2700);
+  showTip('skill:' + r.id, 0.5);
 }
 
 // ---------- hit effects: white slash streak, impact star, burst ring, screen flash

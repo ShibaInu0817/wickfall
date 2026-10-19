@@ -11,7 +11,7 @@ function toast(text, ms = 3200) {
   toastEl.textContent = text; toastEl.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms);
 }
-function hint(key, text, ms) { if (G.hinted[key]) return; G.hinted[key] = true; toast(text, ms || 4200); }
+function hint(key, text, ms) { if (G.hinted[key]) return; if (G.state === 'tip') { setTimeout(() => hint(key, text, ms), 500); return; } G.hinted[key] = true; toast(text, ms || 6000); }
 function fmtTime(s) { s = Math.floor(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 function setOverlay(kind) { setOverlay0(kind); focusMenu(); const gp = $('galPanel'); if (gp && G.gal) gp.hidden = !!kind; }
 function volRow(k, label) {
@@ -122,8 +122,7 @@ function setOverlay0(kind) {
     }
     overlay.innerHTML = `<div class="ov"><p class="steps"><span>Home</span>·<b>Hero</b>·<span>Chapter</span></p><h2>Choose your hero</h2>
     <div class="chars">
-      ${card('wick', '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c2 4 5 6 5 10a5 5 0 0 1-10 0c0-4 3-6 5-10z" fill="#f2a541"/><rect x="14" y="17" width="12" height="10" rx="1" fill="#efe3c2"/><rect x="16.5" y="20" width="2" height="3" fill="#18121f"/><rect x="21.5" y="20" width="2" height="3" fill="#18121f"/><path d="M13 27h14l3 9H10z" fill="#3a2b4b"/></svg>')}
-      ${card('snuff', '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M18 5h4l1 2-1 1h-4l-1-1z" fill="#d9b46a"/><path d="M19 7h2l8 12H11z" fill="#c79a4a"/><path d="M19 7h1L14 19h-3z" fill="#8d6a33"/><rect x="10" y="18.5" width="20" height="1.6" fill="#ecc97f"/><rect x="13" y="20" width="14" height="8" rx="1" fill="#121019"/><rect x="16" y="22.5" width="2.6" height="2.6" fill="#f4ead0"/><rect x="21.4" y="22.5" width="2.6" height="2.6" fill="#f4ead0"/><path d="M13 28h14l2 8H11z" fill="#2b3a46"/><path d="M27 30c4-1 7-4 9-8" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>')}
+      ${card('wick', '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M18 5h4l1 2-1 1h-4l-1-1z" fill="#d9b46a"/><path d="M19 7h2l8 12H11z" fill="#c79a4a"/><path d="M19 7h1L14 19h-3z" fill="#8d6a33"/><rect x="10" y="18.5" width="20" height="1.6" fill="#ecc97f"/><rect x="13" y="20" width="14" height="8" rx="1" fill="#121019"/><rect x="16" y="22.5" width="2.6" height="2.6" fill="#f4ead0"/><rect x="21.4" y="22.5" width="2.6" height="2.6" fill="#f4ead0"/><path d="M13 28h14l2 8H11z" fill="#2b3a46"/><path d="M27 30c4-1 7-4 9-8" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>')}
       ${card('knight', '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2c1.6 3 4 4.5 4 7.5a4 4 0 0 1-8 0c0-3 2.4-4.5 4-7.5z" fill="#f2a541"/><path d="M11 24v-6a9 9 0 0 1 18 0v6z" fill="#7b88a0"/><rect x="13" y="18.5" width="14" height="2.5" rx="1" fill="#f2a541"/><path d="M11 24h18l2 4H9z" fill="#5d6a82"/><path d="M12 28h16l3 9H9z" fill="#5a2430"/><rect x="29" y="28" width="4" height="5" rx="1" fill="#c79a4a"/><rect x="30" y="29.5" width="2" height="2" fill="#fff1c1"/></svg>')}
       ${card('hero', '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c2 4 5 6 5 10a5 5 0 0 1-10 0c0-4 3-6 5-10z" fill="#8fd8ff"/><path d="M20 8c1 2 2.5 3.5 2.5 5.5a2.5 2.5 0 0 1-5 0c0-2 1.5-3.5 2.5-5.5z" fill="#eafaff"/><path d="M14 22c-4 1-8 3-11 6 3-1 7-2 11-3z" fill="#1f3550"/><rect x="14" y="17" width="12" height="10" rx="1" fill="#e8ecf2"/><rect x="18" y="20" width="1.6" height="3" fill="#121826"/><rect x="22" y="20" width="1.6" height="3" fill="#121826"/><path d="M13 27h14l3 9H10z" fill="#232a3a"/><path d="M26 30l11-9" stroke="#8fd8ff" stroke-width="2.4" stroke-linecap="round"/><path d="M26 30l11-9" stroke="#ffffff" stroke-width="0.9" stroke-linecap="round"/></svg>')}
     </div>
@@ -219,7 +218,7 @@ function setOverlay0(kind) {
 }
 function rankHtml(R, embers) {
   const row = (i, label, val, note, pts, max) => `<p style="--d:${0.35 + i * 0.12}s"><span>${label}</span><b>${val}</b><em>${note}</em><i><u style="--k:${pts / max}"></u></i><strong>+${pts}</strong></p>`;
-  const bestTxt = R.assist ? 'Assist was on · best not saved' : !R.best && !R.newBest ? '' : R.newBest ? (R.best ? `New best · was ${R.best.rank} (${R.best.score})` : 'First clear · best saved') : `Best · ${R.best.rank} (${R.best.score}) with ${(CHARS[R.best.hero] || CH()).name}`;
+  const bestTxt = R.assist ? 'Assist was on · best not saved' : !R.best && !R.newBest ? '' : R.newBest ? (R.best ? `New best · was ${R.best.rank} (${R.best.score})` : 'First clear · best saved') : `Best · ${R.best.rank} (${R.best.score}) with ${(CHARS[heroId(R.best.hero)] || CH()).name}`;
   return `<div class="rank">
     <div class="rstamp r-${R.rank}" aria-label="Rank ${R.rank}"><small>Rank</small><b>${R.rank}</b></div>
     <div class="rrows">

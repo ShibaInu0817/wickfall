@@ -20,7 +20,7 @@ function drawCardHeroes(t, dt) {
         st.n = st.n % 3 + 1; st.next = 2.4; P.atkDir = 'side'; P.atkHit = new Set();
         if (id === 'knight') { const sw = knightSwing('side', st.n, false); Object.assign(P, { swing:sw, atkDur:sw.d, atkT:sw.d, swFrom:P.swAng, struck:false, combo:st.n, fin:false }); }
         else if (id === 'hero') { const sw = heroSwing('side', st.n, false); Object.assign(P, { swing:sw, atkDur:sw.d, atkT:sw.d, swFrom:P.swAng, struck:0, hWin:-1, combo:st.n, fin:false }); }
-        else { P.atkT = id === 'snuff' ? SN.dur : 0.2; P.alt = !P.alt; P.fin = false; }
+        else { P.atkT = SN.dur; P.alt = !P.alt; P.fin = false; }
       }
       if (id === 'knight') updateKnightPose(dt); else if (id === 'hero') updateHeroPose(dt);
       const g = c.getContext('2d'); ctx = g;
@@ -40,8 +40,7 @@ function drawCardHeroes(t, dt) {
   }
 }
 const PV_MOVES = {
-  wick:[['side', 1, 'Slash'], ['side', 1, 'Slash'], ['up', 1, 'Up-slash']],
-  snuff:[['side', 1, 'Sweep'], ['side', 2, 'Back-sweep'], ['up', 1, 'Up-sweep']],
+  wick:[['side', 1, 'Sweep'], ['side', 2, 'Back-sweep'], ['up', 1, 'Up-sweep']],
   knight:[['side', 1, 'Forehand'], ['side', 2, 'Backhand'], ['side', 3, 'Rising cut'], ['up', 1, 'Overhead']],
   hero:[['side', 1, 'Draw cut'], ['side', 2, 'Rising crescent'], ['side', 3, 'Frost cross'], ['up', 1, 'Sky cut']]
 };
@@ -61,7 +60,7 @@ function drawPartyPreview(t, dt) {
         P.atkDir = dir; P.atkHit = new Set(); P.combo = n; P.fin = false;
         if (id === 'knight') { const sw = knightSwing(dir, n, false); Object.assign(P, { swing:sw, atkDur:sw.d, atkT:sw.d, swFrom:P.swAng, struck:false }); }
         else if (id === 'hero') { const sw = heroSwing(dir, n, false) || heroSwing('side', 1, false); Object.assign(P, { swing:sw, atkDur:sw.d, atkT:sw.d, swFrom:P.swAng, struck:0, hWin:-1 }); }
-        else { P.atkT = id === 'snuff' ? SN.dur : 0.2; P.alt = id === 'snuff' && n === 2; }
+        else { P.atkT = SN.dur; P.alt = n === 2; }
         pv.wait = pv.i === list.length - 1 ? 1.1 : 0.28; pv.label = name; if (dir === 'side') pv.hit = 0.3;
         const l = document.getElementById('pvl'); if (l) l.textContent = name;
       }

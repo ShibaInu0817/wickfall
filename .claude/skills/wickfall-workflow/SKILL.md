@@ -15,7 +15,7 @@ For adding heroes, enemies, bosses or stages, also use the `wickfall-content` sk
 - **Be ready to undo.** Copy the project folder before every non-trivial change (`cp -r wickfall wickfall.bak-<what>`). Mention that the backup exists.
 - **Light game.** Don't add accounts, databases or servers. Saving stays in the browser.
 - **Short, hollow story.** Lines are brief, quiet and melancholy. Never add long dialogue.
-- **Boss fights carry no text hints.** Every attack must have its own visible and audible tell. The player must never be stuck without wax, and Chapter 3 needs wax for Wax Dive.
+- **Boss fights carry no text hints while fighting.** A single paused tip on the retry after repeated falls is allowed, and a wordless marker (the bobbing arrow) may point at a weak spot. Every attack must have its own visible and audible tell. The player must never be stuck without wax, and Chapter 3 needs wax for Wax Dive.
 - **Don't lean on colour alone.** Signals must also differ in shape (see the moth's parry lights: a lit light is a bigger diamond with a white heart, a failed one is cracked in two).
 - **Plain replies.** Say what changed and what to try. Note honestly what was only tested by bots or headless browsers.
 
@@ -60,7 +60,7 @@ Where to look (grep the name rather than trusting line numbers):
 | player physics/combat/skills | 14 |
 | `loadRoom`, gallery (`GAL_BOSS`), `HERO_STATS`, `step`, camera | 15 |
 | themes, tiles, `drawPlayer` | 16 |
-| heroes: 17 Wick (`snuff`), 18 Wick Hero (`hero`), 19 Lampknight (`knight`) | 17-19 |
+| heroes: 17 Wick (`wick`), 18 Wick Hero (`hero`), 19 Lampknight (`knight`) | 17-19 |
 | old-enemy/Warden drawing, hazards, HUD, camp | 20 |
 | frame loop + render order | 21 |
 | Characters (Beta) heroes / bestiary + practice | 22 / 23 |

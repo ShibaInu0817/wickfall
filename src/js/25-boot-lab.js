@@ -26,7 +26,7 @@ function start(data) {
 const LAB = { on:(typeof location !== 'undefined' && /lab/i.test(location.hash + location.pathname)) || !!window.UW_LAB, last:null, run:null, god:false };
 function labPost(m) { try { if (window.parent && window.parent !== window) window.parent.postMessage(Object.assign({ uw:1 }, m), '*'); } catch (_) {} }
 function labStart(o) {
-  o = Object.assign({ hero:G.char || 'snuff', stage:1, intro:false }, o || {}); LAB.last = o;
+  o = Object.assign({ hero:G.char || 'wick', stage:1, intro:false }, o || {}); LAB.last = o;
   if (ROSTER.includes(o.hero)) G.char = o.hero;
   newGame('ch3'); G.iris = null; G.hinted = { start:1, shrine:1, cocoon:1 };
   const ki = ROOM_DEFS.findIndex(d => d.id === 'kiln'); G.cp = { room:ki };
@@ -111,6 +111,6 @@ if (LAB.on) {
 try {
   window.claude?.hot?.snapshot?.(() => ({ started:G.state !== 'title' && !G.gal, bossDown:G.bossDown, time:G.time, deaths:G.deaths, cp:G.cp, hp:P.hp, wax:P.wax, hinted:G.hinted, skills:G.skills, char:G.char, chapter:G.chapter, coins:G.coins, coinGot:G.coinGot, lit:G.lit, broken:G.broken, ver:3 }));
 } catch (_) {}
-if (LAB.on) { start({}); setTimeout(() => labStart({ hero:'snuff', stage:1 }), 120); }
+if (LAB.on) { start({}); setTimeout(() => labStart({ hero:'wick', stage:1 }), 120); }
 else window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
 })();

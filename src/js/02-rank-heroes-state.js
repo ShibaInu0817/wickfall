@@ -37,29 +37,29 @@ function tutDoneLesson(id) {
 // ---------- heroes
 const CHARS = {
   wick:{ name:'Wick', tag:'Normal', slash:1, maxHp:5, run:118, dashV:300, dashT:0.18, reach:1, combo:false,
-    blurb:'A quick candle-spirit with a brass hook. Five embers.' },
-  snuff:{ name:'Wick', tag:'Normal', slash:1, maxHp:5, run:118, dashV:300, dashT:0.18, reach:1, combo:false,
     blurb:'A little candle-spirit with a short sword. Five embers and wide, sweeping slashes.' },
   knight:{ name:'Lampknight', tag:'Easier', slash:1.5, maxHp:7, run:106, dashV:270, dashT:0.16, reach:1.25, combo:true,
     blurb:'Armoured, seven embers, a two-handed greatsword and a heavy four-hit combo ending in a fire cleave.' },
   hero:{ name:'Wick Hero', tag:'Easiest', slash:3, maxHp:9, run:128, dashV:330, dashT:0.18, reach:1.6, combo:true,
     blurb:'A swordsman crowned with blue fire, carrying a polished katana. Nine embers, huge damage, and a finisher that cuts everything in a wide sphere ahead.' }
 };
-// the heroes you can pick, in order (the original Wick retired; its name passed to the candle with the pin)
-const ROSTER = ['snuff', 'knight', 'hero'];
-const CH = () => CHARS[G.char] || CHARS.snuff;
+// the heroes you can pick, in order
+const ROSTER = ['wick', 'knight', 'hero'];
+// saves from before the rename call Wick 'snuff'
+const heroId = id => id === 'snuff' ? 'wick' : id;
+const CH = () => CHARS[G.char] || CHARS.wick;
 
 // ---------- state
 const P = { x:0, y:0, w:10, h:14, hp:5, maxHp:5, wax:0, safe:{x:0,y:0}, atkHit:new Set() };
 const G = { state:'title', ri:0, room:null, tiles:null, bg:null, enemies:[], drops:[], waves:[], parts:[], cam:{x:0},
   shake:0, hitstop:0, fade:0, fadeDir:0, fadeCb:null, shrine:null, cp:{room:0}, boss:null, bossDown:false,
   time:0, deaths:0, winT:0, hinted:{}, nearShrine:false,
-  fx:[], spells:[], relics:[], signs:[], signAct:null, menu:'home', chapter:1, coins:0, coinGot:{}, lit:{}, broken:{}, puddles:[], coinL:[], smith:null, shots:[], braziers:[], cracks:new Set(), skills:{}, flash:{ t:0, max:1, a:0, c:'255,255,255' }, vig:0, skillToastT:0, char:'snuff' };
-try { const c = localStorage.getItem('wf-char'); if (ROSTER.includes(c)) G.char = c; } catch (_) {}
+  fx:[], spells:[], relics:[], signs:[], signAct:null, menu:'home', chapter:1, coins:0, coinGot:{}, lit:{}, broken:{}, puddles:[], coinL:[], smith:null, shots:[], braziers:[], cracks:new Set(), skills:{}, flash:{ t:0, max:1, a:0, c:'255,255,255' }, vig:0, skillToastT:0, char:'wick' };
+try { const c = heroId(localStorage.getItem('wf-char')); if (ROSTER.includes(c)) { G.char = c; localStorage.setItem('wf-char', c); } } catch (_) {}
 
 function resetPlayer() {
   Object.assign(P, { vx:0, vy:0, face:1, grounded:false, coyote:0, jumpBuf:0, jumping:false, dashT:0, dashCD:0, canDash:true, dashDir:1,
-    atkT:0, atkCD:0, atkDir:'side', atkSpike:false, healT:0, inv:0, hurtT:0, recoilT:0, recoilV:0, dead:false, deadT:0,
+    atkT:0, atkCD:0, atkDir:'side', atkSpike:false, healT:0, inv:0, hitAt:-9, hurtT:0, recoilT:0, recoilV:0, dead:false, deadT:0,
     sit:false, locked:0, dropT:0, anim:0, castCD:0, dive:false, flareT:0, combo:0, comboT:0, fin:false, lungeT:0,
     atkDur:0.2, atkBuf:0, focusSpent:0, focusTick:0, idleT:0, swing:null, swAng:2.75, swFrom:2.75, sheathT:0, struck:false, landed:false, smear:null,
     pose:{ lean:0, crouch:0, stride:0, hip:0, hop:0 } });
