@@ -45,14 +45,20 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .nav .play:hover{background:var(--flame);color:#1a1208!important}
 @media (max-width:720px){.nav nav a:not(.play){display:none}}
 
-/* ---------- hero: the camp at night */
-.hero{position:relative;overflow:hidden;display:grid;align-items:start;min-height:clamp(560px,92vh,900px)}
-.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 70%}
-.hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,8,12,.8) 0%,rgba(7,8,12,.15) 38%,rgba(7,8,12,0) 58%,rgba(7,8,12,.55) 82%,var(--night) 100%)}
+/* ---------- hero: the title on one centred axis, then the camp as its own band below it, centred on the heroes */
+.hero{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;min-height:clamp(560px,92vh,900px);background:radial-gradient(ellipse 70% 55% at 50% 38%,rgba(242,165,65,.09),transparent 70%)}
+.hero .shade{position:absolute;inset:0 0 auto;height:140px;background:linear-gradient(180deg,rgba(7,8,12,.8),transparent)}
 .hero canvas.embers{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.hero .inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:16px;padding-block:clamp(96px,14vh,150px) 40px}
-.title{position:relative;margin:0;font:400 clamp(3.8rem,12.5vw,9.2rem)/.86 var(--f-display);letter-spacing:.045em;color:#f6e7bf;text-shadow:0 .055em 0 #3a2410,0 0 .5em rgba(242,165,65,.4)}
-.title canvas{position:absolute;left:50%;top:-.6em;width:.22em;height:.35em;transform:translateX(-50%);image-rendering:pixelated;filter:drop-shadow(0 0 12px rgba(242,165,65,.8))}
+.hero .inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:16px;padding-block:clamp(80px,10vh,110px) 0}
+/* never wider than the footage, so wide screens don't zoom in and crop it; all four edges fade into the night */
+.camp{position:relative;width:min(100%,1440px);margin:clamp(8px,2vw,24px) auto 56px;height:clamp(200px,24vw,346px);
+  -webkit-mask-image:linear-gradient(transparent,#000 24%,#000 80%,transparent),linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(transparent,#000 24%,#000 80%,transparent),linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-composite:intersect}
+.camp video,.camp .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+@media (max-width:640px){.camp{height:auto;aspect-ratio:4/3}}   /* a 4:3 crop of the band still holds all three heroes */
+@media (max-width:480px){.btn{letter-spacing:.1em;padding:14px 20px}.btn .long{display:none}}
+.title{position:relative;margin:0;font:400 clamp(3.4rem,9vw,7.4rem)/.86 var(--f-display);letter-spacing:.045em;color:#f6e7bf;text-shadow:0 .055em 0 #3a2410,0 0 .5em rgba(242,165,65,.4)}
+.title canvas{display:block;margin:0 auto .12em;width:.22em;height:.35em;image-rendering:pixelated;filter:drop-shadow(0 0 12px rgba(242,165,65,.8))}
 .filigree{width:min(420px,80vw);height:22px;color:var(--frame)}
 .slogan{margin:0;font:400 clamp(1.3rem,3vw,1.9rem)/1.2 var(--f-display);letter-spacing:.05em;color:var(--wax)}
 .ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:10px}
@@ -187,15 +193,17 @@ footer nav a{text-decoration:none} footer nav a:hover{color:var(--core)}
 
 <main id="top">
   <section class="hero" aria-label="Wickfall" style="padding:0">
-    <img class="poster" src="media/hero-camp.jpg" alt="">
-    <video src="media/hero-camp.mp4" poster="media/hero-camp.jpg" autoplay muted loop playsinline aria-hidden="true"><source src="media/hero-camp.webm" type="video/webm"><source src="media/hero-camp.mp4" type="video/mp4"></video>
     <div class="shade"></div><canvas class="embers" aria-hidden="true"></canvas>
     <div class="inner wrap">
       <h1 class="title"><canvas class="flame" width="7" height="11" aria-hidden="true"></canvas>Wickfall</h1>
       <svg class="filigree" viewBox="0 0 420 22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 11h150M262 11h150"/><path d="M158 11c14 0 18-9 30-9s14 9 22 9 10-9 22-9 16 9 30 9"/><path d="M158 11c14 0 18 9 30 9s14-9 22-9 10 9 22 9 16-9 30-9"/></g><rect x="205" y="6" width="10" height="10" transform="rotate(45 210 11)" fill="#f2a541"/></svg>
       <p class="slogan">Every flame goes out. Not yours.</p>
-      <div class="ctas"><a class="btn primary" href="../"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1l10 6-10 6z" fill="currentColor"/></svg>Play free in your browser</a><a class="btn" href="#trailer">Watch the trailer</a></div>
+      <div class="ctas"><a class="btn primary" href="../"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1l10 6-10 6z" fill="currentColor"/></svg>Play free<span class="long">&nbsp;in your browser</span></a><a class="btn" href="#trailer">Watch the trailer</a></div>
       <div class="meta"><span>No download</span><span>Keyboard, gamepad or touch</span><span>Saves stay in your browser</span></div>
+    </div>
+    <div class="camp" aria-hidden="true">
+      <img class="poster" src="media/hero-camp.jpg" alt="">
+      <video src="media/hero-camp.mp4" poster="media/hero-camp.jpg" autoplay muted loop playsinline><source src="media/hero-camp.webm" type="video/webm"><source src="media/hero-camp.mp4" type="video/mp4"></video>
     </div>
     <a class="down" href="#trailer">Descend<i></i></a>
   </section>
