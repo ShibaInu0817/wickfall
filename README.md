@@ -69,8 +69,9 @@ wickfall/
 │   └── lab-head.html        the three lines that turn the game into lab.html
 ├── dist/                    what you deploy (generated; do not edit)
 ├── build/                   artifact.html: the game page without head.html, for claude.ai (generated)
-├── .claude/skills/          project skills for Claude: workflow, adding content (heroes, enemies, bosses, stages), feel and polish
+├── .claude/                 project skills and handoff notes for Claude: workflow, adding content (heroes, enemies, bosses, stages), feel and polish
 ├── media/                   trailer, teaser, screenshots and the link-preview image
+├── LICENSE                  MIT for the code; art, music, story and media all rights reserved
 ├── site.json                version, public address, title and slogan (fills the version label and link-preview tags)
 ├── CHANGELOG.md             what changed in each version
 ├── .github/workflows/       GitHub Pages deploy
@@ -94,10 +95,13 @@ tools/test.sh --all                             # plus the browser tests (needs 
 Every push to `main` builds the game and deploys `dist/` to GitHub Pages (`.github/workflows/pages.yml`).
 To host it elsewhere, upload the contents of `dist/` together to any static host and serve it over http(s); opened from disk, the music is blocked.
 
+Code: MIT. Art, music, story and media: all rights reserved. See [LICENSE](LICENSE).
+
 ### Releasing a patch
 
 1. Bump `version` in `site.json` (it shows on the title and pause screens).
 2. Add a line to [CHANGELOG.md](CHANGELOG.md).
 3. Commit, tag and push: `git tag v0.1.1-beta && git push && git push --tags`.
+4. Publish the release: `gh release create v0.1.1-beta --prerelease --title v0.1.1-beta --notes "<its CHANGELOG lines>"`.
 
 Keep saves compatible: progress lives in players' browsers (`wf-` keys), so convert old saves if their shape changes.

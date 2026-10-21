@@ -5,6 +5,8 @@ description: Use whenever working on the Wickfall canvas platformer (formerly Un
 
 # Wickfall: how to work on the project
 
+Where the last session left off: `.claude/HANDOFF.md`.
+
 Wickfall is a single-page canvas platformer: a 480×272 pixel game scaled to the screen, three chapters, four bosses, a hidden duel (the Black Wick) and a boss rush. It has no server, no login and no database by design. Everything that persists lives in localStorage. The world inside the story is still called Underwick; only the game title changed.
 
 For adding heroes, enemies, bosses or stages, also use the `wickfall-content` skill. For sound, music, screen shake, balance and mobile controls, use `wickfall-feel`.
@@ -111,7 +113,7 @@ tools/test.sh --all                 # + browser tests (Playwright, Chromium at /
 
 ## Versions
 
-`version` in `site.json` (e.g. `0.1.0-beta`) is the one source; the build fills `@@VERSION@@` in the page (title and pause screens). A fix or rebalance bumps the patch, new content the minor. Each release: bump, add a line to `CHANGELOG.md`, commit, tag `v<version>`, push with tags.
+`version` in `site.json` (e.g. `0.1.0-beta`) is the one source; the build fills `@@VERSION@@` in the page (title and pause screens). A fix or rebalance bumps the patch, new content the minor. Each release: bump, add a line to `CHANGELOG.md`, commit, tag `v<version>`, push with tags, then `gh release create v<version> --prerelease` with that version's changelog lines as notes.
 
 ## Wrap-up checklist
 
