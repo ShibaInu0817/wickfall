@@ -19,14 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Assets are not covered by the license above.
-
-"The Software" means the source code only: src/js/, src/*.html, src/style.css,
-src/labs/, src/homepage/index.html, tools/ and tests/.
-
-The game's art and characters, story text, music (src/audio/), sound effects,
-and everything in media/ and src/homepage/media/ are
-Copyright (c) 2026 ShibaInu0817. All rights reserved.

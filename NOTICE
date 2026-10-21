@@ -1,0 +1,8 @@
+Wickfall: what the MIT License covers
+
+The MIT License in LICENSE applies to the source code only: src/js/, src/*.html,
+src/style.css, src/labs/, src/homepage/index.html, tools/ and tests/.
+
+The game's art and characters, story text, music (src/audio/), sound effects,
+and everything in media/ and src/homepage/media/ are
+Copyright (c) 2026 ShibaInu0817. All rights reserved.
